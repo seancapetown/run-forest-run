@@ -562,8 +562,18 @@ function hidePinScreen() {
   s.style.opacity='0'; setTimeout(()=>s.style.display='none',500);
 }
 function hideSplash() {
-  const s=document.getElementById('splash');
-  s.style.opacity='0'; setTimeout(()=>{ s.style.display='none'; showPinScreen(); },800);
+  const s = document.getElementById('splash');
+  s.style.opacity = '0';
+  setTimeout(() => {
+    s.style.display = 'none';
+    showPinScreen();
+    // Show loader and fetch live GFW data
+    const loader = document.getElementById('data-loading');
+    if (loader) loader.style.display = 'flex';
+    fetchDailyRate().then(() => {
+      if (loader) loader.style.display = 'none';
+    });
+  }, 800);
 }
 function resetAll() {
   running=false; cancelAnimationFrame(raf);
