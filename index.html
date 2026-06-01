@@ -6,6 +6,7 @@
 <title>Run Forest Run · The forest is running out</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
@@ -73,7 +74,7 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
   display:none; align-items:center; justify-content:center;
   opacity:0; transition:opacity .5s ease;
 }
-#pin-box { width:90%; max-width:400px; display:flex; flex-direction:column; gap:12px; }
+#pin-box { width:90%; max-width:400px; display:flex; flex-direction:column; gap:12px; position:relative; }
 #pin-title { font-family:var(--display); font-size:24px; color:var(--parch); line-height:1.2; }
 #pin-sub { font-size:10px; color:var(--data); line-height:1.8; }
 #search-row { display:flex; }
@@ -162,6 +163,31 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 .info-row { display:flex; align-items:center; gap:10px; font-size:9px; color:var(--data); letter-spacing:.08em; margin:3px 0; }
 .info-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
 
+/* SATELLITE DATA OVERLAY */
+#satellite-overlay {
+  position:absolute; inset:0; z-index:10;
+  background:rgba(8,14,8,.92);
+  display:none; flex-direction:column;
+  align-items:center; justify-content:center; gap:16px;
+  border-radius:2px;
+}
+#satellite-overlay .spinner {
+  width:28px; height:28px;
+  border:2px solid rgba(74,122,42,.2);
+  border-top-color:var(--living);
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+#satellite-overlay h3 {
+  font-family:var(--display); font-size:16px;
+  color:var(--parch); font-weight:700; text-align:center;
+}
+#satellite-overlay p {
+  font-size:9px; color:var(--data);
+  letter-spacing:.12em; text-transform:uppercase;
+  text-align:center; line-height:1.8;
+}
+
 /* DATA LOADING */
 #data-loading {
   display:none; align-items:center; justify-content:center;
@@ -208,6 +234,11 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 
 <div id="pin-screen">
   <div id="pin-box">
+    <div id="satellite-overlay">
+      <div class="spinner"></div>
+      <h3>Gathering live satellite data</h3>
+      <p>Querying Global Forest Watch<br>Integrated Deforestation Alerts<br>3-8 day satellite lag</p>
+    </div>
     <div id="pin-title">Where do you live?</div>
     <div id="pin-sub">Every day ~30 km² of Amazon forest disappears.<br>Pin your location. See that scale on streets you know.</div>
     <div id="search-row">
@@ -217,10 +248,7 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
     <div id="search-results"></div>
     <button id="geo-btn">📍 Use my current location</button>
     <div id="pin-err"></div>
-    <div id="data-loading">
-      <div class="spinner"></div>
-      <span>Gathering live satellite data from GFW...</span>
-    </div>
+
   </div>
 </div>
 
@@ -567,11 +595,15 @@ function hideSplash() {
   setTimeout(() => {
     s.style.display = 'none';
     showPinScreen();
-    // Show loader and fetch live GFW data
-    const loader = document.getElementById('data-loading');
-    if (loader) loader.style.display = 'flex';
+    // Show overlay blocking search until data is ready
+    const overlay = document.getElementById('satellite-overlay');
+    if (overlay) overlay.style.display = 'flex';
     fetchDailyRate().then(() => {
-      if (loader) loader.style.display = 'none';
+      if (overlay) {
+        overlay.style.opacity = '0';
+        overlay.style.transition = 'opacity .4s';
+        setTimeout(() => { overlay.style.display = 'none'; overlay.style.opacity = ''; }, 400);
+      }
     });
   }, 800);
 }
