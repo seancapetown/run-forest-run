@@ -136,7 +136,7 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
   border:0.5px solid rgba(74,122,42,.3); border-left:none;
   color:var(--parch); font-family:var(--mono);
   font-size:10px; padding:10px 16px; cursor:pointer;
-  letter-spacing:.06em;
+  letter-spacing:.06em; white-space:nowrap;
 }
 #search-btn:hover { background:rgba(74,122,42,.28); }
 #search-results { max-height:140px; overflow-y:auto; }
@@ -220,7 +220,7 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
   font-size:8px; color:var(--dim); letter-spacing:.1em;
   text-transform:uppercase; margin-bottom:6px;
 }
-#prog-track { height:1.5px; background:rgba(74,122,42,.15); }
+#prog-track { height:2px; background:rgba(74,122,42,.2); }
 #prog-fill  { height:100%; background:var(--data); width:0%; transition:width .5s linear; }
 
 /* ── QUOTE ── */
@@ -291,6 +291,43 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
   letter-spacing:.14em; text-transform:uppercase;
 }
 
+/* ── TIMELINE ── */
+#timeline {
+  position:fixed; bottom:90px; left:50%; transform:translateX(-50%);
+  z-index:50; display:none;
+  background:rgba(8,14,8,.92); border:0.5px solid rgba(74,122,42,.25);
+  padding:14px 20px; width:90%; max-width:480px; text-align:center;
+}
+#tl-heading {
+  font-size:8px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--dim); margin-bottom:10px;
+}
+#tl-controls {
+  display:flex; align-items:center; gap:10px; margin-bottom:8px;
+}
+#tl-slider {
+  flex:1; -webkit-appearance:none; appearance:none;
+  height:2px; background:rgba(74,122,42,.2); outline:none; cursor:pointer;
+}
+#tl-slider::-webkit-slider-thumb {
+  -webkit-appearance:none; width:12px; height:12px;
+  border-radius:50%; background:var(--burn); cursor:pointer;
+}
+#tl-year {
+  font-family:var(--display); font-size:20px;
+  color:var(--parch); min-width:44px;
+}
+#tl-play-btn {
+  background:none; border:0.5px solid rgba(74,122,42,.3);
+  color:var(--data); font-family:var(--mono);
+  font-size:9px; padding:4px 10px; cursor:pointer;
+  letter-spacing:.08em; text-transform:uppercase; white-space:nowrap;
+}
+#tl-play-btn:hover { background:rgba(74,122,42,.15); color:var(--parch); }
+#tl-info {
+  font-size:9px; color:var(--burn); letter-spacing:.06em; line-height:1.5;
+}
+
 /* ── MOBILE ── */
 @media (max-width:600px) {
   #splash { padding:32px 24px; }
@@ -300,6 +337,8 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
   #clock-block { top:66px; }
   #clock { font-size:20px; }
   #hdr-wm span { font-size:15px; }
+  #timeline { bottom:100px; width:calc(100% - 24px); }
+  #tl-year { font-size:16px; }
 }
 
 </style>
@@ -417,6 +456,17 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
   <div id="runner-label">Forest</div>
 </div>
 
+<!-- TIMELINE -->
+<div id="timeline">
+  <div id="tl-heading">← Drag to explore Amazon loss year by year</div>
+  <div id="tl-controls">
+    <input id="tl-slider" type="range" min="1972" max="2025" value="2025">
+    <div id="tl-year">2025</div>
+    <button id="tl-play-btn">▶ Play</button>
+  </div>
+  <div id="tl-info"></div>
+</div>
+
 <!-- LOADING -->
 <div id="loading">
   <div class="spinner"></div>
@@ -427,8 +477,22 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 // ────────────────────────────────────────────
 // CONSTANTS
 // ────────────────────────────────────────────
-const DAILY_KM2 = 30;   // average daily Amazon clearing
-const DAY_S     = 86400; // seconds in a day
+const DAILY_KM2 = 30;
+const DAY_S     = 86400;
+
+const ANNUAL_LOSS = {
+  1972:11000,1973:11500,1974:12000,1975:13000,1976:14000,
+  1977:15000,1978:16000,1979:17000,1980:18000,1981:20000,
+  1982:21000,1983:22000,1984:27700,1985:25800,1986:22000,
+  1987:28000,1988:21050,1989:17770,1990:13810,1991:11030,
+  1992:13786,1993:14896,1994:14896,1995:29059,1996:18161,
+  1997:13227,1998:17383,1999:17259,2000:18226,2001:18165,
+  2002:21651,2003:25396,2004:27772,2005:19014,2006:14286,
+  2007:11651,2008:12911,2009:7464, 2010:7000, 2011:6418,
+  2012:4571, 2013:5891, 2014:5012, 2015:6207, 2016:7893,
+  2017:6947, 2018:7900, 2019:10129,2020:11088,2021:13235,
+  2022:11568,2023:9001, 2024:9500, 2025:9712
+};
 
 // ────────────────────────────────────────────
 // STATE
@@ -438,6 +502,7 @@ let pinLat = null, pinLng = null, placeName = '';
 let simSec = 0, speed = 1, raf = null, lastTs = null, running = false;
 let clearCircle = null, trailLine = null, trailCoords = [];
 let pathPoints = [];
+let histCircle = null, tlPlaying = false, tlTimer = null;
 
 // ────────────────────────────────────────────
 // MAP INIT
@@ -560,12 +625,11 @@ function tick(ts) {
   // Clearing circle
   if (clearCircle) clearCircle.setRadius(rad * 1000);
 
-  // Runner position
-  const idx  = Math.floor(frac * (pathPoints.length - 1));
-  const next = Math.min(idx + 1, pathPoints.length - 1);
-  const t    = (frac * (pathPoints.length - 1)) % 1;
-  const rLat = pathPoints[idx][0] + (pathPoints[next][0] - pathPoints[idx][0]) * t;
-  const rLng = pathPoints[idx][1] + (pathPoints[next][1] - pathPoints[idx][1]) * t;
+  // Runner runs the perimeter of the CURRENT circle size
+  // Calculate position directly on circle edge using current angle
+  const angle = frac * 2 * Math.PI; // full circle over the day
+  const rLat = pinLat + (rad / 111) * Math.cos(angle);
+  const rLng = pinLng + (rad / (111 * Math.cos(pinLat * Math.PI / 180))) * Math.sin(angle);
 
   trailCoords.push([rLat, rLng]);
   if (trailLine) trailLine.setLatLngs(trailCoords);
@@ -605,6 +669,7 @@ function startRun(lat, lng, name) {
     color: '#c8531a', weight: 1.5, opacity: .5
   }).addTo(map);
 
+  // pathPoints will be rebuilt each tick based on current radius
   pathPoints = buildRunPath(lat, lng, DAILY_KM2);
 
   // UI
@@ -616,6 +681,13 @@ function startRun(lat, lng, name) {
   running = true;
   lastTs  = null;
   raf     = requestAnimationFrame(tick);
+
+  // Show timeline and draw initial historic circle
+  showEl('timeline');
+  setTimeout(() => {
+    document.getElementById('tl-slider').value = 2025;
+    drawHistCircle(2025);
+  }, 1500);
 }
 
 // ────────────────────────────────────────────
@@ -709,11 +781,74 @@ function resetAll() {
   if (trailLine)   { map.removeLayer(trailLine);   trailLine   = null; }
   runnerEl.style.display = 'none';
   trailCoords = []; pathPoints = [];
-  hideEl('hdr','stats','clock-block','ctx-bar','progress','quote','controls','repin');
+  hideEl('hdr','stats','clock-block','ctx-bar','progress','quote','controls','repin','timeline');
+  if (histCircle) { map.removeLayer(histCircle); histCircle = null; }
+  if (tlTimer) { clearInterval(tlTimer); tlPlaying = false; }
   setTimeout(showPinScreen, 100);
   document.getElementById('search-results').innerHTML = '';
   document.getElementById('search-inp').value = '';
   document.getElementById('pin-err').textContent = '';
+}
+
+// ────────────────────────────────────────────
+// TIMELINE
+// ────────────────────────────────────────────
+function cumulativeLoss(upToYear) {
+  return Object.entries(ANNUAL_LOSS)
+    .filter(([y]) => parseInt(y) <= upToYear)
+    .reduce((s, [, v]) => s + v, 0);
+}
+
+function drawHistCircle(yr) {
+  if (histCircle) { map.removeLayer(histCircle); histCircle = null; }
+  if (!pinLat) return;
+
+  const total   = cumulativeLoss(yr);
+  const radiusKm = Math.sqrt(total / Math.PI);
+  const annual  = ANNUAL_LOSS[yr] || 0;
+
+  document.getElementById('tl-year').textContent = yr;
+  document.getElementById('tl-info').textContent =
+    `${yr}: −${annual.toLocaleString()} km² that year  ·  −${total.toLocaleString()} km² total since 1972`;
+
+  histCircle = L.circle([pinLat, pinLng], {
+    radius:      radiusKm * 1000,
+    color:       '#c8531a',
+    fillColor:   '#7a3a0a',
+    fillOpacity: 0.13,
+    weight:      2,
+    dashArray:   '10 6',
+    opacity:     0.85,
+    interactive: false
+  }).addTo(map);
+}
+
+function playTimeline() {
+  if (tlPlaying) {
+    // Pause
+    tlPlaying = false;
+    clearInterval(tlTimer);
+    document.getElementById('tl-play-btn').textContent = '▶ Play';
+    return;
+  }
+  // Start from 1972
+  tlPlaying = true;
+  document.getElementById('tl-play-btn').textContent = '⏸ Pause';
+  const slider = document.getElementById('tl-slider');
+  slider.value = 1972;
+  drawHistCircle(1972);
+
+  tlTimer = setInterval(() => {
+    const yr = parseInt(slider.value);
+    if (yr >= 2025) {
+      clearInterval(tlTimer);
+      tlPlaying = false;
+      document.getElementById('tl-play-btn').textContent = '▶ Play';
+      return;
+    }
+    slider.value = yr + 1;
+    drawHistCircle(yr + 1);
+  }, 250);
 }
 
 // ────────────────────────────────────────────
@@ -732,11 +867,28 @@ document.querySelectorAll('.ctrl-btn').forEach(btn => {
 // EVENT LISTENERS
 // ────────────────────────────────────────────
 document.getElementById('splash-cta').addEventListener('click', hideSplash);
+document.getElementById('tl-slider').addEventListener('input', e => {
+  drawHistCircle(parseInt(e.target.value));
+});
+document.getElementById('tl-play-btn').addEventListener('click', playTimeline);
 document.getElementById('repin-btn').addEventListener('click', resetAll);
 document.getElementById('search-btn').addEventListener('click', doSearch);
 document.getElementById('geo-btn').addEventListener('click', useGeo);
+// Search on Enter key
 document.getElementById('search-inp').addEventListener('keydown', e => {
-  if (e.key === 'Enter') doSearch();
+  if (e.key === 'Enter') { clearTimeout(searchTimer); doSearch(); }
+});
+
+// Live search-as-you-type with 400ms debounce
+let searchTimer = null;
+document.getElementById('search-inp').addEventListener('input', e => {
+  const q = e.target.value.trim();
+  clearTimeout(searchTimer);
+  if (q.length < 3) {
+    document.getElementById('search-results').innerHTML = '';
+    return;
+  }
+  searchTimer = setTimeout(doSearch, 400);
 });
 
 // Ken Burns on splash — slight zoom out on load
