@@ -90,23 +90,9 @@ module.exports = async function handler(req, res) {
   try {
     const sql = `SELECT latitude, longitude, umd_glad_landsat_alerts__confidence AS confidence, alert__date, alert__count FROM gfw_integrated_alerts WHERE alert__date >= '${getDateDaysAgo(30)}' LIMIT 100`;
 
-    // Step 1: Call latest to get redirect location
-    const step1 = await gfwQuery(apiKey, `/dataset/gfw_integrated_alerts/latest/query?sql=${encodeURIComponent(sql)}`);
-
-    let finalPath;
-    if ([301,302,307,308].includes(step1.status) && step1.headers.location) {
-      // Follow the redirect with the full path from location header
-      finalPath = step1.headers.location;
-    } else if (step1.status === 200) {
-      // Got data directly
-      const parsed = JSON.parse(step1.body);
-      return buildResponse(res, parsed.data || []);
-    } else {
-      // Try with today's version directly
-      finalPath = `/dataset/gfw_integrated_alerts/${getTodayVersion()}/query?sql=${encodeURIComponent(sql)}`;
-    }
-
-    // Step 2: Query the resolved path with API key
+    // Use the correct endpoint: /query/json with today's version
+    const version = getTodayVersion();
+    const finalPath = `/dataset/gfw_integrated_alerts/${version}/query/json?sql=${encodeURIComponent(sql)}`;
     const step2 = await gfwQuery(apiKey, finalPath);
 
     if (step2.status !== 200) {
