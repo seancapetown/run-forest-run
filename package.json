@@ -2,8 +2,6 @@
   "name": "run-forest-run",
   "version": "1.0.0",
   "dependencies": {
-    "@turf/intersect": "^5.1.6",
-    "@turf/helpers": "^5.1.6",
-    "@turf/circle": "^5.1.6"
+    "@turf/turf": "^6.5.0"
   }
 }
