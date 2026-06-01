@@ -765,11 +765,14 @@ function startRun(lat, lng, name) {
   showEl('hdr', 'stats', 'clock-block', 'ctx-bar', 'progress', 'quote', 'controls', 'repin');
 
   // Start sim from current time of day
-  simSec  = dayFraction() * DAY_S;
-  running = true;
-  lastTs  = null;
-  runnerEl.style.display = 'flex';
-  raf = requestAnimationFrame(tick);
+  simSec = dayFraction() * DAY_S;
+  // Small delay to let map render before starting animation
+  setTimeout(() => {
+    running = true;
+    lastTs  = null;
+    runnerEl.style.display = 'flex';
+    raf = requestAnimationFrame(tick);
+  }, 500);
 
   // Show timeline and draw initial historic circle
   showEl('timeline');
@@ -893,30 +896,27 @@ function cumulativeLoss(upToYear) {
 
 function drawHistCircle(yr) {
   if (histCircle) { map.removeLayer(histCircle); histCircle = null; }
-  if (landClipLayer) { map.removeLayer(landClipLayer); landClipLayer = null; }
-  lastClipRad = -1;
-  pendingClip = false;
   if (!pinLat) return;
 
   const total    = cumulativeLoss(yr);
-  const radiusKm = Math.sqrt(total / Math.PI);
   const annual   = ANNUAL_LOSS[yr] || 0;
+  const km2used  = tlMode === 'annual' ? annual : total;
+  const radiusKm = Math.sqrt(Math.max(km2used, 1) / Math.PI);
 
   document.getElementById('tl-year').textContent = yr;
-  document.getElementById('tl-info').textContent =
-    `${yr}: −${annual.toLocaleString()} km² that year  ·  −${total.toLocaleString()} km² total since 1972`;
+  document.getElementById('tl-info').textContent = tlMode === 'cumulative'
+    ? `${yr}: −${annual.toLocaleString()} km² that year  ·  −${total.toLocaleString()} km² total since 1972`
+    : `${yr}: −${annual.toLocaleString()} km² cleared that year  ·  radius ${radiusKm.toFixed(0)} km`;
 
-  // Draw as SVG circle directly on map — no pane tricks
   histCircle = L.circle([pinLat, pinLng], {
     radius:      radiusKm * 1000,
     color:       '#c8531a',
     fillColor:   '#c8531a',
-    fillOpacity: 0.10,
+    fillOpacity: tlMode === 'annual' ? 0.18 : 0.10,
     weight:      2.5,
-    dashArray:   '12 7',
+    dashArray:   tlMode === 'annual' ? null : '12 7',
     opacity:     1.0,
-    interactive: false,
-    className:   'hist-circle'
+    interactive: false
   }).addTo(map);
 }
 
