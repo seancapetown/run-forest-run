@@ -717,10 +717,9 @@ function tick(ts) {
   }
 
   // Runner runs the perimeter of the CURRENT circle size
-  // Calculate position directly on circle edge using current angle
-  const angle = frac * 2 * Math.PI; // full circle over the day
-  const rLat = pinLat + (rad / 111) * Math.cos(angle);
-  const rLng = pinLng + (rad / (111 * Math.cos(pinLat * Math.PI / 180))) * Math.sin(angle);
+  const angle = frac * 2 * Math.PI;
+  const rLat  = pinLat + (rad / 111) * Math.cos(angle);
+  const rLng  = pinLng + (rad / (111 * Math.cos(pinLat * Math.PI / 180))) * Math.sin(angle);
 
   trailCoords.push([rLat, rLng]);
   if (trailLine) trailLine.setLatLngs(trailCoords);
@@ -758,12 +757,8 @@ function startRun(lat, lng, name) {
   lastClipRad = -1;
 
   trailCoords = [];
-  trailLine = L.polyline([], {
-    color: '#c8531a', weight: 1.5, opacity: .5
-  }).addTo(map);
-
-  // pathPoints will be rebuilt each tick based on current radius
-  pathPoints = buildRunPath(lat, lng, DAILY_KM2);
+  trailLine   = L.polyline([], { color:'#c8531a', weight:1.5, opacity:.5 }).addTo(map);
+  pathPoints  = buildRunPath(lat, lng, DAILY_KM2); // kept for onMapMove fallback
 
   // UI
   document.getElementById('loc-name').textContent = name || '';
@@ -773,7 +768,8 @@ function startRun(lat, lng, name) {
   simSec  = dayFraction() * DAY_S;
   running = true;
   lastTs  = null;
-  raf     = requestAnimationFrame(tick);
+  runnerEl.style.display = 'flex';
+  raf = requestAnimationFrame(tick);
 
   // Show timeline and draw initial historic circle
   showEl('timeline');
