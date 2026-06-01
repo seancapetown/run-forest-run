@@ -10,7 +10,7 @@ function fetchLand() {
     if (landCache) return resolve(landCache);
     const options = {
       hostname: 'raw.githubusercontent.com',
-      path: '/nvkelso/natural-earth-vector/master/geojson/ne_50m_land.geojson',
+      path: '/nvkelso/natural-earth-vector/master/geojson/ne_10m_land.geojson',
       headers: { 'User-Agent': 'RunForestRun/1.0' }
     };
     https.get(options, (res) => {
