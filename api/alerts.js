@@ -24,45 +24,30 @@ function getRegion(lng, lat) {
   return 'Amazon Basin';
 }
 
-// First discover the latest version, then query it
-function discoverVersion(apiKey) {
-  return new Promise((resolve, reject) => {
-    const options = {
-      hostname: 'data-api.globalforestwatch.org',
-      path: '/dataset/gfw_integrated_alerts/latest',
-      headers: { 'x-api-key': apiKey, 'User-Agent': 'RunForestRun/1.0' }
-    };
-    https.get(options, (res) => {
-      // The location header on redirect tells us the version
-      if (res.headers.location) {
-        const match = res.headers.location.match(/\/(v\d+)\//);
-        if (match) return resolve(match[1]);
-      }
-      let data = '';
-      res.on('data', c => data += c);
-      res.on('end', () => {
-        try {
-          const json = JSON.parse(data);
-          const version = json.data?.version || json.version;
-          resolve(version || 'latest');
-        } catch(e) { resolve('latest'); }
-      });
-    }).on('error', reject);
-  });
+// Get today's version string e.g. v20260601
+function getTodayVersion() {
+  const d = new Date();
+  const y = d.getUTCFullYear();
+  const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(d.getUTCDate()).padStart(2, '0');
+  return `v${y}${m}${day}`;
 }
 
-function queryGFW(apiKey, version, sql) {
+function gfwQuery(apiKey, path) {
   return new Promise((resolve, reject) => {
-    const path = `/dataset/gfw_integrated_alerts/${version}/query?sql=${encodeURIComponent(sql)}`;
     const options = {
       hostname: 'data-api.globalforestwatch.org',
       path,
-      headers: { 'x-api-key': apiKey, 'User-Agent': 'RunForestRun/1.0' }
+      headers: {
+        'x-api-key': apiKey,
+        'User-Agent': 'RunForestRun/1.0',
+        'Accept': 'application/json'
+      }
     };
     https.get(options, (res) => {
       let data = '';
       res.on('data', c => data += c);
-      res.on('end', () => resolve({ status: res.statusCode, body: data }));
+      res.on('end', () => resolve({ status: res.statusCode, body: data, headers: res.headers }));
     }).on('error', reject);
   });
 }
@@ -103,44 +88,61 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    // Step 1: discover current version
-    const version = await discoverVersion(apiKey);
-
-    // Step 2: query that version directly
     const sql = `SELECT latitude, longitude, umd_glad_landsat_alerts__confidence AS confidence, alert__date, alert__count FROM gfw_integrated_alerts WHERE alert__date >= '${getDateDaysAgo(30)}' LIMIT 100`;
-    const { status, body } = await queryGFW(apiKey, version, sql);
 
-    if (status !== 200) {
-      return res.status(200).json({ ...getFallback(), annual_loss: ANNUAL_LOSS, gfw_status: status });
+    // Step 1: Call latest to get redirect location
+    const step1 = await gfwQuery(apiKey, `/dataset/gfw_integrated_alerts/latest/query?sql=${encodeURIComponent(sql)}`);
+
+    let finalPath;
+    if ([301,302,307,308].includes(step1.status) && step1.headers.location) {
+      // Follow the redirect with the full path from location header
+      finalPath = step1.headers.location;
+    } else if (step1.status === 200) {
+      // Got data directly
+      const parsed = JSON.parse(step1.body);
+      return buildResponse(res, parsed.data || []);
+    } else {
+      // Try with today's version directly
+      finalPath = `/dataset/gfw_integrated_alerts/${getTodayVersion()}/query?sql=${encodeURIComponent(sql)}`;
     }
 
-    const parsed = JSON.parse(body);
-    const rows = parsed.data || [];
+    // Step 2: Query the resolved path with API key
+    const step2 = await gfwQuery(apiKey, finalPath);
 
-    if (!rows.length) {
-      return res.status(200).json({ ...getFallback(), annual_loss: ANNUAL_LOSS });
+    if (step2.status !== 200) {
+      return res.status(200).json({ ...getFallback(), annual_loss: ANNUAL_LOSS, gfw_status: step2.status, gfw_path: finalPath });
     }
 
-    const alerts = rows.map(row => ({
-      lat:        row.latitude,
-      lng:        row.longitude,
-      date:       row.alert__date,
-      confidence: row.confidence || 'nominal',
-      intensity:  Math.min(100, (row.alert__count || 1) * 10),
-      region:     getRegion(row.longitude, row.latitude)
-    })).filter(a => a.lat && a.lng);
-
-    const estimatedKm2 = Math.max(20, Math.min(40, alerts.length * 0.28 + 5));
-
-    return res.status(200).json({
-      source:             'GFW Integrated Deforestation Alerts',
-      estimated_area_km2: parseFloat(estimatedKm2.toFixed(2)),
-      total_alerts:       alerts.length,
-      alerts:             alerts.slice(0, 60),
-      annual_loss:        ANNUAL_LOSS
-    });
+    const parsed = JSON.parse(step2.body);
+    return buildResponse(res, parsed.data || []);
 
   } catch(e) {
     return res.status(200).json({ ...getFallback(), annual_loss: ANNUAL_LOSS, error: e.message });
   }
 };
+
+function buildResponse(res, rows) {
+  if (!rows.length) {
+    const fb = getFallback();
+    return res.status(200).json({ ...fb, annual_loss: ANNUAL_LOSS });
+  }
+
+  const alerts = rows.map(row => ({
+    lat:        row.latitude,
+    lng:        row.longitude,
+    date:       row.alert__date,
+    confidence: row.confidence || 'nominal',
+    intensity:  Math.min(100, (row.alert__count || 1) * 10),
+    region:     getRegion(row.longitude, row.latitude)
+  })).filter(a => a.lat && a.lng);
+
+  const estimatedKm2 = Math.max(20, Math.min(40, alerts.length * 0.28 + 5));
+
+  return res.status(200).json({
+    source:             'GFW Integrated Deforestation Alerts',
+    estimated_area_km2: parseFloat(estimatedKm2.toFixed(2)),
+    total_alerts:       alerts.length,
+    alerts:             alerts.slice(0, 60),
+    annual_loss:        ANNUAL_LOSS
+  });
+}
