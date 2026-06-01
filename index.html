@@ -112,15 +112,15 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 #date-str { font-size:8px; color:var(--dim); letter-spacing:.1em; text-transform:uppercase; margin-top:2px; }
 #loc-name { font-size:9px; color:#8aaa7a; margin-top:4px; font-style:italic; }
 
-#ctx-bar { position:fixed; bottom:170px; left:0; right:0; z-index:100; display:none; pointer-events:none; padding:10px 20px; background:linear-gradient(to top, rgba(8,14,8,.9) 0%, transparent 100%); }
-#ctx-text { font-size:10px; color:rgba(200,200,170,.75); line-height:1.6; letter-spacing:.04em; max-width:700px; }
+#ctx-bar { position:fixed; bottom:120px; left:20px; z-index:100; display:none; pointer-events:none; max-width:220px; }
+#ctx-text { font-size:9px; color:rgba(200,200,170,.4); line-height:1.6; letter-spacing:.03em; }
 
 #progress { position:fixed; bottom:52px; left:20px; right:140px; z-index:100; display:none; pointer-events:none; }
 #prog-labels { display:flex; justify-content:space-between; font-size:8px; color:var(--dim); letter-spacing:.1em; text-transform:uppercase; margin-bottom:6px; }
 #prog-track { height:2px; background:rgba(74,122,42,.2); }
 #prog-fill { height:100%; background:var(--data); width:0%; transition:width .5s linear; }
 
-#quote { position:fixed; bottom:22px; left:0; right:0; z-index:100; text-align:center; display:none; pointer-events:none; font-family:var(--display); font-size:11px; color:rgba(232,220,200,.28); font-style:italic; }
+
 
 #controls { position:fixed; bottom:52px; right:20px; z-index:100; display:none; align-items:center; gap:6px; }
 .ctrl-label { font-size:8px; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
@@ -287,7 +287,7 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
   <div id="prog-track"><div id="prog-fill"></div></div>
 </div>
 
-<div id="quote">"I just felt like running."</div>
+
 
 <div id="controls">
   <span class="ctrl-label">Speed</span>
@@ -481,7 +481,7 @@ function startRun(lat, lng, name) {
   trailLine = L.polyline([], {color:'#c8531a', weight:1.5, opacity:.5}).addTo(map);
 
   document.getElementById('loc-name').textContent = name||'';
-  show('hdr','stats','clock-block','ctx-bar','progress','quote','controls','repin','info-panel');
+  show('hdr','stats','clock-block','ctx-bar','progress','controls','repin','info-panel');
 
   simSec = dayFraction() * DAY_S;
   running = true; lastTs = null;
@@ -617,7 +617,7 @@ function resetAll() {
   if(histCircle){map.removeLayer(histCircle);histCircle=null;}
   if(tlTimer){clearInterval(tlTimer);tlPlaying=false;}
   runnerEl.style.display='none'; trailCoords=[];
-  hide('hdr','stats','clock-block','ctx-bar','progress','quote','controls','repin','timeline','info-panel');
+  hide('hdr','stats','clock-block','ctx-bar','progress','controls','repin','timeline','info-panel');
   setTimeout(showPinScreen,100);
   document.getElementById('search-results').innerHTML='';
   document.getElementById('search-inp').value='';
