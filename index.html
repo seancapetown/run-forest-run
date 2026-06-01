@@ -109,6 +109,7 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
   position:fixed; inset:0; z-index:90;
   background:rgba(8,14,8,.93);
   display:none; align-items:center; justify-content:center;
+  opacity:0; transition:opacity .5s ease;
 }
 #pin-box {
   width:90%; max-width:400px;
@@ -179,7 +180,7 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 }
 .s-label {
   font-size:8px; letter-spacing:.14em; text-transform:uppercase;
-  color:var(--dim); margin-bottom:2px;
+  color:var(--data); margin-bottom:2px;
 }
 .s-value {
   font-size:22px; font-weight:300; color:var(--parch);
@@ -390,7 +391,7 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 </div>
 
 <!-- QUOTE -->
-<div id="quote">"The forest is running out." — Run Forest Run</div>
+<div id="quote">"I just felt like running."</div>
 
 <!-- SPEED CONTROLS -->
 <div id="controls">
@@ -684,17 +685,22 @@ function useGeo() {
 function showPinScreen() {
   const s = document.getElementById('pin-screen');
   s.style.display = 'flex';
-  setTimeout(() => s.style.opacity = '1', 10);
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => { s.style.opacity = '1'; });
+  });
 }
 function hidePinScreen() {
   const s = document.getElementById('pin-screen');
   s.style.opacity = '0';
-  setTimeout(() => s.style.display = 'none', 600);
+  setTimeout(() => { s.style.display = 'none'; }, 500);
 }
 function hideSplash() {
   const s = document.getElementById('splash');
   s.style.opacity = '0';
-  setTimeout(() => { s.style.display = 'none'; showPinScreen(); }, 800);
+  setTimeout(() => {
+    s.style.display = 'none';
+    showPinScreen();
+  }, 800);
 }
 function resetAll() {
   running = false;
@@ -704,7 +710,7 @@ function resetAll() {
   runnerEl.style.display = 'none';
   trailCoords = []; pathPoints = [];
   hideEl('hdr','stats','clock-block','ctx-bar','progress','quote','controls','repin');
-  showPinScreen();
+  setTimeout(showPinScreen, 100);
   document.getElementById('search-results').innerHTML = '';
   document.getElementById('search-inp').value = '';
   document.getElementById('pin-err').textContent = '';
@@ -733,11 +739,11 @@ document.getElementById('search-inp').addEventListener('keydown', e => {
   if (e.key === 'Enter') doSearch();
 });
 
-// Ken Burns on splash
-window.addEventListener('load', () => {
+// Ken Burns on splash — slight zoom out on load
+setTimeout(() => {
   const bg = document.getElementById('splash-bg');
   if (bg) bg.style.transform = 'scale(1.0)';
-});
+}, 100);
 
 // ────────────────────────────────────────────
 // BOOT
