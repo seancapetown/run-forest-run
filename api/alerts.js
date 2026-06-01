@@ -1,5 +1,4 @@
 const https = require('https');
-const http = require('http');
 
 const ANNUAL_LOSS = {
   1972:11000,1973:11500,1974:12000,1975:13000,1976:14000,1977:15000,1978:16000,1979:17000,1980:18000,1981:20000,
@@ -25,23 +24,46 @@ function getRegion(lng, lat) {
   return 'Amazon Basin';
 }
 
-// Fetch a URL following redirects automatically
-function fetchWithRedirects(url, headers, maxRedirects = 5) {
+// First discover the latest version, then query it
+function discoverVersion(apiKey) {
   return new Promise((resolve, reject) => {
-    const lib = url.startsWith('https') ? https : http;
-    const req = lib.get(url, { headers }, (res) => {
-      if ([301, 302, 307, 308].includes(res.statusCode) && res.headers.location && maxRedirects > 0) {
-        const redirectUrl = res.headers.location.startsWith('http')
-          ? res.headers.location
-          : new URL(res.headers.location, url).toString();
-        resolve(fetchWithRedirects(redirectUrl, headers, maxRedirects - 1));
-        return;
+    const options = {
+      hostname: 'data-api.globalforestwatch.org',
+      path: '/dataset/gfw_integrated_alerts/latest',
+      headers: { 'x-api-key': apiKey, 'User-Agent': 'RunForestRun/1.0' }
+    };
+    https.get(options, (res) => {
+      // The location header on redirect tells us the version
+      if (res.headers.location) {
+        const match = res.headers.location.match(/\/(v\d+)\//);
+        if (match) return resolve(match[1]);
       }
       let data = '';
       res.on('data', c => data += c);
+      res.on('end', () => {
+        try {
+          const json = JSON.parse(data);
+          const version = json.data?.version || json.version;
+          resolve(version || 'latest');
+        } catch(e) { resolve('latest'); }
+      });
+    }).on('error', reject);
+  });
+}
+
+function queryGFW(apiKey, version, sql) {
+  return new Promise((resolve, reject) => {
+    const path = `/dataset/gfw_integrated_alerts/${version}/query?sql=${encodeURIComponent(sql)}`;
+    const options = {
+      hostname: 'data-api.globalforestwatch.org',
+      path,
+      headers: { 'x-api-key': apiKey, 'User-Agent': 'RunForestRun/1.0' }
+    };
+    https.get(options, (res) => {
+      let data = '';
+      res.on('data', c => data += c);
       res.on('end', () => resolve({ status: res.statusCode, body: data }));
-    });
-    req.on('error', reject);
+    }).on('error', reject);
   });
 }
 
@@ -81,24 +103,22 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const sql = encodeURIComponent(
-      `SELECT latitude, longitude, umd_glad_landsat_alerts__confidence AS confidence,
-       alert__date, alert__count
-       FROM gfw_integrated_alerts
-       WHERE alert__date >= '${getDateDaysAgo(30)}'
-       LIMIT 100`
-    );
-    const url = `https://data-api.globalforestwatch.org/dataset/gfw_integrated_alerts/latest/query?sql=${sql}`;
-    const { status, body } = await fetchWithRedirects(url, {
-      'x-api-key': apiKey,
-      'User-Agent': 'RunForestRun/1.0'
-    });
+    // Step 1: discover current version
+    const version = await discoverVersion(apiKey);
+
+    // Step 2: query that version directly
+    const sql = `SELECT latitude, longitude, umd_glad_landsat_alerts__confidence AS confidence, alert__date, alert__count FROM gfw_integrated_alerts WHERE alert__date >= '${getDateDaysAgo(30)}' LIMIT 100`;
+    const { status, body } = await queryGFW(apiKey, version, sql);
+
+    if (status !== 200) {
+      return res.status(200).json({ ...getFallback(), annual_loss: ANNUAL_LOSS, gfw_status: status });
+    }
 
     const parsed = JSON.parse(body);
     const rows = parsed.data || [];
 
     if (!rows.length) {
-      return res.status(200).json({ ...getFallback(), annual_loss: ANNUAL_LOSS, gfw_status: status });
+      return res.status(200).json({ ...getFallback(), annual_loss: ANNUAL_LOSS });
     }
 
     const alerts = rows.map(row => ({
