@@ -111,7 +111,7 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 #date-str { font-size:8px; color:var(--dim); letter-spacing:.1em; text-transform:uppercase; margin-top:2px; }
 #loc-name { font-size:9px; color:#8aaa7a; margin-top:4px; font-style:italic; }
 
-#ctx-bar { position:fixed; bottom:88px; left:0; right:0; z-index:100; display:none; pointer-events:none; padding:10px 20px; background:linear-gradient(to top, rgba(8,14,8,.9) 0%, transparent 100%); }
+#ctx-bar { position:fixed; bottom:170px; left:0; right:0; z-index:100; display:none; pointer-events:none; padding:10px 20px; background:linear-gradient(to top, rgba(8,14,8,.9) 0%, transparent 100%); }
 #ctx-text { font-size:10px; color:rgba(200,200,170,.75); line-height:1.6; letter-spacing:.04em; max-width:700px; }
 
 #progress { position:fixed; bottom:52px; left:20px; right:140px; z-index:100; display:none; pointer-events:none; }
@@ -151,6 +151,16 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 #tl-play-btn { background:none; border:0.5px solid rgba(74,122,42,.3); color:var(--data); font-family:var(--mono); font-size:9px; padding:4px 10px; cursor:pointer; letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; }
 #tl-play-btn:hover { background:rgba(74,122,42,.15); }
 #tl-info { font-size:9px; color:var(--burn); letter-spacing:.06em; line-height:1.5; }
+
+/* INFO PANEL */
+#info-panel {
+  position:fixed; top:72px; left:50%; transform:translateX(-50%);
+  z-index:100; display:none; pointer-events:none;
+  background:rgba(8,14,8,.88); border:0.5px solid rgba(74,122,42,.2);
+  padding:10px 18px; text-align:center; white-space:nowrap;
+}
+.info-row { display:flex; align-items:center; gap:10px; font-size:9px; color:var(--data); letter-spacing:.08em; margin:3px 0; }
+.info-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
 
 /* RUNNER */
 #runner { position:fixed; z-index:200; pointer-events:none; transform:translate(-50%,-50%); display:none; flex-direction:column; align-items:center; }
@@ -254,6 +264,17 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
   <div id="tl-info"></div>
 </div>
 
+<div id="info-panel">
+  <div class="info-row">
+    <div class="info-dot" style="background:#c8531a"></div>
+    <span>Today's Amazon clearing — Forest is running this perimeter</span>
+  </div>
+  <div class="info-row">
+    <div class="info-dot" style="background:#8b1a1a; opacity:0.8"></div>
+    <span>Cumulative loss since 1972 — drag the timeline to explore</span>
+  </div>
+</div>
+
 <div id="runner">
   <svg width="26" height="34" viewBox="278 147 372 810" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 0 5px rgba(255,200,100,.6))">
     <g transform="translate(0,1024) scale(0.1,-0.1)">
@@ -264,7 +285,8 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 </div>
 
 <script>
-const DAILY_KM2 = 30;
+let DAILY_KM2 = 6.1; // fallback: INPE/Imazon Aug 2025-Mar 2026 average
+let DATA_SOURCE = 'INPE/Imazon 2025-2026';
 const DAY_S = 86400;
 const ANNUAL_LOSS = {
   1972:11000,1973:11500,1974:12000,1975:13000,1976:14000,1977:15000,1978:16000,1979:17000,1980:18000,1981:20000,
@@ -281,6 +303,21 @@ let simSec = 0, speed = 1, raf = null, lastTs = null, running = false;
 let clearCircle = null, trailLine = null, trailCoords = [];
 let histCircle = null, tlPlaying = false, tlTimer = null, tlMode = 'cumulative';
 let searchTimer = null;
+
+// Fetch real daily deforestation figure from GFW satellite data
+async function fetchDailyRate() {
+  try {
+    const res = await fetch('/api/alerts');
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data.estimated_area_km2 && data.estimated_area_km2 > 0) {
+      DAILY_KM2 = data.estimated_area_km2;
+      DATA_SOURCE = data.source || 'GFW Integrated Alerts';
+    }
+  } catch(e) {
+    console.warn('Could not fetch daily rate, using fallback');
+  }
+}
 
 // Fetch land-clipped circle from Vercel serverless function
 async function fetchClippedCircle(lat, lng, radiusKm) {
@@ -313,7 +350,7 @@ function hide(...ids) { ids.forEach(id => { const el=document.getElementById(id)
 
 function contextText(km2, rad, name) {
   let scale = km2<2?'smaller than most city parks':km2<8?'covering a large suburb':km2<18?'spanning several neighbourhoods':km2<25?'large enough to swallow a city centre':'an area most cities would call enormous';
-  return `${km2.toFixed(1)} km² cleared so far today — ${scale}, ${rad.toFixed(1)} km from ${name||'your pin'}.`;
+  return `${km2.toFixed(1)} km² cleared so far today — ${scale}, ${rad.toFixed(1)} km from ${name||'your pin'}. Based on ${DATA_SOURCE}.`;
 }
 
 function updateRunnerPos(lat, lng) {
@@ -394,7 +431,7 @@ function startRun(lat, lng, name) {
   trailLine = L.polyline([], {color:'#c8531a', weight:1.5, opacity:.5}).addTo(map);
 
   document.getElementById('loc-name').textContent = name||'';
-  show('hdr','stats','clock-block','ctx-bar','progress','quote','controls','repin');
+  show('hdr','stats','clock-block','ctx-bar','progress','quote','controls','repin','info-panel');
 
   simSec = dayFraction() * DAY_S;
   running = true; lastTs = null;
@@ -425,10 +462,10 @@ function drawHistCircle(yr) {
   // Draw plain circle immediately as placeholder
   histCircle = L.circle([pinLat,pinLng], {
     radius: radiusKm*1000,
-    color:'#c8531a', fillColor:'#c8531a',
-    fillOpacity: tlMode==='annual'?0.18:0.10,
-    weight:2.5, dashArray:tlMode==='annual'?null:'12 7',
-    opacity:1, interactive:false
+    color:'#8b1a1a', fillColor:'#8b1a1a',
+    fillOpacity: tlMode==='annual'?0.20:0.12,
+    weight:2, dashArray:tlMode==='annual'?null:'10 6',
+    opacity:0.85, interactive:false
   }).addTo(map);
   // Replace with land-clipped version from server
   fetchClippedCircle(pinLat, pinLng, radiusKm).then(geojson => {
@@ -516,7 +553,7 @@ function resetAll() {
   if(histCircle){map.removeLayer(histCircle);histCircle=null;}
   if(tlTimer){clearInterval(tlTimer);tlPlaying=false;}
   runnerEl.style.display='none'; trailCoords=[];
-  hide('hdr','stats','clock-block','ctx-bar','progress','quote','controls','repin','timeline');
+  hide('hdr','stats','clock-block','ctx-bar','progress','quote','controls','repin','timeline','info-panel');
   setTimeout(showPinScreen,100);
   document.getElementById('search-results').innerHTML='';
   document.getElementById('search-inp').value='';
