@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.5.0/turf.min.js"></script>
 <style>
 
 /* ── TOKENS ── */
@@ -505,6 +506,36 @@ let pathPoints = [];
 let histCircle = null, tlPlaying = false, tlTimer = null;
 
 // ────────────────────────────────────────────
+// LAND DATA & CLIPPING
+// ────────────────────────────────────────────
+let landGeoJSON = null;
+let landClipLayer = null;
+let lastClipRad = -1;
+
+async function loadLand() {
+  try {
+    const res = await fetch('https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_land.geojson');
+    landGeoJSON = await res.json();
+  } catch(e) { console.warn('Land data unavailable'); }
+}
+
+function clipToLand(lat, lng, radiusKm) {
+  if (!landGeoJSON || !turf) return null;
+  try {
+    const circle = turf.circle([lng, lat], radiusKm, { steps: 128, units:'kilometers' });
+    const parts = [];
+    for (const f of landGeoJSON.features) {
+      try {
+        const ix = turf.intersect(circle, f);
+        if (ix) parts.push(ix);
+      } catch(e) {}
+    }
+    if (!parts.length) return null;
+    return turf.featureCollection(parts);
+  } catch(e) { return null; }
+}
+
+// ────────────────────────────────────────────
 // MAP INIT
 // ────────────────────────────────────────────
 function initMap() {
@@ -517,6 +548,7 @@ function initMap() {
   }).addTo(map);
   runnerEl = document.getElementById('runner');
   map.on('moveend zoomend', onMapMove);
+  loadLand();
 }
 
 // ────────────────────────────────────────────
@@ -622,8 +654,26 @@ function tick(ts) {
   document.getElementById('clock').textContent    = fmtTime(now);
   document.getElementById('date-str').textContent = fmtDate(now);
 
-  // Clearing circle
-  if (clearCircle) clearCircle.setRadius(rad * 1000);
+  // Clearing circle — land clipped when radius changes meaningfully
+  if (Math.abs(rad - lastClipRad) > 0.08 && landGeoJSON) {
+    lastClipRad = rad;
+    // Remove old layers
+    if (clearCircle) { map.removeLayer(clearCircle); clearCircle = null; }
+    if (landClipLayer) { map.removeLayer(landClipLayer); landClipLayer = null; }
+    // Draw land-clipped GeoJSON
+    const clipped = clipToLand(pinLat, pinLng, rad);
+    if (clipped) {
+      landClipLayer = L.geoJSON(clipped, {
+        style: { color:'#c8531a', fillColor:'#c8531a', fillOpacity:.14, weight:.8 }
+      }).addTo(map);
+    } else {
+      clearCircle = L.circle([pinLat, pinLng], {
+        radius: rad*1000, color:'#c8531a', fillColor:'#c8531a', fillOpacity:.14, weight:.8
+      }).addTo(map);
+    }
+  } else if (!landGeoJSON && clearCircle) {
+    clearCircle.setRadius(rad * 1000);
+  }
 
   // Runner runs the perimeter of the CURRENT circle size
   // Calculate position directly on circle edge using current angle
@@ -660,9 +710,11 @@ function startRun(lat, lng, name) {
     radius: 5, color: '#c8531a', fillColor: '#c8531a', fillOpacity: .9, weight: 2
   }).addTo(map);
 
+  // Start with tiny circle — will be replaced by land-clipped version in tick
   clearCircle = L.circle([lat, lng], {
-    radius: 1, color: '#c8531a', fillColor: '#c8531a', fillOpacity: .14, weight: .8
+    radius: 1, color:'#c8531a', fillColor:'#c8531a', fillOpacity:.14, weight:.8
   }).addTo(map);
+  lastClipRad = -1;
 
   trailCoords = [];
   trailLine = L.polyline([], {
@@ -783,6 +835,8 @@ function resetAll() {
   trailCoords = []; pathPoints = [];
   hideEl('hdr','stats','clock-block','ctx-bar','progress','quote','controls','repin','timeline');
   if (histCircle) { map.removeLayer(histCircle); histCircle = null; }
+  if (landClipLayer) { map.removeLayer(landClipLayer); landClipLayer = null; }
+  lastClipRad = -1;
   if (tlTimer) { clearInterval(tlTimer); tlPlaying = false; }
   setTimeout(showPinScreen, 100);
   document.getElementById('search-results').innerHTML = '';
@@ -801,25 +855,29 @@ function cumulativeLoss(upToYear) {
 
 function drawHistCircle(yr) {
   if (histCircle) { map.removeLayer(histCircle); histCircle = null; }
+  if (landClipLayer) { map.removeLayer(landClipLayer); landClipLayer = null; }
+  lastClipRad = -1;
   if (!pinLat) return;
 
-  const total   = cumulativeLoss(yr);
+  const total    = cumulativeLoss(yr);
   const radiusKm = Math.sqrt(total / Math.PI);
-  const annual  = ANNUAL_LOSS[yr] || 0;
+  const annual   = ANNUAL_LOSS[yr] || 0;
 
   document.getElementById('tl-year').textContent = yr;
   document.getElementById('tl-info').textContent =
     `${yr}: −${annual.toLocaleString()} km² that year  ·  −${total.toLocaleString()} km² total since 1972`;
 
+  // Draw as SVG circle directly on map — no pane tricks
   histCircle = L.circle([pinLat, pinLng], {
     radius:      radiusKm * 1000,
     color:       '#c8531a',
-    fillColor:   '#7a3a0a',
-    fillOpacity: 0.13,
-    weight:      2,
-    dashArray:   '10 6',
-    opacity:     0.85,
-    interactive: false
+    fillColor:   '#c8531a',
+    fillOpacity: 0.10,
+    weight:      2.5,
+    dashArray:   '12 7',
+    opacity:     1.0,
+    interactive: false,
+    className:   'hist-circle'
   }).addTo(map);
 }
 
