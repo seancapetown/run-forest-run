@@ -79,7 +79,7 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 
 /* ── SPLASH ── */
 #splash {
-  position:fixed; inset:0; z-index:100;
+  position:fixed; inset:0; z-index:400;
   display:flex; align-items:flex-end;
   padding:48px 52px;
   overflow:hidden;
@@ -136,7 +136,7 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 
 /* ── PIN SCREEN ── */
 #pin-screen {
-  position:fixed; inset:0; z-index:90;
+  position:fixed; inset:0; z-index:400;
   background:rgba(8,14,8,.93);
   display:none; align-items:center; justify-content:center;
   opacity:0; transition:opacity .5s ease;
@@ -188,7 +188,7 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 
 /* ── HEADER ── */
 #hdr {
-  position:fixed; top:0; left:0; right:0; z-index:50;
+  position:fixed; top:0; left:0; right:0; z-index:500;
   padding:14px 20px 10px;
   background:linear-gradient(to bottom, rgba(8,14,8,.95) 60%, transparent);
   display:none;
@@ -205,7 +205,7 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 
 /* ── STATS (top left) ── */
 #stats {
-  position:fixed; top:72px; left:20px; z-index:50;
+  position:fixed; top:72px; left:20px; z-index:500;
   display:none; pointer-events:none;
 }
 .s-label {
@@ -220,7 +220,7 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 
 /* ── CLOCK (top right) ── */
 #clock-block {
-  position:fixed; top:72px; right:20px; z-index:50;
+  position:fixed; top:72px; right:20px; z-index:500;
   text-align:right; display:none; pointer-events:none;
 }
 #clock { font-size:26px; font-weight:300; color:var(--parch); letter-spacing:.06em; }
@@ -229,7 +229,7 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 
 /* ── CONTEXT BAR (bottom) ── */
 #ctx-bar {
-  position:fixed; bottom:88px; left:0; right:0; z-index:50;
+  position:fixed; bottom:88px; left:0; right:0; z-index:500;
   display:none; pointer-events:none;
   padding:10px 20px;
   background:linear-gradient(to top, rgba(8,14,8,.9) 0%, transparent 100%);
@@ -242,7 +242,7 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 
 /* ── PROGRESS BAR ── */
 #progress {
-  position:fixed; bottom:52px; left:20px; right:20px; z-index:50;
+  position:fixed; bottom:52px; left:20px; right:20px; z-index:500;
   display:none; pointer-events:none;
 }
 #prog-labels {
@@ -255,7 +255,7 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 
 /* ── QUOTE ── */
 #quote {
-  position:fixed; bottom:22px; left:0; right:0; z-index:50;
+  position:fixed; bottom:22px; left:0; right:0; z-index:500;
   text-align:center; display:none; pointer-events:none;
   font-family:var(--display); font-size:11px;
   color:rgba(232,220,200,.28); font-style:italic; letter-spacing:.02em;
@@ -263,7 +263,7 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 
 /* ── CONTROLS ── */
 #controls {
-  position:fixed; bottom:52px; right:20px; z-index:51;
+  position:fixed; bottom:52px; right:20px; z-index:500;
   display:none; align-items:center; gap:6px;
 }
 .ctrl-label { font-size:8px; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
@@ -279,7 +279,7 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 
 /* ── REPIN ── */
 #repin {
-  position:fixed; bottom:52px; left:20px; z-index:51; display:none;
+  position:fixed; bottom:52px; left:20px; z-index:500; display:none;
 }
 #repin-btn {
   background:none; border:0.5px solid rgba(74,122,42,.25);
@@ -291,7 +291,7 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 
 /* ── RUNNER ── */
 #runner {
-  position:fixed; z-index:60; pointer-events:none;
+  position:fixed; z-index:500; pointer-events:none;
   transform:translate(-50%, -50%); display:none;
   flex-direction:column; align-items:center;
 }
@@ -303,7 +303,7 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 
 /* ── LOADING ── */
 #loading {
-  position:fixed; inset:0; z-index:80;
+  position:fixed; inset:0; z-index:600;
   background:rgba(8,14,8,.88);
   display:none; align-items:center; justify-content:center;
   flex-direction:column; gap:12px;
@@ -324,7 +324,7 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 /* ── TIMELINE ── */
 #timeline {
   position:fixed; bottom:90px; left:50%; transform:translateX(-50%);
-  z-index:50; display:none;
+  z-index:500; display:none;
   background:rgba(8,14,8,.92); border:0.5px solid rgba(74,122,42,.25);
   padding:14px 20px; width:90%; max-width:480px; text-align:center;
 }
@@ -939,981 +939,6 @@ function drawHistCircle(yr) {
     opacity:     1.0,
     interactive: false,
     pane:        'circlePane'
-  }).addTo(map);
-}
-
-function playTimeline() {
-  if (tlPlaying) {
-    // Pause
-    tlPlaying = false;
-    clearInterval(tlTimer);
-    document.getElementById('tl-play-btn').textContent = '▶ Play';
-    return;
-  }
-  // Start from 1972
-  tlPlaying = true;
-  document.getElementById('tl-play-btn').textContent = '⏸ Pause';
-  const slider = document.getElementById('tl-slider');
-  slider.value = 1972;
-  drawHistCircle(1972);
-
-  tlTimer = setInterval(() => {
-    const yr = parseInt(slider.value);
-    if (yr >= 2025) {
-      clearInterval(tlTimer);
-      tlPlaying = false;
-      document.getElementById('tl-play-btn').textContent = '▶ Play';
-      return;
-    }
-    slider.value = yr + 1;
-    drawHistCircle(yr + 1);
-  }, 250);
-}
-
-// ────────────────────────────────────────────
-// SPEED CONTROLS
-// ────────────────────────────────────────────
-document.querySelectorAll('.ctrl-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    speed  = parseInt(btn.dataset.spd);
-    lastTs = null;
-    document.querySelectorAll('.ctrl-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  });
-});
-
-// ────────────────────────────────────────────
-// EVENT LISTENERS
-// ────────────────────────────────────────────
-document.getElementById('splash-cta').addEventListener('click', hideSplash);
-document.getElementById('tl-slider').addEventListener('input', e => {
-  drawHistCircle(parseInt(e.target.value));
-});
-document.getElementById('tl-play-btn').addEventListener('click', playTimeline);
-document.querySelectorAll('.tl-mode').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tl-mode').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    tlMode = btn.dataset.mode;
-    drawHistCircle(parseInt(document.getElementById('tl-slider').value));
-  });
-});
-document.getElementById('repin-btn').addEventListener('click', resetAll);
-document.getElementById('search-btn').addEventListener('click', doSearch);
-document.getElementById('geo-btn').addEventListener('click', useGeo);
-// Search on Enter key
-document.getElementById('search-inp').addEventListener('keydown', e => {
-  if (e.key === 'Enter') { clearTimeout(searchTimer); doSearch(); }
-});
-
-// Live search-as-you-type with 400ms debounce
-let searchTimer = null;
-document.getElementById('search-inp').addEventListener('input', e => {
-  const q = e.target.value.trim();
-  clearTimeout(searchTimer);
-  if (q.length < 3) {
-    document.getElementById('search-results').innerHTML = '';
-    return;
-  }
-  searchTimer = setTimeout(doSearch, 400);
-});
-
-// Ken Burns on splash — slight zoom out on load
-setTimeout(() => {
-  const bg = document.getElementById('splash-bg');
-  if (bg) bg.style.transform = 'scale(1.0)';
-}, 100);
-
-// ────────────────────────────────────────────
-// BOOT
-// ────────────────────────────────────────────
-initMap();
-</script>
-</body>
-</html>
-}
-.leaflet-container { background:var(--night); }
-.leaflet-control-attribution {
-  background:rgba(8,14,8,.8)!important;
-  color:var(--dim)!important;
-  font-size:7px;
-}
-.leaflet-control-attribution a { color:var(--data)!important; }
-.leaflet-control-zoom {
-  border:none !important;
-  box-shadow:none !important;
-}
-.leaflet-control-zoom a {
-  background:rgba(8,14,8,.88) !important;
-  color:var(--parch) !important;
-  border:0.5px solid rgba(74,122,42,.35) !important;
-  font-size:18px !important;
-  font-weight:300 !important;
-  width:36px !important;
-  height:36px !important;
-  line-height:34px !important;
-  display:block !important;
-  text-align:center !important;
-  margin-bottom:4px !important;
-  transition:background .15s !important;
-}
-.leaflet-control-zoom a:hover {
-  background:rgba(200,83,26,.25) !important;
-  border-color:rgba(200,83,26,.5) !important;
-  color:var(--parch) !important;
-}
-.leaflet-top.leaflet-right {
-  top: auto !important;
-  bottom: 60px !important;
-  right: 20px !important;
-}
-.leaflet-top.leaflet-left {
-  top: auto !important;
-  bottom: 60px !important;
-  left: auto !important;
-  right: 60px !important;
-}
-
-/* ── SPLASH ── */
-#splash {
-  position:fixed; inset:0; z-index:100;
-  display:flex; align-items:flex-end;
-  padding:48px 52px;
-  overflow:hidden;
-  transition:opacity .8s ease;
-}
-#splash-bg {
-  position:absolute; inset:0;
-  background:url('forest-runner.png') center/cover no-repeat;
-  transition:transform 6s ease-out;
-  transform:scale(1.04);
-}
-#splash-bg::after {
-  content:'';
-  position:absolute; inset:0;
-  background:linear-gradient(
-    to top,
-    rgba(8,14,8,.92) 0%,
-    rgba(8,14,8,.5) 45%,
-    rgba(8,14,8,.15) 100%
-  );
-}
-#splash-content {
-  position:relative; z-index:1;
-  display:flex; flex-direction:column; gap:0;
-}
-.sw {
-  font-family:var(--display);
-  font-size:clamp(52px, 10vw, 108px);
-  font-weight:700;
-  line-height:.88;
-  display:block;
-  text-shadow:0 2px 20px rgba(0,0,0,.5);
-}
-.sw-1 { color:var(--parch); }
-.sw-2 { color:var(--living); }
-.sw-3 { color:var(--burn); }
-#splash-tag {
-  font-size:9px; letter-spacing:.2em; text-transform:uppercase;
-  color:rgba(200,213,185,.45); margin-top:10px; margin-bottom:24px;
-}
-#splash-cta {
-  font-family:var(--mono); font-size:11px; color:var(--parch);
-  background:rgba(8,14,8,.5);
-  border:0.5px solid rgba(232,220,200,.3);
-  padding:12px 28px; cursor:pointer;
-  letter-spacing:.14em; text-transform:uppercase;
-  transition:all .2s; white-space:nowrap;
-  align-self:flex-start;
-}
-#splash-cta:hover {
-  background:rgba(200,83,26,.25);
-  border-color:rgba(200,83,26,.7);
-}
-
-/* ── PIN SCREEN ── */
-#pin-screen {
-  position:fixed; inset:0; z-index:90;
-  background:rgba(8,14,8,.93);
-  display:none; align-items:center; justify-content:center;
-  opacity:0; transition:opacity .5s ease;
-}
-#pin-box {
-  width:90%; max-width:400px;
-  display:flex; flex-direction:column; gap:12px;
-}
-#pin-title {
-  font-family:var(--display); font-size:24px;
-  color:var(--parch); line-height:1.2; margin-bottom:4px;
-}
-#pin-sub {
-  font-size:10px; color:var(--data); line-height:1.8; margin-bottom:4px;
-}
-#search-row { display:flex; }
-#search-inp {
-  flex:1;
-  background:rgba(74,122,42,.08);
-  border:0.5px solid rgba(74,122,42,.3);
-  color:var(--parch); font-family:var(--mono);
-  font-size:11px; padding:10px 12px; outline:none;
-}
-#search-inp::placeholder { color:var(--dim); }
-#search-btn {
-  background:rgba(74,122,42,.15);
-  border:0.5px solid rgba(74,122,42,.3); border-left:none;
-  color:var(--parch); font-family:var(--mono);
-  font-size:10px; padding:10px 16px; cursor:pointer;
-  letter-spacing:.06em; white-space:nowrap;
-}
-#search-btn:hover { background:rgba(74,122,42,.28); }
-#search-results { max-height:140px; overflow-y:auto; }
-.result {
-  padding:8px 10px; font-size:10px; color:#8aaa7a;
-  border-bottom:0.5px solid rgba(74,122,42,.12);
-  cursor:pointer;
-}
-.result:hover { background:rgba(74,122,42,.1); }
-#geo-btn {
-  background:none; border:none; color:var(--dim);
-  font-family:var(--mono); font-size:9px;
-  cursor:pointer; text-transform:uppercase;
-  letter-spacing:.1em; text-decoration:underline;
-  text-align:left;
-}
-#geo-btn:hover { color:#8aaa7a; }
-#pin-err { font-size:9px; color:var(--burn); min-height:14px; }
-
-/* ── HEADER ── */
-#hdr {
-  position:fixed; top:0; left:0; right:0; z-index:50;
-  padding:14px 20px 10px;
-  background:linear-gradient(to bottom, rgba(8,14,8,.95) 60%, transparent);
-  display:none;
-  pointer-events:none;
-}
-#hdr-inner { display:flex; align-items:center; gap:12px; }
-#hdr-runner { flex-shrink:0; }
-#hdr-wm { display:flex; gap:5px; align-items:baseline; }
-#hdr-wm span { font-family:var(--display); font-size:18px; line-height:1; }
-#hdr-tag {
-  font-size:8px; letter-spacing:.16em; text-transform:uppercase;
-  color:var(--dim); margin-top:2px;
-}
-
-/* ── STATS (top left) ── */
-#stats {
-  position:fixed; top:72px; left:20px; z-index:50;
-  display:none; pointer-events:none;
-}
-.s-label {
-  font-size:8px; letter-spacing:.14em; text-transform:uppercase;
-  color:var(--data); margin-bottom:2px;
-}
-.s-value {
-  font-size:22px; font-weight:300; color:var(--parch);
-  line-height:1; margin-bottom:14px;
-}
-.s-unit { font-size:9px; color:var(--data); margin-left:2px; }
-
-/* ── CLOCK (top right) ── */
-#clock-block {
-  position:fixed; top:72px; right:20px; z-index:50;
-  text-align:right; display:none; pointer-events:none;
-}
-#clock { font-size:26px; font-weight:300; color:var(--parch); letter-spacing:.06em; }
-#date-str { font-size:8px; color:var(--dim); letter-spacing:.1em; text-transform:uppercase; margin-top:2px; }
-#loc-name { font-size:9px; color:#8aaa7a; margin-top:4px; font-style:italic; }
-
-/* ── CONTEXT BAR (bottom) ── */
-#ctx-bar {
-  position:fixed; bottom:88px; left:0; right:0; z-index:50;
-  display:none; pointer-events:none;
-  padding:10px 20px;
-  background:linear-gradient(to top, rgba(8,14,8,.9) 0%, transparent 100%);
-}
-#ctx-text {
-  font-size:10px; color:rgba(200,200,170,.75);
-  line-height:1.6; letter-spacing:.04em;
-  max-width:700px;
-}
-
-/* ── PROGRESS BAR ── */
-#progress {
-  position:fixed; bottom:52px; left:20px; right:20px; z-index:50;
-  display:none; pointer-events:none;
-}
-#prog-labels {
-  display:flex; justify-content:space-between;
-  font-size:8px; color:var(--dim); letter-spacing:.1em;
-  text-transform:uppercase; margin-bottom:6px;
-}
-#prog-track { height:2px; background:rgba(74,122,42,.2); }
-#prog-fill  { height:100%; background:var(--data); width:0%; transition:width .5s linear; }
-
-/* ── QUOTE ── */
-#quote {
-  position:fixed; bottom:22px; left:0; right:0; z-index:50;
-  text-align:center; display:none; pointer-events:none;
-  font-family:var(--display); font-size:11px;
-  color:rgba(232,220,200,.28); font-style:italic; letter-spacing:.02em;
-}
-
-/* ── CONTROLS ── */
-#controls {
-  position:fixed; bottom:52px; right:20px; z-index:51;
-  display:none; align-items:center; gap:6px;
-}
-.ctrl-label { font-size:8px; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
-.ctrl-btn {
-  background:rgba(74,122,42,.1);
-  border:0.5px solid rgba(74,122,42,.25);
-  color:var(--parch); font-family:var(--mono);
-  font-size:9px; padding:4px 9px; cursor:pointer;
-  transition:background .15s;
-}
-.ctrl-btn:hover  { background:rgba(74,122,42,.22); }
-.ctrl-btn.active { background:rgba(74,122,42,.26); border-color:rgba(74,122,42,.6); }
-
-/* ── REPIN ── */
-#repin {
-  position:fixed; bottom:52px; left:20px; z-index:51; display:none;
-}
-#repin-btn {
-  background:none; border:0.5px solid rgba(74,122,42,.25);
-  color:var(--dim); font-family:var(--mono);
-  font-size:8px; padding:4px 10px; cursor:pointer;
-  letter-spacing:.1em; text-transform:uppercase;
-}
-#repin-btn:hover { color:#8aaa7a; }
-
-/* ── RUNNER ── */
-#runner {
-  position:fixed; z-index:60; pointer-events:none;
-  transform:translate(-50%, -50%); display:none;
-  flex-direction:column; align-items:center;
-}
-#runner-label {
-  font-family:var(--display); font-size:8px; color:var(--parch);
-  white-space:nowrap; margin-top:2px;
-  text-shadow:0 0 10px #000, 0 0 20px #000;
-}
-
-/* ── LOADING ── */
-#loading {
-  position:fixed; inset:0; z-index:80;
-  background:rgba(8,14,8,.88);
-  display:none; align-items:center; justify-content:center;
-  flex-direction:column; gap:12px;
-}
-.spinner {
-  width:24px; height:24px;
-  border:1px solid rgba(74,122,42,.2);
-  border-top-color:var(--living);
-  border-radius:50%;
-  animation:spin .8s linear infinite;
-}
-@keyframes spin { to { transform:rotate(360deg); } }
-#loading-text {
-  font-size:9px; color:var(--data);
-  letter-spacing:.14em; text-transform:uppercase;
-}
-
-/* ── TIMELINE ── */
-#timeline {
-  position:fixed; bottom:90px; left:50%; transform:translateX(-50%);
-  z-index:50; display:none;
-  background:rgba(8,14,8,.92); border:0.5px solid rgba(74,122,42,.25);
-  padding:14px 20px; width:90%; max-width:480px; text-align:center;
-}
-#tl-heading {
-  font-size:8px; letter-spacing:.16em; text-transform:uppercase;
-  color:var(--dim); margin-bottom:10px;
-}
-#tl-controls {
-  display:flex; align-items:center; gap:10px; margin-bottom:8px;
-}
-#tl-slider {
-  flex:1; -webkit-appearance:none; appearance:none;
-  height:2px; background:rgba(74,122,42,.2); outline:none; cursor:pointer;
-}
-#tl-slider::-webkit-slider-thumb {
-  -webkit-appearance:none; width:12px; height:12px;
-  border-radius:50%; background:var(--burn); cursor:pointer;
-}
-#tl-year {
-  font-family:var(--display); font-size:20px;
-  color:var(--parch); min-width:44px;
-}
-#tl-play-btn {
-  background:none; border:0.5px solid rgba(74,122,42,.3);
-  color:var(--data); font-family:var(--mono);
-  font-size:9px; padding:4px 10px; cursor:pointer;
-  letter-spacing:.08em; text-transform:uppercase; white-space:nowrap;
-}
-#tl-play-btn:hover { background:rgba(74,122,42,.15); color:var(--parch); }
-#tl-info {
-  font-size:9px; color:var(--burn); letter-spacing:.06em; line-height:1.5;
-}
-#tl-top {
-  display:flex; justify-content:space-between; align-items:center;
-  margin-bottom:10px;
-}
-#tl-heading { margin-bottom:0; }
-#tl-toggle { display:flex; gap:0; }
-.tl-mode {
-  background:none; border:0.5px solid rgba(74,122,42,.25);
-  color:var(--dim); font-family:var(--mono);
-  font-size:8px; padding:3px 10px; cursor:pointer;
-  letter-spacing:.08em; text-transform:uppercase;
-  transition:all .15s;
-}
-.tl-mode:first-child { border-right:none; }
-.tl-mode:hover { color:var(--parch); background:rgba(74,122,42,.1); }
-.tl-mode.active {
-  background:rgba(200,83,26,.2); border-color:rgba(200,83,26,.5);
-  color:var(--burn);
-}
-
-/* ── MOBILE ── */
-@media (max-width:600px) {
-  #splash { padding:32px 24px; }
-  .sw { font-size:clamp(44px,16vw,80px); }
-  #stats { top:66px; }
-  .s-value { font-size:18px; }
-  #clock-block { top:66px; }
-  #clock { font-size:20px; }
-  #hdr-wm span { font-size:15px; }
-  #timeline { bottom:100px; width:calc(100% - 24px); }
-  #tl-year { font-size:16px; }
-}
-
-</style>
-</head>
-<body>
-
-<!-- MAP -->
-<div id="map"></div>
-
-<!-- SPLASH -->
-<div id="splash">
-  <div id="splash-bg"></div>
-  <div id="splash-content">
-    <span class="sw sw-1">Run</span>
-    <span class="sw sw-2">Forest</span>
-    <span class="sw sw-3">Run.</span>
-    <div id="splash-tag">runforestrun.earth · real satellite data · global forest watch</div>
-    <button id="splash-cta">The forest is running out →</button>
-  </div>
-</div>
-
-<!-- PIN SCREEN -->
-<div id="pin-screen">
-  <div id="pin-box">
-    <div id="pin-title">Where do you live?</div>
-    <div id="pin-sub">
-      Every day ~30 km² of Amazon forest disappears.<br>
-      Pin your location. See that scale on streets you know.
-    </div>
-    <div id="search-row">
-      <input id="search-inp" placeholder="Search your city or neighbourhood…" autocomplete="off"/>
-      <button id="search-btn">Search</button>
-    </div>
-    <div id="search-results"></div>
-    <button id="geo-btn">📍 Use my current location</button>
-    <div id="pin-err"></div>
-  </div>
-</div>
-
-<!-- HEADER -->
-<div id="hdr">
-  <div id="hdr-inner">
-    <div id="hdr-runner">
-      <svg width="22" height="30" viewBox="278 147 372 810" xmlns="http://www.w3.org/2000/svg">
-        <g transform="translate(0,1024) scale(0.1,-0.1)">
-          <path fill="#c8531a" d="M5530 8769 c-41 -17 -88 -30 -103 -30 -20 1 -30 -4 -33 -17 -3 -10 -25 -30 -49 -45 -58 -37 -108 -94 -144 -165 -32 -63 -37 -88 -46 -199 -5 -69 -4 -73 25 -106 19 -23 28 -41 24 -52 -5 -11 0 -18 15 -22 31 -8 27 -18 -26 -60 -25 -21 -53 -45 -62 -53 -9 -8 -38 -33 -64 -54 -51 -41 -77 -81 -77 -116 0 -11 -8 -24 -17 -27 -42 -15 -92 -57 -104 -85 -11 -27 -10 -32 6 -44 18 -13 17 -15 -11 -45 -16 -17 -50 -45 -76 -61 -52 -34 -55 -40 -34 -58 12 -9 24 -6 60 15 25 15 48 31 51 35 3 5 20 19 38 32 27 19 30 19 17 3 -28 -36 -65 -65 -114 -91 -27 -15 -71 -40 -96 -58 -26 -17 -56 -36 -66 -42 -35 -21 -4 -28 119 -28 121 1 130 3 241 49 17 7 17 6 3 -22 -9 -16 -34 -81 -55 -145 -69 -199 -88 -229 -277 -428 -81 -86 -215 -290 -215 -326 0 -11 9 -30 19 -43 l19 -24 -86 -116 c-103 -138 -122 -173 -122 -223 0 -44 29 -70 132 -116 37 -17 86 -44 110 -60 24 -16 90 -52 148 -80 58 -28 113 -56 122 -64 15 -12 16 -30 7 -203 -11 -230 -44 -502 -68 -566 -10 -25 -30 -62 -45 -81 -14 -19 -26 -44 -26 -56 0 -31 34 -46 72 -33 17 6 33 10 34 8 2 -1 13 -51 25 -111 l21 -107 -20 -107 c-12 -59 -26 -140 -32 -179 -17 -105 -39 -170 -114 -328 -37 -77 -65 -149 -64 -160 2 -11 13 -24 25 -30 15 -6 21 -16 18 -30 -3 -11 -19 -87 -35 -168 -53 -256 -87 -333 -191 -433 -90 -87 -126 -106 -353 -183 -98 -33 -212 -79 -254 -101 -91 -47 -238 -159 -428 -328 -269 -237 -501 -362 -599 -323 -12 5 -34 3 -58 -6 -20 -9 -49 -13 -63 -10 -42 8 -101 -11 -168 -53 -35 -22 -72 -40 -83 -40 -66 0 -56 -80 39 -295 41 -93 87 -210 102 -260 28 -91 67 -175 114 -250 14 -22 25 -41 25 -42 -3 -5 92 -97 140 -136 74 -60 181 -119 209 -115 12 2 37 23 56 47 41 54 39 72 -18 206 -61 144 -80 380 -36 447 17 26 16 28 -6 68 -22 39 -22 41 -5 51 13 8 17 18 13 34 -5 21 9 35 141 127 221 154 299 200 434 258 161 69 233 105 360 182 106 64 446 221 573 264 45 16 93 24 135 24 146 1 211 71 276 295 14 51 71 184 129 305 57 118 109 227 115 242 l10 27 46 -20 c43 -19 48 -19 71 -4 14 9 36 40 49 68 34 73 40 140 21 232 -9 42 -16 82 -16 87 0 15 43 -42 85 -112 48 -82 90 -127 126 -135 15 -4 56 1 91 10 35 10 72 19 83 22 15 3 33 -13 75 -69 30 -40 93 -120 139 -177 114 -141 234 -308 265 -367 13 -27 30 -77 37 -112 14 -65 13 -74 -27 -397 -18 -149 -14 -366 10 -555 26 -195 38 -390 32 -495 -13 -213 -18 -251 -37 -291 -10 -22 -19 -54 -19 -72 l0 -31 -30 17 c-39 22 -61 5 -37 -29 11 -15 13 -27 7 -39 -5 -10 -7 -19 -5 -22 3 -3 -1 -27 -9 -54 -8 -27 -18 -70 -21 -96 l-7 -48 -432 -2 c-237 -2 -1158 -5 -2046 -7 -888 -2 -1714 -5 -1835 -6 -121 -2 -581 -4 -1022 -4 l-803 -1 0 -470 0 -470 5120 0 5120 0 0 470 0 470 -47 1 c-27 0 -66 1 -88 3 -22 1 -641 3 -1375 4 -1081 2 -1330 5 -1310 15 37 19 38 58 1 89 -27 23 -39 26 -163 31 -192 8 -272 39 -438 169 -73 57 -95 79 -95 98 0 26 -8 28 -51 15 -18 -6 -24 1 -42 44 -19 44 -22 68 -22 203 0 84 7 230 15 323 8 94 24 280 35 415 11 135 28 290 36 344 9 55 20 132 24 170 4 39 22 111 39 160 24 66 32 107 33 165 2 92 -2 101 -121 259 -91 121 -120 169 -141 237 -6 22 -44 107 -83 188 -64 133 -70 150 -54 158 27 15 20 50 -20 107 -21 28 -64 89 -96 135 -72 106 -127 163 -208 218 -79 53 -143 120 -188 193 -30 51 -36 74 -57 216 -17 117 -23 211 -25 357 l-1 198 58 7 c40 5 73 2 104 -7 50 -16 218 -24 238 -12 18 12 15 31 -9 53 l-21 19 33 5 c30 4 34 9 37 38 3 27 -1 34 -22 42 -37 14 -32 30 9 30 36 0 75 28 75 54 0 23 -28 45 -73 57 -51 13 -107 39 -107 48 0 4 25 15 55 25 72 22 117 60 113 95 -3 24 -6 26 -54 25 -36 -1 -83 -15 -162 -49 -95 -40 -118 -54 -154 -95 -25 -28 -55 -52 -72 -56 -23 -5 -27 -4 -21 6 12 19 7 623 -6 677 -7 34 -6 65 6 126 9 45 18 132 22 192 7 141 -10 235 -83 453 -30 90 -54 171 -54 181 0 10 -6 34 -14 53 -14 33 -13 39 32 151 41 102 49 116 67 111 46 -13 85 -36 109 -65 25 -29 103 -71 138 -74 9 -1 33 15 52 35 35 37 35 38 30 106 -7 103 -15 137 -33 159 -10 11 -25 32 -34 47 -16 26 -16 27 19 47 43 26 51 46 28 72 -19 21 -12 35 20 41 10 1 24 11 30 20 9 15 2 27 -44 73 l-54 54 -2 76 -3 75 73 0 c86 0 148 19 199 61 71 59 43 99 -71 99 -31 0 -97 5 -146 10 l-88 10 -57 58 c-31 32 -79 84 -107 114 -97 106 -184 124 -324 67z"/>
-        </g>
-      </svg>
-    </div>
-    <div>
-      <div id="hdr-wm">
-        <span style="color:var(--parch)">Run</span>
-        <span style="color:var(--living)">Forest</span>
-        <span style="color:var(--burn)">Run.</span>
-      </div>
-      <div id="hdr-tag">The forest is running out</div>
-    </div>
-  </div>
-</div>
-
-<!-- STATS -->
-<div id="stats">
-  <div class="s-label">Cleared today</div>
-  <div class="s-value"><span id="v-km2">—</span><span class="s-unit">km²</span></div>
-  <div class="s-label">Radius from your pin</div>
-  <div class="s-value"><span id="v-rad">—</span><span class="s-unit">km</span></div>
-  <div class="s-label">Forest has run</div>
-  <div class="s-value"><span id="v-run">—</span><span class="s-unit">km</span></div>
-</div>
-
-<!-- CLOCK -->
-<div id="clock-block">
-  <div id="clock">--:--:--</div>
-  <div id="date-str"></div>
-  <div id="loc-name"></div>
-</div>
-
-<!-- CONTEXT -->
-<div id="ctx-bar"><div id="ctx-text"></div></div>
-
-<!-- PROGRESS -->
-<div id="progress">
-  <div id="prog-labels">
-    <span>00:00</span>
-    <span id="prog-pct">0%</span>
-    <span>24:00</span>
-  </div>
-  <div id="prog-track"><div id="prog-fill"></div></div>
-</div>
-
-<!-- QUOTE -->
-<div id="quote">"I just felt like running."</div>
-
-<!-- SPEED CONTROLS -->
-<div id="controls">
-  <span class="ctrl-label">Speed</span>
-  <button class="ctrl-btn active" data-spd="1">1×</button>
-  <button class="ctrl-btn" data-spd="60">1min/s</button>
-  <button class="ctrl-btn" data-spd="3600">1hr/s</button>
-</div>
-
-<!-- REPIN -->
-<div id="repin">
-  <button id="repin-btn">↩ change pin</button>
-</div>
-
-<!-- RUNNER -->
-<div id="runner">
-  <svg width="26" height="34" viewBox="278 147 372 810" xmlns="http://www.w3.org/2000/svg"
-       style="filter:drop-shadow(0 0 5px rgba(255,200,100,.6))">
-    <g transform="translate(0,1024) scale(0.1,-0.1)">
-      <path fill="#c8531a" d="M5530 8769 c-41 -17 -88 -30 -103 -30 -20 1 -30 -4 -33 -17 -3 -10 -25 -30 -49 -45 -58 -37 -108 -94 -144 -165 -32 -63 -37 -88 -46 -199 -5 -69 -4 -73 25 -106 19 -23 28 -41 24 -52 -5 -11 0 -18 15 -22 31 -8 27 -18 -26 -60 -25 -21 -53 -45 -62 -53 -9 -8 -38 -33 -64 -54 -51 -41 -77 -81 -77 -116 0 -11 -8 -24 -17 -27 -42 -15 -92 -57 -104 -85 -11 -27 -10 -32 6 -44 18 -13 17 -15 -11 -45 -16 -17 -50 -45 -76 -61 -52 -34 -55 -40 -34 -58 12 -9 24 -6 60 15 25 15 48 31 51 35 3 5 20 19 38 32 27 19 30 19 17 3 -28 -36 -65 -65 -114 -91 -27 -15 -71 -40 -96 -58 -26 -17 -56 -36 -66 -42 -35 -21 -4 -28 119 -28 121 1 130 3 241 49 17 7 17 6 3 -22 -9 -16 -34 -81 -55 -145 -69 -199 -88 -229 -277 -428 -81 -86 -215 -290 -215 -326 0 -11 9 -30 19 -43 l19 -24 -86 -116 c-103 -138 -122 -173 -122 -223 0 -44 29 -70 132 -116 37 -17 86 -44 110 -60 24 -16 90 -52 148 -80 58 -28 113 -56 122 -64 15 -12 16 -30 7 -203 -11 -230 -44 -502 -68 -566 -10 -25 -30 -62 -45 -81 -14 -19 -26 -44 -26 -56 0 -31 34 -46 72 -33 17 6 33 10 34 8 2 -1 13 -51 25 -111 l21 -107 -20 -107 c-12 -59 -26 -140 -32 -179 -17 -105 -39 -170 -114 -328 -37 -77 -65 -149 -64 -160 2 -11 13 -24 25 -30 15 -6 21 -16 18 -30 -3 -11 -19 -87 -35 -168 -53 -256 -87 -333 -191 -433 -90 -87 -126 -106 -353 -183 -98 -33 -212 -79 -254 -101 -91 -47 -238 -159 -428 -328 -269 -237 -501 -362 -599 -323 -12 5 -34 3 -58 -6 -20 -9 -49 -13 -63 -10 -42 8 -101 -11 -168 -53 -35 -22 -72 -40 -83 -40 -66 0 -56 -80 39 -295 41 -93 87 -210 102 -260 28 -91 67 -175 114 -250 14 -22 25 -41 25 -42 -3 -5 92 -97 140 -136 74 -60 181 -119 209 -115 12 2 37 23 56 47 41 54 39 72 -18 206 -61 144 -80 380 -36 447 17 26 16 28 -6 68 -22 39 -22 41 -5 51 13 8 17 18 13 34 -5 21 9 35 141 127 221 154 299 200 434 258 161 69 233 105 360 182 106 64 446 221 573 264 45 16 93 24 135 24 146 1 211 71 276 295 14 51 71 184 129 305 57 118 109 227 115 242 l10 27 46 -20 c43 -19 48 -19 71 -4 14 9 36 40 49 68 34 73 40 140 21 232 -9 42 -16 82 -16 87 0 15 43 -42 85 -112 48 -82 90 -127 126 -135 15 -4 56 1 91 10 35 10 72 19 83 22 15 3 33 -13 75 -69 30 -40 93 -120 139 -177 114 -141 234 -308 265 -367 13 -27 30 -77 37 -112 14 -65 13 -74 -27 -397 -18 -149 -14 -366 10 -555 26 -195 38 -390 32 -495 -13 -213 -18 -251 -37 -291 -10 -22 -19 -54 -19 -72 l0 -31 -30 17 c-39 22 -61 5 -37 -29 11 -15 13 -27 7 -39 -5 -10 -7 -19 -5 -22 3 -3 -1 -27 -9 -54 -8 -27 -18 -70 -21 -96 l-7 -48 -432 -2 c-237 -2 -1158 -5 -2046 -7 -888 -2 -1714 -5 -1835 -6 -121 -2 -581 -4 -1022 -4 l-803 -1 0 -470 0 -470 5120 0 5120 0 0 470 0 470 -47 1 c-27 0 -66 1 -88 3 -22 1 -641 3 -1375 4 -1081 2 -1330 5 -1310 15 37 19 38 58 1 89 -27 23 -39 26 -163 31 -192 8 -272 39 -438 169 -73 57 -95 79 -95 98 0 26 -8 28 -51 15 -18 -6 -24 1 -42 44 -19 44 -22 68 -22 203 0 84 7 230 15 323 8 94 24 280 35 415 11 135 28 290 36 344 9 55 20 132 24 170 4 39 22 111 39 160 24 66 32 107 33 165 2 92 -2 101 -121 259 -91 121 -120 169 -141 237 -6 22 -44 107 -83 188 -64 133 -70 150 -54 158 27 15 20 50 -20 107 -21 28 -64 89 -96 135 -72 106 -127 163 -208 218 -79 53 -143 120 -188 193 -30 51 -36 74 -57 216 -17 117 -23 211 -25 357 l-1 198 58 7 c40 5 73 2 104 -7 50 -16 218 -24 238 -12 18 12 15 31 -9 53 l-21 19 33 5 c30 4 34 9 37 38 3 27 -1 34 -22 42 -37 14 -32 30 9 30 36 0 75 28 75 54 0 23 -28 45 -73 57 -51 13 -107 39 -107 48 0 4 25 15 55 25 72 22 117 60 113 95 -3 24 -6 26 -54 25 -36 -1 -83 -15 -162 -49 -95 -40 -118 -54 -154 -95 -25 -28 -55 -52 -72 -56 -23 -5 -27 -4 -21 6 12 19 7 623 -6 677 -7 34 -6 65 6 126 9 45 18 132 22 192 7 141 -10 235 -83 453 -30 90 -54 171 -54 181 0 10 -6 34 -14 53 -14 33 -13 39 32 151 41 102 49 116 67 111 46 -13 85 -36 109 -65 25 -29 103 -71 138 -74 9 -1 33 15 52 35 35 37 35 38 30 106 -7 103 -15 137 -33 159 -10 11 -25 32 -34 47 -16 26 -16 27 19 47 43 26 51 46 28 72 -19 21 -12 35 20 41 10 1 24 11 30 20 9 15 2 27 -44 73 l-54 54 -2 76 -3 75 73 0 c86 0 148 19 199 61 71 59 43 99 -71 99 -31 0 -97 5 -146 10 l-88 10 -57 58 c-31 32 -79 84 -107 114 -97 106 -184 124 -324 67z"/>
-    </g>
-  </svg>
-  <div id="runner-label">Forest</div>
-</div>
-
-<!-- TIMELINE -->
-<div id="timeline">
-  <div id="tl-top">
-    <div id="tl-heading">← Drag to explore Amazon loss year by year</div>
-    <div id="tl-toggle">
-      <button class="tl-mode active" data-mode="cumulative">Cumulative</button>
-      <button class="tl-mode" data-mode="annual">Annual</button>
-    </div>
-  </div>
-  <div id="tl-controls">
-    <input id="tl-slider" type="range" min="1972" max="2025" value="2025">
-    <div id="tl-year">2025</div>
-    <button id="tl-play-btn">▶ Play</button>
-  </div>
-  <div id="tl-info"></div>
-</div>
-
-<!-- LOADING -->
-<div id="loading">
-  <div class="spinner"></div>
-  <div id="loading-text">Loading…</div>
-</div>
-
-<script>
-// ────────────────────────────────────────────
-// CONSTANTS
-// ────────────────────────────────────────────
-const DAILY_KM2 = 30;
-const DAY_S     = 86400;
-
-const ANNUAL_LOSS = {
-  1972:11000,1973:11500,1974:12000,1975:13000,1976:14000,
-  1977:15000,1978:16000,1979:17000,1980:18000,1981:20000,
-  1982:21000,1983:22000,1984:27700,1985:25800,1986:22000,
-  1987:28000,1988:21050,1989:17770,1990:13810,1991:11030,
-  1992:13786,1993:14896,1994:14896,1995:29059,1996:18161,
-  1997:13227,1998:17383,1999:17259,2000:18226,2001:18165,
-  2002:21651,2003:25396,2004:27772,2005:19014,2006:14286,
-  2007:11651,2008:12911,2009:7464, 2010:7000, 2011:6418,
-  2012:4571, 2013:5891, 2014:5012, 2015:6207, 2016:7893,
-  2017:6947, 2018:7900, 2019:10129,2020:11088,2021:13235,
-  2022:11568,2023:9001, 2024:9500, 2025:9712
-};
-
-// ────────────────────────────────────────────
-// STATE
-// ────────────────────────────────────────────
-let map, runnerEl;
-let pinLat = null, pinLng = null, placeName = '';
-let simSec = 0, speed = 1, raf = null, lastTs = null, running = false;
-let clearCircle = null, trailLine = null, trailCoords = [];
-let pathPoints = [];
-let histCircle = null, tlPlaying = false, tlTimer = null, tlMode = 'cumulative';
-
-// ────────────────────────────────────────────
-// SERVER-SIDE LAND CLIPPING
-// ────────────────────────────────────────────
-let landClipLayer = null;
-let lastClipRad   = -1;
-let pendingClip   = false;
-
-async function fetchClippedCircle(lat, lng, radiusKm) {
-  try {
-    const res = await fetch(`/api/circle?lat=${lat}&lng=${lng}&radius=${radiusKm.toFixed(3)}`);
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data.geojson;
-  } catch(e) { return null; }
-}
-
-// ────────────────────────────────────────────
-// MAP INIT
-// ────────────────────────────────────────────
-function initMap() {
-  map = L.map('map', {
-    center: [20, 0], zoom: 3,
-    zoomControl: false, attributionControl: true
-  });
-  // Add zoom control to bottom right — out of the way of UI panels
-  L.control.zoom({ position: 'bottomright' }).addTo(map);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19
-  }).addTo(map);
-  runnerEl = document.getElementById('runner');
-  map.on('moveend zoomend', onMapMove);
-}
-
-// ────────────────────────────────────────────
-// HELPERS
-// ────────────────────────────────────────────
-function dayFraction() {
-  const n = new Date();
-  return (n.getHours() * 3600 + n.getMinutes() * 60 + n.getSeconds()) / DAY_S;
-}
-function fmtTime(d)  { return d.toTimeString().slice(0, 8); }
-function fmtDate(d)  {
-  return d.toLocaleDateString('en-GB', {
-    weekday:'long', day:'numeric', month:'long', year:'numeric'
-  }).toUpperCase();
-}
-function buildRunPath(lat, lng, km2) {
-  const pts = [], R = Math.sqrt(km2 / Math.PI), steps = 90;
-  for (let i = 0; i <= steps; i++) {
-    const a = (i / steps) * 2 * Math.PI;
-    pts.push([
-      lat + (R / 111) * Math.cos(a),
-      lng + (R / (111 * Math.cos(lat * Math.PI / 180))) * Math.sin(a)
-    ]);
-  }
-  return pts;
-}
-function setLoading(on, txt = '') {
-  document.getElementById('loading').style.display = on ? 'flex' : 'none';
-  if (txt) document.getElementById('loading-text').textContent = txt;
-}
-function showEl(...ids) {
-  ids.forEach(id => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.style.display = id === 'controls' ? 'flex' : 'block';
-  });
-}
-function hideEl(...ids) {
-  ids.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = 'none';
-  });
-}
-
-// ────────────────────────────────────────────
-// CONTEXT TEXT
-// ────────────────────────────────────────────
-function contextText(km2, rad, name) {
-  let scale;
-  if      (km2 < 2)  scale = 'smaller than most city parks';
-  else if (km2 < 8)  scale = 'covering a large suburb';
-  else if (km2 < 18) scale = 'spanning several neighbourhoods';
-  else if (km2 < 25) scale = 'large enough to swallow a city centre';
-  else               scale = 'an area most cities would call enormous';
-  return `${km2.toFixed(1)} km² cleared so far today — ${scale}, ${rad.toFixed(1)} km from ${name || 'your pin'}.`;
-}
-
-// ────────────────────────────────────────────
-// RUNNER POSITION
-// ────────────────────────────────────────────
-function updateRunnerPos(lat, lng) {
-  const pt = map.latLngToContainerPoint([lat, lng]);
-  runnerEl.style.left = pt.x + 'px';
-  runnerEl.style.top  = pt.y + 'px';
-  runnerEl.style.display = 'flex';
-}
-function onMapMove() {
-  if (!running || !pathPoints.length) return;
-  const frac  = simSec / DAY_S;
-  const idx   = Math.floor(frac * (pathPoints.length - 1));
-  const next  = Math.min(idx + 1, pathPoints.length - 1);
-  const t     = (frac * (pathPoints.length - 1)) % 1;
-  const rLat  = pathPoints[idx][0] + (pathPoints[next][0] - pathPoints[idx][0]) * t;
-  const rLng  = pathPoints[idx][1] + (pathPoints[next][1] - pathPoints[idx][1]) * t;
-  updateRunnerPos(rLat, rLng);
-}
-
-// ────────────────────────────────────────────
-// ANIMATION TICK
-// ────────────────────────────────────────────
-function tick(ts) {
-  if (!running) return;
-  if (!lastTs) lastTs = ts;
-  const real = (ts - lastTs) / 1000;
-  lastTs = ts;
-  simSec = Math.min(simSec + real * speed, DAY_S);
-
-  const frac = simSec / DAY_S;
-  const km2  = frac * DAILY_KM2;
-  const rad  = Math.sqrt(km2 / Math.PI);
-
-  // Stats
-  document.getElementById('v-km2').textContent = km2.toFixed(2);
-  document.getElementById('v-rad').textContent = rad.toFixed(2);
-  document.getElementById('v-run').textContent = (frac * 2 * Math.PI * Math.sqrt(DAILY_KM2 / Math.PI) * 1.05).toFixed(2);
-
-  // Progress
-  document.getElementById('prog-fill').style.width = (frac * 100) + '%';
-  document.getElementById('prog-pct').textContent  = (frac * 100).toFixed(1) + '%';
-
-  // Clock
-  const now = new Date();
-  document.getElementById('clock').textContent    = fmtTime(now);
-  document.getElementById('date-str').textContent = fmtDate(now);
-
-  // Clearing circle — fetch server-clipped version when radius changes meaningfully
-  if (Math.abs(rad - lastClipRad) > 0.08 && !pendingClip) {
-    lastClipRad = rad;
-    pendingClip = true;
-    // Show plain circle immediately while waiting for clipped version
-    if (clearCircle) clearCircle.setRadius(rad * 1000);
-    // Fetch precise land-clipped version from server
-    fetchClippedCircle(pinLat, pinLng, rad).then(geojson => {
-      pendingClip = false;
-      if (!geojson || !geojson.features || !geojson.features.length) return;
-      if (landClipLayer) { map.removeLayer(landClipLayer); landClipLayer = null; }
-      // Hide plain circle, show clipped version
-      if (clearCircle) { clearCircle.setRadius(0); }
-      landClipLayer = L.geoJSON(geojson, {
-        style: { color:'#c8531a', fillColor:'#c8531a', fillOpacity:.15, weight:1 }
-      }).addTo(map);
-    });
-  } else if (clearCircle && !landClipLayer) {
-    clearCircle.setRadius(rad * 1000);
-  }
-
-  // Runner runs the perimeter of the CURRENT circle size
-  const angle = frac * 2 * Math.PI;
-  const rLat  = pinLat + (rad / 111) * Math.cos(angle);
-  const rLng  = pinLng + (rad / (111 * Math.cos(pinLat * Math.PI / 180))) * Math.sin(angle);
-
-  trailCoords.push([rLat, rLng]);
-  if (trailLine) trailLine.setLatLngs(trailCoords);
-  updateRunnerPos(rLat, rLng);
-
-  // Context
-  document.getElementById('ctx-text').textContent = contextText(km2, rad, placeName);
-
-  if (simSec < DAY_S) {
-    raf = requestAnimationFrame(tick);
-  } else {
-    document.getElementById('quote').textContent = '"I\'m pretty tired. I think I\'ll go home now."';
-    document.getElementById('quote').style.color = 'rgba(232,220,200,.6)';
-  }
-}
-
-// ────────────────────────────────────────────
-// START RUN
-// ────────────────────────────────────────────
-function startRun(lat, lng, name) {
-  pinLat = lat; pinLng = lng; placeName = name;
-
-  // Map
-  map.setView([lat, lng], 14);
-
-  // Layers
-  L.circleMarker([lat, lng], {
-    radius: 5, color: '#c8531a', fillColor: '#c8531a', fillOpacity: .9, weight: 2
-  }).addTo(map);
-
-  // Start with tiny circle — will be replaced by land-clipped version in tick
-  clearCircle = L.circle([lat, lng], {
-    radius: 1, color:'#c8531a', fillColor:'#c8531a', fillOpacity:.14, weight:.8
-  }).addTo(map);
-  lastClipRad = -1;
-
-  trailCoords = [];
-  trailLine   = L.polyline([], { color:'#c8531a', weight:1.5, opacity:.5 }).addTo(map);
-  pathPoints  = buildRunPath(lat, lng, DAILY_KM2); // kept for onMapMove fallback
-
-  // UI
-  document.getElementById('loc-name').textContent = name || '';
-  showEl('hdr', 'stats', 'clock-block', 'ctx-bar', 'progress', 'quote', 'controls', 'repin');
-
-  // Start sim from current time of day
-  simSec = dayFraction() * DAY_S;
-  // Small delay to let map render before starting animation
-  setTimeout(() => {
-    running = true;
-    lastTs  = null;
-    runnerEl.style.display = 'flex';
-    raf = requestAnimationFrame(tick);
-  }, 500);
-
-  // Show timeline and draw initial historic circle
-  showEl('timeline');
-  setTimeout(() => {
-    document.getElementById('tl-slider').value = 2025;
-    drawHistCircle(2025);
-  }, 1500);
-}
-
-// ────────────────────────────────────────────
-// SEARCH
-// ────────────────────────────────────────────
-function doSearch() {
-  const q = document.getElementById('search-inp').value.trim();
-  if (!q) return;
-  document.getElementById('search-results').innerHTML =
-    '<div class="result" style="color:var(--dim)">Searching…</div>';
-  document.getElementById('pin-err').textContent = '';
-
-  fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5`)
-    .then(r => r.json())
-    .then(data => {
-      const el = document.getElementById('search-results');
-      if (!data.length) {
-        el.innerHTML = '';
-        document.getElementById('pin-err').textContent = 'No results found.';
-        return;
-      }
-      el.innerHTML = '';
-      data.slice(0, 5).forEach(p => {
-        const d = document.createElement('div');
-        d.className = 'result';
-        d.textContent = p.display_name.length > 70
-          ? p.display_name.slice(0, 70) + '…'
-          : p.display_name;
-        d.onclick = () => selectPlace(parseFloat(p.lat), parseFloat(p.lon), p.display_name.split(',')[0]);
-        el.appendChild(d);
-      });
-    })
-    .catch(() => {
-      document.getElementById('pin-err').textContent = 'Search failed. Try again.';
-    });
-}
-
-function selectPlace(lat, lng, name) {
-  hidePinScreen();
-  startRun(lat, lng, name);
-}
-
-function useGeo() {
-  document.getElementById('pin-err').textContent = 'Locating…';
-  if (!navigator.geolocation) {
-    document.getElementById('pin-err').textContent = 'Geolocation unavailable.';
-    return;
-  }
-  navigator.geolocation.getCurrentPosition(pos => {
-    const lat = pos.coords.latitude, lng = pos.coords.longitude;
-    fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
-      .then(r => r.json())
-      .then(d => {
-        const name = d.address.suburb || d.address.city || d.address.town || 'your location';
-        hidePinScreen();
-        startRun(lat, lng, name);
-      })
-      .catch(() => { hidePinScreen(); startRun(lat, lng, 'your location'); });
-  }, () => {
-    document.getElementById('pin-err').textContent = 'Location access denied. Try searching.';
-  });
-}
-
-// ────────────────────────────────────────────
-// SCREEN TRANSITIONS
-// ────────────────────────────────────────────
-function showPinScreen() {
-  const s = document.getElementById('pin-screen');
-  s.style.display = 'flex';
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => { s.style.opacity = '1'; });
-  });
-}
-function hidePinScreen() {
-  const s = document.getElementById('pin-screen');
-  s.style.opacity = '0';
-  setTimeout(() => { s.style.display = 'none'; }, 500);
-}
-function hideSplash() {
-  const s = document.getElementById('splash');
-  s.style.opacity = '0';
-  setTimeout(() => {
-    s.style.display = 'none';
-    showPinScreen();
-  }, 800);
-}
-function resetAll() {
-  running = false;
-  cancelAnimationFrame(raf);
-  if (clearCircle) { map.removeLayer(clearCircle); clearCircle = null; }
-  if (trailLine)   { map.removeLayer(trailLine);   trailLine   = null; }
-  runnerEl.style.display = 'none';
-  trailCoords = []; pathPoints = [];
-  hideEl('hdr','stats','clock-block','ctx-bar','progress','quote','controls','repin','timeline');
-  if (histCircle) { map.removeLayer(histCircle); histCircle = null; }
-  if (landClipLayer) { map.removeLayer(landClipLayer); landClipLayer = null; }
-  lastClipRad = -1;
-  pendingClip = false;
-  if (tlTimer) { clearInterval(tlTimer); tlPlaying = false; }
-  setTimeout(showPinScreen, 100);
-  document.getElementById('search-results').innerHTML = '';
-  document.getElementById('search-inp').value = '';
-  document.getElementById('pin-err').textContent = '';
-}
-
-// ────────────────────────────────────────────
-// TIMELINE
-// ────────────────────────────────────────────
-function cumulativeLoss(upToYear) {
-  return Object.entries(ANNUAL_LOSS)
-    .filter(([y]) => parseInt(y) <= upToYear)
-    .reduce((s, [, v]) => s + v, 0);
-}
-
-function drawHistCircle(yr) {
-  if (histCircle) { map.removeLayer(histCircle); histCircle = null; }
-  if (!pinLat) return;
-
-  const total    = cumulativeLoss(yr);
-  const annual   = ANNUAL_LOSS[yr] || 0;
-  const km2used  = tlMode === 'annual' ? annual : total;
-  const radiusKm = Math.sqrt(Math.max(km2used, 1) / Math.PI);
-
-  document.getElementById('tl-year').textContent = yr;
-  document.getElementById('tl-info').textContent = tlMode === 'cumulative'
-    ? `${yr}: −${annual.toLocaleString()} km² that year  ·  −${total.toLocaleString()} km² total since 1972`
-    : `${yr}: −${annual.toLocaleString()} km² cleared that year  ·  radius ${radiusKm.toFixed(0)} km`;
-
-  histCircle = L.circle([pinLat, pinLng], {
-    radius:      radiusKm * 1000,
-    color:       '#c8531a',
-    fillColor:   '#c8531a',
-    fillOpacity: tlMode === 'annual' ? 0.18 : 0.10,
-    weight:      2.5,
-    dashArray:   tlMode === 'annual' ? null : '12 7',
-    opacity:     1.0,
-    interactive: false
   }).addTo(map);
 }
 
