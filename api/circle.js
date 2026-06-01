@@ -1,11 +1,8 @@
-// api/circle.js
-// Clips a circle to land boundaries using turf.js proper polygon intersection
-// Called by frontend: /api/circle?lat=X&lng=Y&radius=Z
-
 const https = require('https');
-const turf = require('@turf/turf');
+const intersect = require('@turf/intersect').default;
+const circle = require('@turf/circle').default;
+const { featureCollection } = require('@turf/helpers');
 
-// Cache land data between serverless invocations
 let landCache = null;
 
 function fetchLand() {
@@ -20,12 +17,8 @@ function fetchLand() {
       let data = '';
       res.on('data', c => data += c);
       res.on('end', () => {
-        try {
-          landCache = JSON.parse(data);
-          resolve(landCache);
-        } catch(e) {
-          resolve(null);
-        }
+        try { landCache = JSON.parse(data); resolve(landCache); }
+        catch(e) { resolve(null); }
       });
     }).on('error', () => resolve(null));
   });
@@ -40,44 +33,26 @@ module.exports = async function handler(req, res) {
   const radius = parseFloat(req.query.radius);
 
   if (isNaN(lat) || isNaN(lng) || isNaN(radius)) {
-    return res.status(400).json({ error: 'Missing lat, lng or radius' });
+    return res.status(400).json({ error: 'Missing params' });
   }
 
   const land = await fetchLand();
+  const circ = circle([lng, lat], radius, { steps: 128, units: 'kilometers' });
 
   if (!land) {
-    // Land data unavailable — return unclipped circle as fallback
-    const circle = turf.circle([lng, lat], radius, { steps: 128, units: 'kilometers' });
-    return res.status(200).json({
-      geojson: turf.featureCollection([circle]),
-      clipped: false
-    });
+    return res.status(200).json({ geojson: featureCollection([circ]), clipped: false });
   }
 
-  // Build the circle polygon
-  const circle = turf.circle([lng, lat], radius, { steps: 128, units: 'kilometers' });
-
-  // Intersect with every land feature
   const clipped = [];
   for (const feature of land.features) {
     try {
-      const intersection = turf.intersect(circle, feature);
-      if (intersection) clipped.push(intersection);
-    } catch(e) {
-      // Skip invalid geometries
-    }
-  }
-
-  if (!clipped.length) {
-    // No land intersection found — return empty
-    return res.status(200).json({
-      geojson: turf.featureCollection([]),
-      clipped: true
-    });
+      const ix = intersect(circ, feature);
+      if (ix) clipped.push(ix);
+    } catch(e) {}
   }
 
   return res.status(200).json({
-    geojson: turf.featureCollection(clipped),
-    clipped: true
+    geojson: featureCollection(clipped.length ? clipped : [circ]),
+    clipped: clipped.length > 0
   });
 };
