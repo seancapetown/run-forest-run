@@ -1,4 +1,5 @@
 const https = require('https');
+const http = require('http');
 
 const ANNUAL_LOSS = {
   1972:11000,1973:11500,1974:12000,1975:13000,1976:14000,1977:15000,1978:16000,1979:17000,1980:18000,1981:20000,
@@ -15,8 +16,71 @@ function getDateDaysAgo(days) {
   return d.toISOString().slice(0, 10);
 }
 
-function fetchGFW(apiKey) {
+function getRegion(lng, lat) {
+  if (lat < -10 && lng > -55)              return 'Mato Grosso';
+  if (lat < -8  && lng > -65 && lng < -55) return 'Pará';
+  if (lat < -8  && lng < -65)              return 'Rondônia';
+  if (lat > -5  && lng < -60)              return 'Amazonas';
+  if (lng < -68)                            return 'Acre';
+  return 'Amazon Basin';
+}
+
+// Fetch a URL following redirects automatically
+function fetchWithRedirects(url, headers, maxRedirects = 5) {
   return new Promise((resolve, reject) => {
+    const lib = url.startsWith('https') ? https : http;
+    const req = lib.get(url, { headers }, (res) => {
+      if ([301, 302, 307, 308].includes(res.statusCode) && res.headers.location && maxRedirects > 0) {
+        const redirectUrl = res.headers.location.startsWith('http')
+          ? res.headers.location
+          : new URL(res.headers.location, url).toString();
+        resolve(fetchWithRedirects(redirectUrl, headers, maxRedirects - 1));
+        return;
+      }
+      let data = '';
+      res.on('data', c => data += c);
+      res.on('end', () => resolve({ status: res.statusCode, body: data }));
+    });
+    req.on('error', reject);
+  });
+}
+
+function getFallback() {
+  const hotspots = [
+    {lat:-8.5, lng:-55.2, r:'Pará',       w:0.30},
+    {lat:-10.2,lng:-63.8, r:'Rondônia',    w:0.20},
+    {lat:-12.5,lng:-52.0, r:'Mato Grosso', w:0.25},
+    {lat:-5.8, lng:-57.5, r:'Amazonas',    w:0.15},
+    {lat:-9.8, lng:-67.2, r:'Acre',        w:0.10},
+  ];
+  const confs = ['high','high','nominal','nominal','low'];
+  const alerts = [];
+  for (let i = 0; i < 45; i++) {
+    const rnd = Math.random(); let cum = 0; let hs = hotspots[0];
+    for (const h of hotspots) { cum += h.w; if (rnd < cum) { hs = h; break; } }
+    const d = new Date(); d.setDate(d.getDate() - Math.floor(Math.random() * 30));
+    alerts.push({
+      lat:        hs.lat + (Math.random() - .5) * 2.5,
+      lng:        hs.lng + (Math.random() - .5) * 2.5,
+      date:       d.toISOString().slice(0, 10),
+      confidence: confs[Math.floor(Math.random() * 5)],
+      intensity:  Math.floor(20 + Math.random() * 80),
+      region:     hs.r
+    });
+  }
+  return { source: 'Simulated (GFW unavailable)', estimated_area_km2: 28.4, alerts };
+}
+
+module.exports = async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Cache-Control', 's-maxage=3600');
+
+  const apiKey = process.env.GFW_API_KEY;
+  if (!apiKey) {
+    return res.status(200).json({ ...getFallback(), annual_loss: ANNUAL_LOSS });
+  }
+
+  try {
     const sql = encodeURIComponent(
       `SELECT latitude, longitude, umd_glad_landsat_alerts__confidence AS confidence,
        alert__date, alert__count
@@ -24,48 +88,39 @@ function fetchGFW(apiKey) {
        WHERE alert__date >= '${getDateDaysAgo(30)}'
        LIMIT 100`
     );
-
-    const options = {
-      hostname: 'data-api.globalforestwatch.org',
-      path: `/dataset/gfw_integrated_alerts/latest/query?sql=${sql}`,
-      method: 'GET',
-      headers: {
-        'x-api-key': apiKey,
-        'User-Agent': 'RunForestRun/1.0'
-      }
-    };
-
-    const req = https.request(options, (res) => {
-      let data = '';
-      res.on('data', c => data += c);
-      res.on('end', () => {
-        // Return raw response for debugging
-        resolve({ status: res.statusCode, raw: data });
-      });
+    const url = `https://data-api.globalforestwatch.org/dataset/gfw_integrated_alerts/latest/query?sql=${sql}`;
+    const { status, body } = await fetchWithRedirects(url, {
+      'x-api-key': apiKey,
+      'User-Agent': 'RunForestRun/1.0'
     });
-    req.on('error', reject);
-    req.end();
-  });
-}
 
-module.exports = async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+    const parsed = JSON.parse(body);
+    const rows = parsed.data || [];
 
-  const apiKey = process.env.GFW_API_KEY;
+    if (!rows.length) {
+      return res.status(200).json({ ...getFallback(), annual_loss: ANNUAL_LOSS, gfw_status: status });
+    }
 
-  if (!apiKey) {
-    return res.status(200).json({ error: 'No API key configured' });
-  }
+    const alerts = rows.map(row => ({
+      lat:        row.latitude,
+      lng:        row.longitude,
+      date:       row.alert__date,
+      confidence: row.confidence || 'nominal',
+      intensity:  Math.min(100, (row.alert__count || 1) * 10),
+      region:     getRegion(row.longitude, row.latitude)
+    })).filter(a => a.lat && a.lng);
 
-  try {
-    const { status, raw } = await fetchGFW(apiKey);
-    // Return raw response so we can see exactly what GFW says
+    const estimatedKm2 = Math.max(20, Math.min(40, alerts.length * 0.28 + 5));
+
     return res.status(200).json({
-      gfw_status: status,
-      gfw_raw: raw.slice(0, 2000), // first 2000 chars
-      annual_loss: ANNUAL_LOSS
+      source:             'GFW Integrated Deforestation Alerts',
+      estimated_area_km2: parseFloat(estimatedKm2.toFixed(2)),
+      total_alerts:       alerts.length,
+      alerts:             alerts.slice(0, 60),
+      annual_loss:        ANNUAL_LOSS
     });
+
   } catch(e) {
-    return res.status(200).json({ error: e.message });
+    return res.status(200).json({ ...getFallback(), annual_loss: ANNUAL_LOSS, error: e.message });
   }
 };
