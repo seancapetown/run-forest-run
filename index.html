@@ -113,7 +113,7 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 #loc-name { font-size:9px; color:#8aaa7a; margin-top:4px; font-style:italic; }
 
 #ctx-bar { position:fixed; bottom:120px; left:20px; z-index:100; display:none; pointer-events:none; max-width:220px; }
-#ctx-text { font-size:9px; color:rgba(200,200,170,.4); line-height:1.6; letter-spacing:.03em; }
+#ctx-text { font-size:11px; color:rgba(200,200,170,.65); line-height:1.7; letter-spacing:.02em; }
 
 #progress { position:fixed; bottom:52px; left:20px; right:140px; z-index:100; display:none; pointer-events:none; }
 #prog-labels { display:flex; justify-content:space-between; font-size:8px; color:var(--dim); letter-spacing:.1em; text-transform:uppercase; margin-bottom:6px; }
@@ -213,7 +213,70 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 @media (max-width:600px) {
   #splash { padding:32px 24px; }
   .sw { font-size:clamp(44px,16vw,80px); }
-  #timeline { bottom:100px; width:calc(100% - 24px); }
+
+  /* Header */
+  #hdr { padding:10px 14px 8px; }
+  #hdr-wm span { font-size:15px; }
+
+  /* Hide clock on mobile — saves space */
+  #clock-block { display:none !important; }
+
+  /* Stats — smaller on mobile */
+  #stats { top:60px; left:14px; }
+  .s-value { font-size:17px; margin-bottom:10px; }
+  .s-label { font-size:7px; }
+
+  /* Info panel — below header, full width */
+  #info-panel {
+    top:auto; bottom:230px; left:14px; right:14px;
+    transform:none; white-space:normal;
+    font-size:8px;
+  }
+  .info-row { font-size:8px; }
+
+  /* Context text — hide on mobile, stats are enough */
+  #ctx-bar { display:none !important; }
+
+  /* Timeline — full width, at bottom */
+  #timeline {
+    bottom:70px;
+    width:calc(100% - 24px);
+    left:12px; right:12px;
+    transform:none;
+    padding:10px 14px;
+  }
+  #tl-year { font-size:16px; }
+  #tl-heading { font-size:7px; }
+
+  /* Progress bar — above timeline */
+  #progress {
+    bottom:200px; left:14px; right:100px;
+  }
+
+  /* Speed controls — bottom right, compact */
+  #controls {
+    bottom:200px; right:14px;
+    flex-direction:column; gap:4px;
+  }
+  .ctrl-btn { font-size:8px; padding:3px 6px; }
+  .ctrl-label { display:none; }
+
+  /* Change pin — bottom left */
+  #repin { bottom:170px; left:14px; }
+
+  /* Zoom controls */
+  .leaflet-control-zoom { margin-bottom:80px !important; }
+
+  /* Pin screen */
+  #pin-box { border-radius:16px; }
+  #pin-title { font-size:18px; }
+  #pin-sub { font-size:11px; }
+  .result { font-size:13px; padding:10px 16px; }
+
+  /* Satellite overlay text */
+  #sat-title { font-size:clamp(18px,5vw,26px); }
+  #sat-data { gap:20px; }
+  .sat-stat-value { font-size:18px; }
 }
 </style>
 </head>
