@@ -211,72 +211,70 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 #runner-label { font-family:var(--display); font-size:8px; color:var(--parch); white-space:nowrap; margin-top:2px; text-shadow:0 0 10px #000, 0 0 20px #000; }
 
 @media (max-width:600px) {
+  /* SPLASH */
   #splash { padding:32px 24px; }
   .sw { font-size:clamp(44px,16vw,80px); }
 
-  /* Header */
-  #hdr { padding:10px 14px 8px; }
-  #hdr-wm span { font-size:15px; }
-
-  /* Hide clock on mobile — saves space */
+  /* HIDE everything that clutters mobile */
   #clock-block { display:none !important; }
-
-  /* Stats — smaller on mobile */
-  #stats { top:60px; left:14px; }
-  .s-value { font-size:17px; margin-bottom:10px; }
-  .s-label { font-size:7px; }
-
-  /* Info panel — below header, full width */
-  #info-panel {
-    top:auto; bottom:230px; left:14px; right:14px;
-    transform:none; white-space:normal;
-    font-size:8px;
-  }
-  .info-row { font-size:8px; }
-
-  /* Context text — hide on mobile, stats are enough */
+  #stats { display:none !important; }
+  #info-panel { display:none !important; }
   #ctx-bar { display:none !important; }
+  #progress { display:none !important; }
+  #controls { display:none !important; }
+  #repin { display:none !important; }
 
-  /* Timeline — full width, at bottom */
+  /* HEADER — minimal */
+  #hdr { padding:10px 14px 8px; }
+  #hdr-wm span { font-size:14px; }
+  #hdr-tag { font-size:7px; }
+
+  /* MOBILE STATS BAR — single number, full width, above timeline */
+  #mobile-bar {
+    position:fixed; bottom:170px; left:0; right:0; z-index:100;
+    display:none;
+    padding:10px 16px;
+    background:linear-gradient(to top, rgba(8,14,8,.95) 0%, transparent 100%);
+    pointer-events:none;
+  }
+  #mobile-km2 {
+    font-family:var(--display); font-size:36px; font-weight:700;
+    color:var(--parch); line-height:1;
+  }
+  #mobile-km2 span { font-size:13px; color:var(--data); margin-left:4px; }
+  #mobile-label { font-size:9px; color:var(--data); letter-spacing:.12em; text-transform:uppercase; margin-top:3px; }
+  #mobile-source { font-size:8px; color:rgba(200,200,170,.4); margin-top:2px; }
+
+  /* TIMELINE — full width, bottom */
   #timeline {
-    bottom:70px;
-    width:calc(100% - 24px);
-    left:12px; right:12px;
-    transform:none;
-    padding:10px 14px;
+    bottom:0; left:0; right:0;
+    width:100%; transform:none;
+    border-radius:0; border-left:none; border-right:none; border-bottom:none;
+    padding:12px 16px 24px;
   }
-  #tl-year { font-size:16px; }
+  #tl-year { font-size:16px; min-width:38px; }
   #tl-heading { font-size:7px; }
+  #tl-info { font-size:8px; }
 
-  /* Progress bar — above timeline */
-  #progress {
-    bottom:200px; left:14px; right:100px;
+  /* PIN SCREEN */
+  #pin-screen { align-items:flex-end; }
+  #pin-box {
+    width:100%; border-radius:20px 20px 0 0;
+    max-width:100%;
   }
+  #pin-title { font-size:20px; }
+  #pin-sub { font-size:12px; }
+  .result { font-size:14px; padding:12px 20px; }
+  #search-results { max-height:180px; }
 
-  /* Speed controls — bottom right, compact */
-  #controls {
-    bottom:200px; right:14px;
-    flex-direction:column; gap:4px;
-  }
-  .ctrl-btn { font-size:8px; padding:3px 6px; }
-  .ctrl-label { display:none; }
+  /* SATELLITE OVERLAY */
+  #sat-title { font-size:clamp(20px,6vw,28px); }
+  #sat-data { gap:24px; }
+  .sat-stat-value { font-size:20px; }
+  .sat-stat-label { font-size:7px; }
 
-  /* Change pin — bottom left */
-  #repin { bottom:170px; left:14px; }
-
-  /* Zoom controls */
-  .leaflet-control-zoom { margin-bottom:80px !important; }
-
-  /* Pin screen */
-  #pin-box { border-radius:16px; }
-  #pin-title { font-size:18px; }
-  #pin-sub { font-size:11px; }
-  .result { font-size:13px; padding:10px 16px; }
-
-  /* Satellite overlay text */
-  #sat-title { font-size:clamp(18px,5vw,26px); }
-  #sat-data { gap:20px; }
-  .sat-stat-value { font-size:18px; }
+  /* ZOOM — above timeline */
+  .leaflet-control-zoom { margin-bottom:175px !important; margin-right:12px !important; }
 }
 </style>
 </head>
@@ -386,6 +384,12 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
     <div class="info-dot" style="background:#8b1a1a; opacity:0.8"></div>
     <span>Cumulative loss since 1972 — drag the timeline to explore</span>
   </div>
+</div>
+
+<div id="mobile-bar">
+  <div id="mobile-km2">—<span>km²</span></div>
+  <div id="mobile-label">Cleared today in the Amazon</div>
+  <div id="mobile-source"></div>
 </div>
 
 <div id="runner">
@@ -525,6 +529,11 @@ function tick(ts) {
   updateRunnerPos(rLat, rLng);
 
   document.getElementById('ctx-text').textContent = contextText(km2, rad, placeName);
+  // Update mobile bar
+  const mKm2 = document.getElementById('mobile-km2');
+  const mSrc = document.getElementById('mobile-source');
+  if (mKm2) mKm2.innerHTML = km2.toFixed(1) + '<span>km²</span>';
+  if (mSrc) mSrc.textContent = DATA_SOURCE;
 
   if (simSec < DAY_S) {
     raf = requestAnimationFrame(tick);
@@ -545,6 +554,11 @@ function startRun(lat, lng, name) {
 
   document.getElementById('loc-name').textContent = name||'';
   show('hdr','stats','clock-block','ctx-bar','progress','controls','repin','info-panel');
+  // Show mobile bar on small screens
+  if (window.innerWidth <= 600) {
+    const mb = document.getElementById('mobile-bar');
+    if (mb) mb.style.display = 'block';
+  }
 
   simSec = dayFraction() * DAY_S;
   running = true; lastTs = null;
@@ -681,6 +695,8 @@ function resetAll() {
   if(tlTimer){clearInterval(tlTimer);tlPlaying=false;}
   runnerEl.style.display='none'; trailCoords=[];
   hide('hdr','stats','clock-block','ctx-bar','progress','controls','repin','timeline','info-panel');
+  const mb = document.getElementById('mobile-bar');
+  if (mb) mb.style.display = 'none';
   setTimeout(showPinScreen,100);
   document.getElementById('search-results').innerHTML='';
   document.getElementById('search-inp').value='';
