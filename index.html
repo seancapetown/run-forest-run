@@ -168,6 +168,29 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 .ctrl-btn:hover { background:rgba(74,122,42,.22); }
 .ctrl-btn.active { background:rgba(74,122,42,.26); border-color:rgba(74,122,42,.6); }
 
+/* SHARE BUTTON */
+#share-btn {
+  position:fixed; top:12px; right:16px; z-index:200;
+  display:none; align-items:center; gap:6px;
+  background:rgba(8,14,8,.7); border:0.5px solid rgba(232,220,200,.2);
+  color:var(--parch); font-family:var(--mono); font-size:9px;
+  letter-spacing:.12em; text-transform:uppercase;
+  padding:6px 12px; cursor:pointer;
+  transition:all .2s; pointer-events:all;
+}
+#share-btn:hover { background:rgba(200,83,26,.25); border-color:rgba(200,83,26,.5); }
+#share-btn svg { width:11px; height:11px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+
+/* SHARE TOAST */
+#share-toast {
+  position:fixed; top:50px; right:16px; z-index:300;
+  background:rgba(74,122,42,.2); border:0.5px solid rgba(74,122,42,.4);
+  color:#8aaa7a; font-family:var(--mono); font-size:9px;
+  letter-spacing:.1em; padding:6px 12px;
+  opacity:0; transition:opacity .3s ease;
+  pointer-events:none;
+}
+
 #repin { position:fixed; bottom:22px; left:20px; z-index:100; display:none; }
 #repin-btn { background:none; border:0.5px solid rgba(74,122,42,.25); color:var(--dim); font-family:var(--mono); font-size:8px; padding:4px 10px; cursor:pointer; letter-spacing:.1em; text-transform:uppercase; }
 #repin-btn:hover { color:#8aaa7a; }
@@ -385,6 +408,12 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
     </div>
   </div>
 </div>
+
+<button id="share-btn">
+  <svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+  Share
+</button>
+<div id="share-toast">Link copied ✓</div>
 
 <div id="stats">
   <div class="s-label">Cleared today</div>
@@ -627,6 +656,9 @@ function startRun(lat, lng, name) {
 
   document.getElementById('loc-name').textContent = name||'';
   show('hdr','stats','clock-block','ctx-bar','progress','controls','repin','info-panel');
+  // Show share button
+  const shareBtn = document.getElementById('share-btn');
+  if (shareBtn) shareBtn.style.display = 'flex';
   // Show mobile bar on small screens
   if (window.innerWidth <= 600) {
     const mb = document.getElementById('mobile-bar');
@@ -779,6 +811,8 @@ function resetAll() {
   hide('hdr','stats','clock-block','ctx-bar','progress','controls','repin','timeline','info-panel');
   const mb = document.getElementById('mobile-bar');
   if (mb) mb.style.display = 'none';
+  const shareBtn = document.getElementById('share-btn');
+  if (shareBtn) shareBtn.style.display = 'none';
   setTimeout(showPinScreen,100);
   document.getElementById('search-results').innerHTML='';
   document.getElementById('search-inp').value='';
@@ -820,6 +854,27 @@ function updateTimelineOffset() {
 window.addEventListener('resize', updateTimelineOffset);
 new MutationObserver(updateTimelineOffset)
   .observe(document.getElementById('timeline'), { attributes:true, attributeFilter:['style'] });
+
+// Share
+document.getElementById('share-btn').addEventListener('click', async () => {
+  const km2 = parseFloat(document.getElementById('v-km2').textContent) || DAILY_KM2;
+  const name = placeName || 'your neighbourhood';
+  const url = window.location.href.split('?')[0];
+  const text = `${km2.toFixed(1)} km² of Amazon forest cleared today — the size of ${name}. See what it looks like near you.`;
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: 'Run Forest Run', text, url });
+    } catch(e) { /* user cancelled */ }
+  } else {
+    // Fallback: copy to clipboard
+    try {
+      await navigator.clipboard.writeText(`${text}\n${url}`);
+      const toast = document.getElementById('share-toast');
+      toast.style.opacity = '1';
+      setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+    } catch(e) {}
+  }
+});
 
 // Ken Burns
 setTimeout(()=>{ const bg=document.getElementById('splash-bg'); if(bg) bg.style.transform='scale(1.0)'; },100);
