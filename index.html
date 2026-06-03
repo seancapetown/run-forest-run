@@ -165,11 +165,11 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 
 /* SATELLITE DATA OVERLAY */
 #satellite-overlay {
-  position:absolute; inset:0; z-index:10;
-  background:rgba(8,14,8,.92);
+  position:fixed; inset:0; z-index:950;
+  background:#000;
   display:none; flex-direction:column;
-  align-items:center; justify-content:center; gap:16px;
-  border-radius:2px;
+  align-items:center; justify-content:center; gap:24px;
+  padding:40px 24px;
 }
 #satellite-overlay .spinner {
   width:28px; height:28px;
@@ -207,7 +207,7 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 }
 
 /* RUNNER */
-#runner { position:fixed; z-index:200; pointer-events:none; transform:translate(-50%,-50%); display:none; flex-direction:column; align-items:center; }
+#runner { position:fixed; z-index:201; pointer-events:none; transform:translate(-50%,-50%); display:none; flex-direction:column; align-items:center; }
 #runner-label { font-family:var(--display); font-size:8px; color:var(--parch); white-space:nowrap; margin-top:2px; text-shadow:0 0 10px #000, 0 0 20px #000; }
 
 @media (max-width:600px) {
@@ -231,7 +231,7 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
 
   /* MOBILE STATS BAR — single number, full width, above timeline */
   #mobile-bar {
-    position:fixed; bottom:170px; left:0; right:0; z-index:100;
+    position:fixed; bottom:170px; left:0; right:0; z-index:500;
     display:none;
     padding:10px 16px;
     background:linear-gradient(to top, rgba(8,14,8,.95) 0%, transparent 100%);
@@ -243,29 +243,39 @@ html, body { height:100%; background:var(--night); color:var(--parch); font-fami
   }
   #mobile-km2 span { font-size:13px; color:var(--data); margin-left:4px; }
   #mobile-label { font-size:9px; color:var(--data); letter-spacing:.12em; text-transform:uppercase; margin-top:3px; }
-  #mobile-source { font-size:8px; color:rgba(200,200,170,.4); margin-top:2px; }
+  #mobile-source { font-size:8px; color:rgba(200,200,170,.4); margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 
   /* TIMELINE — full width, bottom */
   #timeline {
-    bottom:0; left:0; right:0;
-    width:100%; transform:none;
-    border-radius:0; border-left:none; border-right:none; border-bottom:none;
-    padding:12px 16px 24px;
+    bottom:0 !important; left:0 !important; right:0 !important;
+    width:100% !important; max-width:100% !important;
+    transform:none !important;
+    border-radius:0 !important;
+    border-left:none !important; border-right:none !important; border-bottom:none !important;
+    padding:12px 16px 24px !important;
+    box-sizing:border-box !important;
   }
+  #tl-top { flex-wrap:wrap; gap:6px; }
   #tl-year { font-size:16px; min-width:38px; }
   #tl-heading { font-size:7px; }
-  #tl-info { font-size:8px; }
+  #tl-info { font-size:8px; white-space:normal; }
+  #tl-toggle { flex-shrink:0; }
 
-  /* PIN SCREEN */
-  #pin-screen { align-items:flex-end; }
+  /* PIN SCREEN — bottom sheet on mobile */
+  #pin-screen { align-items:flex-end !important; background:rgba(0,0,0,.6) !important; }
   #pin-box {
-    width:100%; border-radius:20px 20px 0 0;
-    max-width:100%;
+    width:100% !important; max-width:100% !important;
+    border-radius:20px 20px 0 0 !important;
+    box-shadow:0 -8px 40px rgba(0,0,0,.5) !important;
   }
-  #pin-title { font-size:20px; }
-  #pin-sub { font-size:12px; }
-  .result { font-size:14px; padding:12px 20px; }
-  #search-results { max-height:180px; }
+  #pin-box-header { padding:24px 20px 16px !important; }
+  #pin-box-search { padding:12px 20px !important; }
+  #pin-box-footer { padding:10px 20px 32px !important; }
+  #pin-title { font-size:20px !important; }
+  #pin-sub { font-size:12px !important; }
+  #search-inp { font-size:16px !important; } /* prevents iOS zoom */
+  .result { font-size:14px !important; padding:12px 20px !important; }
+  #search-results { max-height:200px !important; }
 
   /* SATELLITE OVERLAY */
   #sat-title { font-size:clamp(20px,6vw,28px); }
