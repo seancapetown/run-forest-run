@@ -94,7 +94,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   font-family:var(--display); font-size:22px;
   color:#000000 !important; line-height:1.2; font-weight:700; margin-bottom:6px;
 }
-#pin-sub { font-size:12px; color:#666666 !important; line-height:1.6; }
+#pin-sub { font-size:12px; color:#666666 !important; line-height:1.6; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif !important; }
 #pin-box-search { padding:16px 24px; background:#ffffff !important; }
 #search-row {
   display:flex; align-items:center;
@@ -271,9 +271,9 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 
   /* MOBILE STATS BAR — single number, full width, above timeline */
   #mobile-bar {
-    position:fixed; bottom:155px; left:0; right:0; z-index:500;
+    position:fixed; bottom:var(--tl-height, 170px); left:0; right:0; z-index:500;
     display:none;
-    padding:10px 16px 6px;
+    padding:10px 16px 8px;
     background:linear-gradient(to top, rgba(8,14,8,.98) 0%, rgba(8,14,8,.6) 70%, transparent 100%);
     pointer-events:none;
   }
@@ -324,8 +324,8 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   .sat-stat-value { font-size:20px; }
   .sat-stat-label { font-size:7px; }
 
-  /* ZOOM — above timeline */
-  .leaflet-control-zoom { margin-bottom:175px !important; margin-right:12px !important; }
+  /* ZOOM — above timeline + mobile bar */
+  .leaflet-control-zoom { margin-bottom:calc(var(--tl-height, 170px) + 90px) !important; margin-right:12px !important; }
 }
 </style>
 </head>
@@ -621,6 +621,7 @@ function startRun(lat, lng, name) {
   setTimeout(() => {
     document.getElementById('tl-slider').value = 2025;
     drawHistCircle(2025);
+    updateTimelineOffset();
   }, 1500);
 }
 
@@ -787,6 +788,18 @@ document.querySelectorAll('.ctrl-btn').forEach(btn=>btn.addEventListener('click'
   document.querySelectorAll('.ctrl-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
 }));
+
+// Measure the timeline height and keep --tl-height in sync so mobile-bar and zoom sit correctly above it
+function updateTimelineOffset() {
+  if (window.innerWidth > 600) return;
+  const tl = document.getElementById('timeline');
+  if (!tl || tl.style.display === 'none') return;
+  const h = tl.offsetHeight;
+  if (h > 0) document.documentElement.style.setProperty('--tl-height', h + 'px');
+}
+window.addEventListener('resize', updateTimelineOffset);
+new MutationObserver(updateTimelineOffset)
+  .observe(document.getElementById('timeline'), { attributes: true, attributeFilter: ['style'] });
 
 // Ken Burns
 setTimeout(()=>{ const bg=document.getElementById('splash-bg'); if(bg) bg.style.transform='scale(1.0)'; },100);
