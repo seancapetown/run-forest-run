@@ -311,7 +311,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   }
   #pin-box-header { padding:24px 20px 16px !important; }
   #pin-box-search { padding:12px 20px !important; }
-  #pin-box-footer { padding:10px 20px 32px !important; }
+  #pin-box-footer { padding:10px 20px calc(16px + env(safe-area-inset-bottom, 0px)) !important; }
   #pin-title { font-size:20px !important; }
   #pin-sub { font-size:12px !important; }
   #search-inp { font-size:16px !important; } /* prevents iOS zoom */
@@ -324,8 +324,8 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   .sat-stat-value { font-size:20px; }
   .sat-stat-label { font-size:7px; }
 
-  /* ZOOM — above timeline + mobile bar */
-  .leaflet-control-zoom { margin-bottom:calc(var(--tl-height, 170px) + 90px) !important; margin-right:12px !important; }
+  /* ZOOM — position handled by JS on mobile, just remove margin */
+  .leaflet-control-zoom { margin-bottom:0 !important; margin-right:12px !important; }
 }
 </style>
 </head>
@@ -500,7 +500,8 @@ async function fetchClippedCircle(lat, lng, radiusKm) {
 
 function initMap() {
   map = L.map('map', { center:[20,0], zoom:3, zoomControl:false });
-  L.control.zoom({ position:'bottomright' }).addTo(map);
+  const zoomPos = window.innerWidth <= 600 ? 'topleft' : 'bottomright';
+  L.control.zoom({ position: zoomPos }).addTo(map);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom:19 }).addTo(map);
   runnerEl = document.getElementById('runner');
   map.on('moveend zoomend', onMapMove);
@@ -789,7 +790,7 @@ document.querySelectorAll('.ctrl-btn').forEach(btn=>btn.addEventListener('click'
   btn.classList.add('active');
 }));
 
-// Measure the timeline height and keep --tl-height in sync so mobile-bar and zoom sit correctly above it
+// Keep --tl-height in sync so mobile-bar sits flush above the timeline
 function updateTimelineOffset() {
   if (window.innerWidth > 600) return;
   const tl = document.getElementById('timeline');
@@ -799,7 +800,7 @@ function updateTimelineOffset() {
 }
 window.addEventListener('resize', updateTimelineOffset);
 new MutationObserver(updateTimelineOffset)
-  .observe(document.getElementById('timeline'), { attributes: true, attributeFilter: ['style'] });
+  .observe(document.getElementById('timeline'), { attributes:true, attributeFilter:['style'] });
 
 // Ken Burns
 setTimeout(()=>{ const bg=document.getElementById('splash-bg'); if(bg) bg.style.transform='scale(1.0)'; },100);
