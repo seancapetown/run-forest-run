@@ -308,21 +308,21 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 
 <div id="pin-screen">
   <div id="pin-box">
-    <div id="satellite-overlay">
-      <div class="spinner"></div>
-      <h3>Gathering live satellite data</h3>
-      <p>Querying Global Forest Watch<br>Integrated Deforestation Alerts<br>3-8 day satellite lag</p>
+    <div id="pin-box-header">
+      <div id="pin-title">Where do you live?</div>
+      <div id="pin-sub">Pin your location. See today's Amazon clearing on streets you know.</div>
     </div>
-    <div id="pin-title">Where do you live?</div>
-    <div id="pin-sub">Every day ~30 km² of Amazon forest disappears.<br>Pin your location. See that scale on streets you know.</div>
-    <div id="search-row">
-      <input id="search-inp" placeholder="Search your city or neighbourhood…" autocomplete="off"/>
-      <button id="search-btn">Search</button>
+    <div id="pin-box-search">
+      <div id="search-row">
+        <input id="search-inp" placeholder="Search your city or neighbourhood…" autocomplete="off"/>
+        <button id="search-btn">Search</button>
+      </div>
+      <div id="search-results"></div>
     </div>
-    <div id="search-results"></div>
-    <button id="geo-btn">📍 Use my current location</button>
-    <div id="pin-err"></div>
-
+    <div id="pin-box-footer">
+      <button id="geo-btn">📍 Use my current location</button>
+      <div id="pin-err"></div>
+    </div>
   </div>
 </div>
 
