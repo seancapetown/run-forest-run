@@ -273,7 +273,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   #mobile-bar {
     position:fixed; bottom:var(--tl-height, 170px); left:0; right:0; z-index:500;
     display:none;
-    padding:10px 16px 8px;
+    padding:10px 16px 6px;
     background:linear-gradient(to top, rgba(8,14,8,.98) 0%, rgba(8,14,8,.6) 70%, transparent 100%);
     pointer-events:none;
   }
@@ -302,16 +302,16 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   #tl-info { font-size:8px; white-space:normal; }
   #tl-toggle { flex-shrink:0; }
 
-  /* PIN SCREEN — bottom sheet on mobile */
-  #pin-screen { align-items:flex-end !important; background:rgba(0,0,0,.6) !important; }
+  #pin-screen { align-items:flex-end !important; justify-content:flex-end !important; background:rgba(0,0,0,.6) !important; }
   #pin-box {
     width:100% !important; max-width:100% !important;
     border-radius:20px 20px 0 0 !important;
     box-shadow:0 -8px 40px rgba(0,0,0,.5) !important;
+    margin-bottom:0 !important;
   }
   #pin-box-header { padding:24px 20px 16px !important; }
   #pin-box-search { padding:12px 20px !important; }
-  #pin-box-footer { padding:10px 20px calc(16px + env(safe-area-inset-bottom, 0px)) !important; }
+  #pin-box-footer { padding:10px 20px calc(env(safe-area-inset-bottom, 0px) + 16px) !important; }
   #pin-title { font-size:20px !important; }
   #pin-sub { font-size:12px !important; }
   #search-inp { font-size:16px !important; } /* prevents iOS zoom */
@@ -324,8 +324,9 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   .sat-stat-value { font-size:20px; }
   .sat-stat-label { font-size:7px; }
 
-  /* ZOOM — position handled by JS on mobile, just remove margin */
-  .leaflet-control-zoom { margin-bottom:0 !important; margin-right:12px !important; }
+  /* ZOOM — top-left on mobile, nudged down from status bar */
+  .leaflet-top.leaflet-left { top: 56px !important; left: 10px !important; }
+  .leaflet-control-zoom { margin:0 !important; }
 }
 </style>
 </head>
