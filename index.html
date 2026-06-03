@@ -302,6 +302,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   #tl-info { font-size:8px; white-space:normal; }
   #tl-toggle { flex-shrink:0; }
 
+  /* PIN SCREEN — bottom sheet on mobile */
   #pin-screen { align-items:flex-end !important; justify-content:flex-end !important; background:rgba(0,0,0,.6) !important; }
   #pin-box {
     width:100% !important; max-width:100% !important;
@@ -324,10 +325,43 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   .sat-stat-value { font-size:20px; }
   .sat-stat-label { font-size:7px; }
 
-  /* ZOOM — top-left on mobile, nudged down from status bar */
-  .leaflet-top.leaflet-left { top: 56px !important; left: 10px !important; }
+  /* ZOOM — top-left on mobile, clear of status bar */
+  .leaflet-top.leaflet-left { top:56px !important; left:10px !important; }
   .leaflet-control-zoom { margin:0 !important; }
+
+  /* CIRCLE LEGEND — sits above mobile-bar */
+  #circle-legend {
+    bottom:calc(var(--tl-height, 170px) + 70px);
+    left:16px !important; right:16px !important;
+    transform:none !important;
+    width:auto !important;
+  }
 }
+/* CIRCLE LEGEND — auto-dismiss tooltip */
+#circle-legend {
+  position:fixed; left:50%; transform:translateX(-50%);
+  z-index:300; pointer-events:none;
+  background:rgba(8,14,8,.82);
+  border:0.5px solid rgba(74,122,42,.25);
+  padding:10px 16px 10px 14px;
+  display:none;
+  gap:10px;
+  flex-direction:column;
+  opacity:0;
+  transition:opacity .5s ease;
+  white-space:nowrap;
+}
+.cl-row { display:flex; align-items:center; gap:9px; }
+.cl-swatch { flex-shrink:0; width:28px; height:2px; }
+.cl-swatch-solid { background:#c8531a; }
+.cl-swatch-dash {
+  background:transparent;
+  border-top:2px dashed #8b1a1a;
+}
+.cl-text { font-size:10px; color:var(--parch); letter-spacing:.06em; }
+.cl-text span { color:var(--data); font-size:9px; margin-left:4px; }
+
+@keyframes spin { to { transform:rotate(360deg); } }
 </style>
 </head>
 <body>
@@ -442,6 +476,17 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   <div id="mobile-km2">—<span>km²</span></div>
   <div id="mobile-label">Cleared today in the Amazon</div>
   <div id="mobile-source"></div>
+</div>
+
+<div id="circle-legend">
+  <div class="cl-row">
+    <div class="cl-swatch cl-swatch-solid"></div>
+    <div class="cl-text">Today's clearing <span>live estimate</span></div>
+  </div>
+  <div class="cl-row">
+    <div class="cl-swatch cl-swatch-dash"></div>
+    <div class="cl-text">Cumulative since 1972 <span>drag to explore</span></div>
+  </div>
 </div>
 
 <div id="runner">
@@ -624,6 +669,7 @@ function startRun(lat, lng, name) {
     document.getElementById('tl-slider').value = 2025;
     drawHistCircle(2025);
     updateTimelineOffset();
+    showCircleLegend();
   }, 1500);
 }
 
@@ -791,7 +837,7 @@ document.querySelectorAll('.ctrl-btn').forEach(btn=>btn.addEventListener('click'
   btn.classList.add('active');
 }));
 
-// Keep --tl-height in sync so mobile-bar sits flush above the timeline
+// Keep --tl-height in sync so mobile-bar and legend sit correctly above the timeline
 function updateTimelineOffset() {
   if (window.innerWidth > 600) return;
   const tl = document.getElementById('timeline');
@@ -802,6 +848,21 @@ function updateTimelineOffset() {
 window.addEventListener('resize', updateTimelineOffset);
 new MutationObserver(updateTimelineOffset)
   .observe(document.getElementById('timeline'), { attributes:true, attributeFilter:['style'] });
+
+// Circle legend — appears once per session, auto-dismisses after 4s
+let legendShown = false;
+function showCircleLegend() {
+  if (legendShown) return;
+  legendShown = true;
+  const el = document.getElementById('circle-legend');
+  if (!el) return;
+  el.style.display = 'flex';
+  requestAnimationFrame(() => requestAnimationFrame(() => { el.style.opacity = '1'; }));
+  setTimeout(() => {
+    el.style.opacity = '0';
+    setTimeout(() => { el.style.display = 'none'; }, 600);
+  }, 4000);
+}
 
 // Ken Burns
 setTimeout(()=>{ const bg=document.getElementById('splash-bg'); if(bg) bg.style.transform='scale(1.0)'; },100);
