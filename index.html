@@ -21,7 +21,8 @@
   --mono:   'IBM Plex Mono', monospace;
 }
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-html, body { height:100%; background:var(--night); color:var(--parch); font-family:var(--mono); overflow:hidden; }
+html, body { height:100%; min-height:100vh; background:var(--night); color:var(--parch); font-family:var(--mono); overflow:hidden; }
+#map { height:100% !important; }
 
 #map { position:fixed; inset:0; z-index:0; }
 .leaflet-tile { filter:saturate(0.15) brightness(0.32) sepia(0.3); }
