@@ -232,10 +232,10 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 
   /* MOBILE STATS BAR — single number, full width, above timeline */
   #mobile-bar {
-    position:fixed; bottom:170px; left:0; right:0; z-index:500;
+    position:fixed; bottom:155px; left:0; right:0; z-index:500;
     display:none;
-    padding:10px 16px;
-    background:linear-gradient(to top, rgba(8,14,8,.95) 0%, transparent 100%);
+    padding:10px 16px 6px;
+    background:linear-gradient(to top, rgba(8,14,8,.98) 0%, rgba(8,14,8,.6) 70%, transparent 100%);
     pointer-events:none;
   }
   #mobile-km2 {
@@ -252,9 +252,10 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
     width:100% !important; max-width:100% !important;
     transform:none !important;
     border-radius:0 !important;
-    border-left:none !important; border-right:none !important; border-bottom:none !important;
-    padding:12px 16px 24px !important;
+    border:none !important;
+    padding:12px 16px env(safe-area-inset-bottom, 16px) !important;
     box-sizing:border-box !important;
+    margin:0 !important;
   }
   #tl-top { flex-wrap:wrap; gap:6px; }
   #tl-year { font-size:16px; min-width:38px; }
@@ -483,8 +484,10 @@ function contextText(km2, rad, name) {
 
 function updateRunnerPos(lat, lng) {
   const pt = map.latLngToContainerPoint([lat, lng]);
-  runnerEl.style.left = pt.x + 'px';
-  runnerEl.style.top = pt.y + 'px';
+  const mapEl = document.getElementById('map');
+  const rect = mapEl.getBoundingClientRect();
+  runnerEl.style.left = (rect.left + pt.x) + 'px';
+  runnerEl.style.top = (rect.top + pt.y) + 'px';
   runnerEl.style.display = 'flex';
 }
 
@@ -682,15 +685,23 @@ function hideSplash() {
   s.style.opacity = '0';
   setTimeout(() => {
     s.style.display = 'none';
+    // Show pin screen first so white card is visible
     showPinScreen();
-    // Show overlay blocking search until data is ready
+    // Then show overlay on top
     const overlay = document.getElementById('satellite-overlay');
-    if (overlay) overlay.style.display = 'flex';
+    if (overlay) {
+      overlay.style.display = 'flex';
+      overlay.style.opacity = '1';
+    }
     fetchDailyRate().then(() => {
       if (overlay) {
+        overlay.style.transition = 'opacity .6s ease';
         overlay.style.opacity = '0';
-        overlay.style.transition = 'opacity .4s';
-        setTimeout(() => { overlay.style.display = 'none'; overlay.style.opacity = ''; }, 400);
+        setTimeout(() => {
+          overlay.style.display = 'none';
+          overlay.style.opacity = '';
+          overlay.style.transition = '';
+        }, 600);
       }
     });
   }, 800);
