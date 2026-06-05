@@ -1,7 +1,9 @@
-const https = require('https');
+module.exports.config = { maxDuration: 30 };
 
-// Allow up to 60 seconds for GFW satellite data query
-module.exports.config = { maxDuration: 60 };
+const AMAZON_BBOX = {
+  type: 'Polygon',
+  coordinates: [[[-73,-18],[-44,-18],[-44,5],[-73,5],[-73,-18]]]
+};
 
 const ANNUAL_LOSS = {
   1972:11000,1973:11500,1974:12000,1975:13000,1976:14000,1977:15000,1978:16000,1979:17000,1980:18000,1981:20000,
@@ -12,108 +14,53 @@ const ANNUAL_LOSS = {
   2022:11568,2023:9001,2024:9500,2025:9712
 };
 
-// Amazon bounding box
-const AMAZON_GEOMETRY = {
-  type: 'Polygon',
-  coordinates: [[[-73,-18],[-44,-18],[-44,5],[-73,5],[-73,-18]]]
-};
-
-function getDateDaysAgo(days) {
+function daysAgo(n) {
   const d = new Date();
-  d.setDate(d.getDate() - days);
+  d.setDate(d.getDate() - n);
   return d.toISOString().slice(0, 10);
 }
 
-function queryGFW(apiKey, sql, geometry) {
-  return new Promise((resolve, reject) => {
-    const body = JSON.stringify({ sql, geometry });
-    const options = {
-      hostname: 'data-api.globalforestwatch.org',
-      path: '/dataset/gfw_integrated_alerts/latest/query/json',
-      method: 'POST',
-      headers: {
-        'x-api-key': apiKey,
-        'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(body),
-        'User-Agent': 'RunForestRun/1.0'
-      }
-    };
-
-    const req = https.request(options, (res) => {
-      // Follow redirect if needed
-      if ([301,302,307,308].includes(res.statusCode) && res.headers.location) {
-        const redirectPath = res.headers.location;
-        const redirectOptions = {
-          hostname: 'data-api.globalforestwatch.org',
-          path: redirectPath,
-          method: 'POST',
-          headers: {
-            'x-api-key': apiKey,
-            'Content-Type': 'application/json',
-            'Content-Length': Buffer.byteLength(body),
-            'User-Agent': 'RunForestRun/1.0'
-          }
-        };
-        const req2 = https.request(redirectOptions, (res2) => {
-          let data = '';
-          res2.on('data', c => data += c);
-          res2.on('end', () => {
-            try { resolve({ status: res2.statusCode, body: JSON.parse(data) }); }
-            catch(e) { reject(new Error('Parse error: ' + data.slice(0,200))); }
-          });
-        });
-        req2.on('error', reject);
-        req2.write(body);
-        req2.end();
-        return;
-      }
-
-      let data = '';
-      res.on('data', c => data += c);
-      res.on('end', () => {
-        try { resolve({ status: res.statusCode, body: JSON.parse(data) }); }
-        catch(e) { reject(new Error('Parse error: ' + data.slice(0,200))); }
-      });
-    });
-    req.on('error', reject);
-    req.write(body);
-    req.end();
-  });
-}
-
-function getFallback() {
-  // Based on Aug 2025-Mar 2026 INPE/Imazon data: 1,460 km² over 8 months
+function fallback() {
   return {
     source: 'INPE/Imazon 2025-2026 annual average (GFW unavailable)',
     estimated_area_km2: 6.1,
     data_period: 'Aug 2025 - Mar 2026',
-    alerts: []
+    annual_loss: ANNUAL_LOSS
   };
 }
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Cache-Control', 's-maxage=3600'); // cache for 1 hour
+  res.setHeader('Cache-Control', 's-maxage=3600');
 
   const apiKey = process.env.GFW_API_KEY;
-  if (!apiKey) {
-    return res.status(200).json({ ...getFallback(), annual_loss: ANNUAL_LOSS });
-  }
+  if (!apiKey) return res.status(200).json(fallback());
 
   try {
-    // Query total hectares cleared in the last 30 days over the Amazon
-    const since = getDateDaysAgo(30);
-    const sql = `SELECT SUM(area__ha) as total_ha FROM results WHERE gfw_integrated_alerts__date >= '${since}'`;
+    const since = daysAgo(30);
+    const body = JSON.stringify({
+      sql: `SELECT SUM(area__ha) as total_ha FROM results WHERE gfw_integrated_alerts__date >= '${since}'`,
+      geometry: AMAZON_BBOX
+    });
 
-    const { status, body } = await queryGFW(apiKey, sql, AMAZON_GEOMETRY);
+    const response = await fetch('https://data-api.globalforestwatch.org/dataset/gfw_integrated_alerts/latest/query/json', {
+      method: 'POST',
+      headers: {
+        'x-api-key': apiKey,
+        'Content-Type': 'application/json'
+      },
+      body,
+      redirect: 'follow',
+      signal: AbortSignal.timeout(25000)
+    });
 
-    if (status !== 200 || !body.data || !body.data[0]) {
-      return res.status(200).json({ ...getFallback(), annual_loss: ANNUAL_LOSS, gfw_status: status });
-    }
+    if (!response.ok) return res.status(200).json({ ...fallback(), gfw_status: response.status });
 
-    const totalHa = body.data[0].total_ha || 0;
-    const totalKm2 = totalHa / 100; // hectares to km²
-    const dailyKm2 = totalKm2 / 30; // average daily over the period
+    const data = await response.json();
+    if (!data.data?.[0]?.total_ha) return res.status(200).json(fallback());
+
+    const totalKm2 = data.data[0].total_ha / 100;
+    const dailyKm2 = totalKm2 / 30;
 
     return res.status(200).json({
       source: 'GFW Integrated Deforestation Alerts · Satellite data · 3-8 day lag',
@@ -124,6 +71,6 @@ module.exports = async function handler(req, res) {
     });
 
   } catch(e) {
-    return res.status(200).json({ ...getFallback(), annual_loss: ANNUAL_LOSS, error: e.message });
+    return res.status(200).json({ ...fallback(), error: e.message });
   }
 };
