@@ -5,26 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light">
 <title>Run Forest Run · The forest is running out</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
 
 <!-- SEO -->
 <meta name="description" content="See today's Amazon deforestation visualised on streets you know. Real satellite data. Updated daily.">
-
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://runforestrun.earth">
 <meta property="og:title" content="Run Forest Run · The forest is running out">
 <meta property="og:description" content="See today's Amazon deforestation visualised on streets you know. Real satellite data. Updated daily.">
 <meta property="og:image" content="https://runforestrun.earth/og-image.png">
-
 <!-- Twitter/X -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:url" content="https://runforestrun.earth">
 <meta name="twitter:title" content="Run Forest Run · The forest is running out">
 <meta name="twitter:description" content="See today's Amazon deforestation visualised on streets you know. Real satellite data. Updated daily.">
 <meta name="twitter:image" content="https://runforestrun.earth/og-image.png">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.5.0/turf.min.js"></script>
@@ -41,9 +39,7 @@
 }
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 html, body { height:100%; min-height:100vh; background:var(--night); color:var(--parch); font-family:var(--mono); overflow:hidden; }
-#map { height:100% !important; }
-
-#map { position:fixed; inset:0; z-index:0; }
+#map { position:fixed; inset:0; z-index:0; height:100% !important; }
 .leaflet-tile { filter:saturate(0.15) brightness(0.32) sepia(0.3); }
 .leaflet-container { background:var(--night); }
 .leaflet-control-attribution { background:rgba(8,14,8,.8)!important; color:var(--dim)!important; font-size:7px; }
@@ -98,32 +94,19 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   width:90%; max-width:420px;
   display:flex; flex-direction:column;
   background:#ffffff !important;
-  border-radius:20px;
-  overflow:hidden;
+  border-radius:20px; overflow:hidden;
   box-shadow:0 32px 80px rgba(0,0,0,.5);
   color-scheme:light;
 }
-#pin-box-header {
-  padding:28px 24px 20px;
-  background:#ffffff !important;
-  border-bottom:1px solid #e5e5e5;
-}
-#pin-title {
-  font-family:var(--display); font-size:22px;
-  color:#000000 !important; line-height:1.2; font-weight:700; margin-bottom:6px;
-}
-#pin-sub { font-size:12px; color:#666666 !important; line-height:1.6; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif !important; }
+#pin-box-header { padding:28px 24px 20px; background:#ffffff !important; border-bottom:1px solid #e5e5e5; }
+#pin-title { font-family:var(--display); font-size:22px; color:#000000 !important; line-height:1.2; font-weight:700; margin-bottom:6px; }
+#pin-sub { font-size:12px; color:#666666 !important; line-height:1.6; font-family:-apple-system,BlinkMacSystemFont,sans-serif !important; }
 #pin-box-search { padding:16px 24px; background:#ffffff !important; }
-#search-row {
-  display:flex; align-items:center;
-  background:#f2f2f7 !important; border-radius:12px;
-  padding:0 14px; gap:8px;
-}
+#search-row { display:flex; align-items:center; background:#f2f2f7 !important; border-radius:12px; padding:0 14px; gap:8px; }
 #search-inp {
   flex:1; background:transparent !important; border:none;
   color:#000000 !important; font-family:-apple-system,sans-serif;
-  font-size:16px; padding:12px 0; outline:none;
-  -webkit-appearance:none;
+  font-size:16px; padding:12px 0; outline:none; -webkit-appearance:none;
 }
 #search-inp::placeholder { color:#999999 !important; }
 #search-btn { display:none; }
@@ -135,244 +118,41 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   cursor:pointer; display:flex; align-items:center; gap:10px;
   background:#ffffff !important;
 }
-.result::before {
-  content:''; width:6px; height:6px;
-  border-radius:50%; background:#c8531a; flex-shrink:0;
-}
+.result::before { content:''; width:6px; height:6px; border-radius:50%; background:#c8531a; flex-shrink:0; }
 .result:active { background:#f5f5f5 !important; }
 #pin-box-footer { padding:12px 24px 20px; background:#ffffff !important; }
 #geo-btn {
   display:flex; align-items:center; gap:8px;
   background:none !important; border:none;
   color:#c8531a !important; font-family:-apple-system,sans-serif;
-  font-size:15px; cursor:pointer; padding:4px 0; width:100%;
-  -webkit-appearance:none;
+  font-size:15px; cursor:pointer; padding:4px 0; width:100%; -webkit-appearance:none;
 }
-#pin-err {
-  font-size:11px; color:#c8531a !important; min-height:14px;
-  font-family:-apple-system,sans-serif; padding-top:6px;
-}
+#pin-err { font-size:11px; color:#c8531a !important; min-height:14px; font-family:-apple-system,sans-serif; padding-top:6px; }
 
-/* UI ELEMENTS — all above map */
-#hdr { position:fixed; top:0; left:0; right:0; z-index:100; padding:14px 20px 10px; background:linear-gradient(to bottom, rgba(8,14,8,.95) 60%, transparent); display:none; pointer-events:none; }
-/* LOCATION PILL — combined place name + change pin action */
+/* HEADER */
+#hdr {
+  position:fixed; top:0; left:0; right:0; z-index:200;
+  padding:14px 20px 10px;
+  background:linear-gradient(to bottom, rgba(8,14,8,.95) 60%, transparent);
+  display:none; pointer-events:none;
+}
+#hdr-inner { display:flex; align-items:center; gap:12px; pointer-events:all; }
+#hdr-wm { display:flex; gap:5px; align-items:baseline; }
+#hdr-wm span { font-family:var(--display); font-size:18px; line-height:1; }
+#hdr-tag { font-size:8px; letter-spacing:.16em; text-transform:uppercase; color:var(--dim); margin-top:2px; }
+
+/* LOCATION PILL */
 #location-pill {
   display:none; align-items:center; gap:8px;
-  background:rgba(8,14,8,.7);
-  border:0.5px solid rgba(232,220,200,.15);
-  padding:6px 12px 6px 10px;
-  cursor:pointer; transition:all .2s;
-  pointer-events:all;
+  background:rgba(8,14,8,.7); border:0.5px solid rgba(232,220,200,.15);
+  padding:6px 12px 6px 10px; cursor:pointer; transition:all .2s; pointer-events:all;
 }
 #location-pill:hover { background:rgba(200,83,26,.15); border-color:rgba(200,83,26,.4); }
 #location-pill svg { flex-shrink:0; width:10px; height:10px; stroke:var(--burn); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
 #location-pill-name { font-family:var(--mono); font-size:9px; color:var(--parch); letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:120px; }
 #location-pill-action { font-family:var(--mono); font-size:9px; color:var(--parch); letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; border-left:0.5px solid rgba(232,220,200,.15); padding-left:8px; margin-left:2px; }
 
-#hdr-inner { display:flex; align-items:center; gap:12px; }
-#hdr-wm { display:flex; gap:5px; align-items:baseline; }
-#hdr-wm span { font-family:var(--display); font-size:18px; line-height:1; }
-#hdr-tag { font-size:8px; letter-spacing:.16em; text-transform:uppercase; color:var(--dim); margin-top:2px; }
-
-#stats { position:fixed; top:58px; left:0; z-index:100; display:none; pointer-events:none; padding:12px 20px 14px; background:linear-gradient(to right, rgba(8,14,8,.85) 70%, transparent); }
-#stats-inner { display:flex; gap:28px; align-items:flex-end; }
-.s-col { display:flex; flex-direction:column; }
-.s-value { font-size:26px; font-weight:300; color:var(--parch); line-height:1; }
-.s-unit { font-size:9px; color:var(--data); margin-left:2px; }
-.s-label { font-size:7px; letter-spacing:.14em; text-transform:uppercase; color:var(--data); margin-top:3px; }
-#s-ctx { font-size:10px; color:rgba(200,200,170,.8); letter-spacing:.03em; line-height:1.4; margin-top:8px; max-width:340px; }
-#s-source { font-size:8px; color:rgba(200,200,170,.35); letter-spacing:.03em; margin-top:3px; max-width:340px; }
-
-#clock-block { position:fixed; top:72px; right:20px; z-index:100; text-align:right; display:none; pointer-events:none; }
-#clock { font-size:26px; font-weight:300; color:var(--parch); letter-spacing:.06em; }
-#date-str { font-size:8px; color:var(--dim); letter-spacing:.1em; text-transform:uppercase; margin-top:2px; }
-#loc-name { font-size:9px; color:#8aaa7a; margin-top:4px; font-style:italic; }
-
-#ctx-bar { display:none !important; }
-#info-panel { display:none !important; }
-
-/* CONTEXT LINE — inside timeline panel */
-/* context line lives in stats block as #s-ctx */
-
-/* PROGRESS — removed, clock handles time context */
-#progress { display:none !important; }
-
-/* SPEED CONTROLS — removed, moved into timeline panel */
-#controls { display:none !important; }
-
-#repin { display:none !important; }
-
-/* SPEED TOGGLE inside timeline */
-#tl-speed { background:none; border:0.5px solid rgba(74,122,42,.3); color:var(--data); font-family:var(--mono); font-size:9px; padding:4px 10px; cursor:pointer; letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; transition:all .2s; }
-#tl-speed:hover { background:rgba(74,122,42,.15); }
-
-/* TIMELINE */
-#timeline {
-  position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
-  z-index:100; display:none;
-  background:rgba(8,14,8,.92); border:0.5px solid rgba(74,122,42,.25);
-  padding:14px 20px; width:90%; max-width:560px; text-align:center;
-}
-#tl-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
-#tl-heading { font-size:8px; letter-spacing:.16em; text-transform:uppercase; color:var(--dim); }
-#tl-toggle { display:flex; }
-.tl-mode { background:none; border:0.5px solid rgba(74,122,42,.25); color:var(--dim); font-family:var(--mono); font-size:8px; padding:3px 10px; cursor:pointer; letter-spacing:.08em; text-transform:uppercase; }
-.tl-mode:first-child { border-right:none; }
-.tl-mode.active { background:rgba(200,83,26,.2); border-color:rgba(200,83,26,.5); color:var(--burn); }
-#tl-controls { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
-#tl-slider {
-  flex:1; -webkit-appearance:none;
-  height:4px; background:rgba(74,122,42,.3);
-  outline:none; cursor:pointer; border-radius:2px;
-}
-#tl-slider::-webkit-slider-thumb {
-  -webkit-appearance:none; width:16px; height:16px;
-  border-radius:50%; background:var(--burn);
-  cursor:pointer; border:2px solid rgba(8,14,8,.8);
-  box-shadow:0 0 6px rgba(200,83,26,.5);
-}
-#tl-year { font-family:var(--display); font-size:20px; color:var(--parch); min-width:44px; }
-#tl-play-btn { background:none; border:0.5px solid rgba(74,122,42,.3); color:var(--data); font-family:var(--mono); font-size:9px; padding:4px 10px; cursor:pointer; letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; }
-#tl-play-btn:hover { background:rgba(74,122,42,.15); }
-#tl-info { font-size:9px; color:var(--burn); letter-spacing:.06em; line-height:1.5; }
-
-/* INFO PANEL — removed, legend lives in timeline */
-
-/* SATELLITE DATA OVERLAY */
-#satellite-overlay {
-  position:fixed; inset:0; z-index:950;
-  background:#000;
-  display:none; flex-direction:column;
-  align-items:center; justify-content:center; gap:24px;
-  padding:40px 24px;
-}
-#satellite-overlay .spinner {
-  width:28px; height:28px;
-  border:2px solid rgba(74,122,42,.2);
-  border-top-color:var(--living);
-  border-radius:50%;
-  animation:spin .8s linear infinite;
-}
-#satellite-overlay h3 {
-  font-family:var(--display); font-size:16px;
-  color:var(--parch); font-weight:700; text-align:center;
-}
-#satellite-overlay p {
-  font-size:9px; color:var(--data);
-  letter-spacing:.12em; text-transform:uppercase;
-  text-align:center; line-height:1.8;
-}
-
-/* DATA LOADING */
-#data-loading {
-  display:none; align-items:center; justify-content:center;
-  gap:10px; padding:10px 0;
-}
-#data-loading .spinner {
-  width:12px; height:12px;
-  border:1.5px solid rgba(74,122,42,.2);
-  border-top-color:var(--living);
-  border-radius:50%;
-  animation:spin .8s linear infinite;
-  flex-shrink:0;
-}
-#data-loading span {
-  font-size:9px; color:var(--data);
-  letter-spacing:.12em; text-transform:uppercase;
-}
-
-/* RUNNER */
-#runner { position:fixed; z-index:201; pointer-events:none; transform:translate(-50%,-50%); display:none; flex-direction:column; align-items:center; }
-#runner-label { font-family:var(--display); font-size:8px; color:var(--parch); white-space:nowrap; margin-top:2px; text-shadow:0 0 10px #000, 0 0 20px #000; }
-
-@media (max-width:600px) {
-  /* SPLASH */
-  #splash { padding:32px 24px; }
-  .sw { font-size:clamp(44px,16vw,80px); }
-
-  /* HIDE everything that clutters mobile */
-  #clock-block { display:none !important; }
-  #stats { display:none !important; }
-  #info-panel { display:none !important; }
-  #ctx-bar { display:none !important; }
-  #progress { display:none !important; }
-  #controls { display:none !important; }
-  #repin { display:none !important; }
-
-  /* HEADER — minimal */
-  #hdr { padding:10px 14px 8px; }
-  #hdr-wm span { font-size:14px; }
-  #hdr-tag { font-size:7px; }
-
-  /* MOBILE STATS BAR — single number, full width, above timeline */
-  #mobile-bar {
-    position:fixed; bottom:var(--tl-height, 170px); left:0; right:0; z-index:500;
-    display:none;
-    padding:10px 16px 6px;
-    background:linear-gradient(to top, rgba(8,14,8,.98) 0%, rgba(8,14,8,.6) 70%, transparent 100%);
-    pointer-events:none;
-  }
-  #mobile-km2 {
-    font-family:var(--display); font-size:36px; font-weight:700;
-    color:var(--parch); line-height:1;
-  }
-  #mobile-km2 span { font-size:13px; color:var(--data); margin-left:4px; }
-  #mobile-label { font-size:9px; color:var(--data); letter-spacing:.12em; text-transform:uppercase; margin-top:3px; }
-  #mobile-source { font-size:8px; color:rgba(200,200,170,.4); margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-
-  /* TIMELINE — full width, bottom */
-  #timeline {
-    bottom:0 !important; left:0 !important; right:0 !important;
-    width:100% !important; max-width:100% !important;
-    transform:none !important;
-    border-radius:0 !important;
-    border:none !important;
-    padding:12px 16px env(safe-area-inset-bottom, 16px) !important;
-    box-sizing:border-box !important;
-    margin:0 !important;
-  }
-  #tl-top { flex-wrap:wrap; gap:6px; }
-  #tl-year { font-size:16px; min-width:38px; }
-  #tl-heading { font-size:7px; }
-  #tl-info { font-size:8px; white-space:normal; }
-  #tl-toggle { flex-shrink:0; }
-
-  /* PIN SCREEN — bottom sheet on mobile */
-  #pin-screen { align-items:flex-end !important; justify-content:flex-end !important; background:rgba(0,0,0,.6) !important; }
-  #pin-box {
-    width:100% !important; max-width:100% !important;
-    border-radius:20px 20px 0 0 !important;
-    box-shadow:0 -8px 40px rgba(0,0,0,.5) !important;
-    margin-bottom:0 !important;
-  }
-  #pin-box-header { padding:24px 20px 16px !important; }
-  #pin-box-search { padding:12px 20px !important; }
-  #pin-box-footer { padding:10px 20px calc(env(safe-area-inset-bottom, 0px) + 16px) !important; }
-  #pin-title { font-size:20px !important; }
-  #pin-sub { font-size:12px !important; }
-  #search-inp { font-size:16px !important; } /* prevents iOS zoom */
-  .result { font-size:14px !important; padding:12px 20px !important; }
-  #search-results { max-height:200px !important; }
-
-  /* SATELLITE OVERLAY */
-  #sat-title { font-size:clamp(20px,6vw,28px); }
-  #sat-data { gap:24px; }
-  .sat-stat-value { font-size:20px; }
-  .sat-stat-label { font-size:7px; }
-
-  /* ZOOM — top-left on mobile, clear of status bar */
-  .leaflet-top.leaflet-left { top:56px !important; left:10px !important; }
-  .leaflet-control-zoom { margin:0 !important; }
-}
-
-#tl-legend { display:flex; gap:16px; margin-bottom:10px; }
-.tll-item { display:flex; align-items:center; gap:7px; }
-.tll-swatch { flex-shrink:0; width:20px; height:2px; }
-.tll-solid { background:#c8531a; }
-.tll-dash { background:transparent; border-top:2px dashed rgba(139,26,26,.9); }
-.tll-label { font-size:8px; color:var(--data); letter-spacing:.08em; text-transform:uppercase; }
-
-/* SHARE */
+/* SHARE BUTTON */
 #share-btn {
   position:fixed; top:12px; right:16px; z-index:200;
   display:none; align-items:center; gap:6px;
@@ -390,7 +170,152 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   letter-spacing:.1em; padding:6px 12px;
   opacity:0; transition:opacity .3s ease; pointer-events:none;
 }
+
+/* STATS — horizontal row, top left, with dark gradient bg */
+#stats {
+  position:fixed; top:62px; left:0; z-index:100;
+  display:none; pointer-events:none;
+  padding:10px 24px 16px;
+  background:linear-gradient(to bottom, rgba(8,14,8,.88) 0%, rgba(8,14,8,.7) 65%, transparent 100%),
+             linear-gradient(to right, rgba(8,14,8,.92) 75%, transparent 100%);
+}
+#stats-inner { display:flex; gap:28px; align-items:flex-end; }
+.s-col { display:flex; flex-direction:column; }
+.s-value { font-size:26px; font-weight:300; color:var(--parch); line-height:1; }
+.s-unit { font-size:9px; color:var(--data); margin-left:2px; }
+.s-label { font-size:7px; letter-spacing:.14em; text-transform:uppercase; color:var(--data); margin-top:3px; }
+#s-ctx { font-size:10px; color:rgba(200,200,170,.85); letter-spacing:.03em; line-height:1.4; margin-top:10px; max-width:380px; }
+#s-source { font-size:8px; color:rgba(200,200,170,.3); letter-spacing:.03em; margin-top:5px; max-width:380px; }
+
+/* CLOCK */
+#clock-block { position:fixed; top:62px; right:20px; z-index:100; text-align:right; display:none; pointer-events:none; }
+#clock { font-size:26px; font-weight:300; color:var(--parch); letter-spacing:.06em; }
+#date-str { font-size:8px; color:var(--dim); letter-spacing:.1em; text-transform:uppercase; margin-top:2px; }
+#loc-name { font-size:9px; color:#8aaa7a; margin-top:4px; font-style:italic; }
+
+/* TIMELINE */
+#timeline {
+  position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+  z-index:100; display:none;
+  background:rgba(8,14,8,.92); border:0.5px solid rgba(74,122,42,.25);
+  padding:14px 20px; width:90%; max-width:560px;
+}
+#tl-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+#tl-heading { font-size:8px; letter-spacing:.16em; text-transform:uppercase; color:var(--dim); }
+#tl-toggle { display:flex; }
+.tl-mode { background:none; border:0.5px solid rgba(74,122,42,.25); color:var(--dim); font-family:var(--mono); font-size:8px; padding:3px 10px; cursor:pointer; letter-spacing:.08em; text-transform:uppercase; }
+.tl-mode:first-child { border-right:none; }
+.tl-mode.active { background:rgba(200,83,26,.2); border-color:rgba(200,83,26,.5); color:var(--burn); }
+#tl-legend { display:flex; gap:16px; margin-bottom:10px; }
+.tll-item { display:flex; align-items:center; gap:7px; }
+.tll-swatch { flex-shrink:0; width:20px; height:2px; }
+.tll-solid { background:#c8531a; }
+.tll-dash { background:transparent; border-top:2px dashed rgba(139,26,26,.9); }
+.tll-label { font-size:8px; color:var(--data); letter-spacing:.08em; text-transform:uppercase; }
+#tl-controls { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+#tl-slider {
+  flex:1; -webkit-appearance:none;
+  height:4px; background:rgba(74,122,42,.3);
+  outline:none; cursor:pointer; border-radius:2px;
+}
+#tl-slider::-webkit-slider-thumb {
+  -webkit-appearance:none; width:16px; height:16px;
+  border-radius:50%; background:var(--burn);
+  cursor:pointer; border:2px solid rgba(8,14,8,.8);
+  box-shadow:0 0 6px rgba(200,83,26,.5);
+}
+#tl-year { font-family:var(--display); font-size:20px; color:var(--parch); min-width:44px; }
+#tl-play-btn { background:none; border:0.5px solid rgba(74,122,42,.3); color:var(--data); font-family:var(--mono); font-size:9px; padding:4px 10px; cursor:pointer; letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; }
+#tl-play-btn:hover { background:rgba(74,122,42,.15); }
+#tl-speed { background:none; border:0.5px solid rgba(74,122,42,.3); color:var(--data); font-family:var(--mono); font-size:9px; padding:4px 10px; cursor:pointer; letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; transition:all .2s; }
+#tl-speed:hover { background:rgba(74,122,42,.15); }
+#tl-info { font-size:9px; color:var(--burn); letter-spacing:.06em; line-height:1.5; }
+
+/* SATELLITE DATA OVERLAY */
+#satellite-overlay {
+  position:fixed; inset:0; z-index:950; background:#000;
+  display:none; flex-direction:column; align-items:center; justify-content:center; gap:24px; padding:40px 24px;
+}
+#satellite-overlay .spinner {
+  width:28px; height:28px; border:2px solid rgba(74,122,42,.2);
+  border-top-color:var(--living); border-radius:50%; animation:spin .8s linear infinite;
+}
+#satellite-overlay h3 { font-family:var(--display); font-size:16px; color:var(--parch); font-weight:700; text-align:center; }
+#satellite-overlay p { font-size:9px; color:var(--data); letter-spacing:.12em; text-transform:uppercase; text-align:center; line-height:1.8; }
+
+/* RUNNER */
+#runner { position:fixed; z-index:201; pointer-events:none; transform:translate(-50%,-50%); display:none; flex-direction:column; align-items:center; }
+#runner-label { font-family:var(--display); font-size:8px; color:var(--parch); white-space:nowrap; margin-top:2px; text-shadow:0 0 10px #000, 0 0 20px #000; }
+
+/* MOBILE STATS BAR */
+#mobile-bar {
+  position:fixed; bottom:var(--tl-height, 170px); left:0; right:0; z-index:500;
+  display:none; padding:10px 16px 8px;
+  background:linear-gradient(to top, rgba(8,14,8,.98) 0%, rgba(8,14,8,.6) 70%, transparent 100%);
+  pointer-events:none;
+}
+#mobile-km2 { font-family:var(--display); font-size:36px; font-weight:700; color:var(--parch); line-height:1; }
+#mobile-km2 span { font-size:13px; color:var(--data); margin-left:4px; }
+#mobile-label { font-size:9px; color:var(--data); letter-spacing:.12em; text-transform:uppercase; margin-top:3px; }
+#mobile-source { font-size:8px; color:rgba(200,200,170,.4); margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
 @keyframes spin { to { transform:rotate(360deg); } }
+
+/* ─── MOBILE ─────────────────────────────────────── */
+@media (max-width:600px) {
+  #splash { padding:32px 24px; }
+  .sw { font-size:clamp(44px,16vw,80px); }
+
+  /* Hide desktop elements */
+  #clock-block { display:none !important; }
+  #stats { display:none !important; }
+  #share-btn { display:none !important; }
+
+  /* Header */
+  #hdr { padding:10px 14px 8px; }
+  #hdr-wm span { font-size:14px; }
+  #hdr-tag { font-size:7px; }
+  #location-pill-action { display:none; }
+
+  /* Zoom — top left, below status bar */
+  .leaflet-top.leaflet-left { top:56px !important; left:10px !important; }
+  .leaflet-control-zoom { margin:0 !important; }
+
+  /* Pin screen — bottom sheet */
+  #pin-screen { align-items:flex-end !important; justify-content:flex-end !important; background:rgba(0,0,0,.6) !important; }
+  #pin-box {
+    width:100% !important; max-width:100% !important;
+    border-radius:20px 20px 0 0 !important;
+    box-shadow:0 -8px 40px rgba(0,0,0,.5) !important;
+    margin-bottom:0 !important;
+  }
+  #pin-box-header { padding:24px 20px 16px !important; }
+  #pin-box-search { padding:12px 20px !important; }
+  #pin-box-footer { padding:10px 20px calc(env(safe-area-inset-bottom,0px) + 16px) !important; }
+  #pin-title { font-size:20px !important; }
+  #search-inp { font-size:16px !important; }
+  .result { font-size:14px !important; padding:12px 20px !important; }
+  #search-results { max-height:200px !important; }
+
+  /* Timeline — full width, flush bottom */
+  #timeline {
+    bottom:0 !important; left:0 !important; right:0 !important;
+    width:100% !important; max-width:100% !important;
+    transform:none !important; border-radius:0 !important;
+    border:none !important;
+    padding:12px 16px env(safe-area-inset-bottom,16px) !important;
+  }
+  #tl-top { flex-wrap:wrap; gap:6px; }
+  #tl-year { font-size:16px; min-width:38px; }
+  #tl-heading { font-size:7px; }
+  #tl-info { font-size:8px; white-space:normal; }
+  #tl-speed { display:none; }
+
+  /* Satellite overlay */
+  #sat-title { font-size:clamp(20px,6vw,28px); }
+  .sat-stat-value { font-size:20px; }
+  .sat-stat-label { font-size:7px; }
+}
 </style>
 </head>
 <body>
@@ -428,6 +353,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   </div>
 </div>
 
+<!-- HEADER -->
 <div id="hdr">
   <div id="hdr-inner">
     <div>
@@ -438,7 +364,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
       </div>
       <div id="hdr-tag">The forest is running out</div>
     </div>
-    <div id="location-pill" title="Change location">
+    <div id="location-pill">
       <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
       <span id="location-pill-name">—</span>
       <span id="location-pill-action">Change Pin</span>
@@ -452,6 +378,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 </button>
 <div id="share-toast">Link copied ✓</div>
 
+<!-- STATS — desktop only -->
 <div id="stats">
   <div id="stats-inner">
     <div class="s-col">
@@ -471,22 +398,14 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   <div id="s-source"></div>
 </div>
 
+<!-- CLOCK — desktop only -->
 <div id="clock-block">
   <div id="clock">--:--:--</div>
   <div id="date-str"></div>
   <div id="loc-name"></div>
 </div>
 
-
-
-<div id="progress" style="display:none"></div>
-<div id="controls" style="display:none">
-  <button class="ctrl-btn active" data-spd="1">1×</button>
-  <button class="ctrl-btn" data-spd="60">1min/s</button>
-  <button class="ctrl-btn" data-spd="3600">1hr/s</button>
-</div>
-<div id="repin" style="display:none"><button id="repin-btn">↩ change pin</button></div>
-
+<!-- TIMELINE -->
 <div id="timeline">
   <div id="tl-top">
     <div id="tl-heading">← Drag to explore Amazon loss year by year</div>
@@ -496,31 +415,33 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
     </div>
   </div>
   <div id="tl-legend">
-    <div class="tll-item">
-      <div class="tll-swatch tll-solid"></div>
-      <div class="tll-label">Today's clearing</div>
-    </div>
-    <div class="tll-item">
-      <div class="tll-swatch tll-dash"></div>
-      <div class="tll-label">Cumulative since 1972</div>
-    </div>
+    <div class="tll-item"><div class="tll-swatch tll-solid"></div><div class="tll-label">Today's clearing</div></div>
+    <div class="tll-item"><div class="tll-swatch tll-dash"></div><div class="tll-label">Cumulative since 1972</div></div>
   </div>
   <div id="tl-controls">
     <input id="tl-slider" type="range" min="1972" max="2025" value="2025">
     <div id="tl-year">2025</div>
     <button id="tl-play-btn">▶ Play</button>
-    <button id="tl-speed" data-spd="1">Real time</button>
+    <button id="tl-speed">Real time</button>
   </div>
   <div id="tl-info"></div>
 </div>
 
-
+<!-- MOBILE BAR -->
 <div id="mobile-bar">
   <div id="mobile-km2">—<span>km²</span></div>
   <div id="mobile-label">Cleared today in the Amazon</div>
   <div id="mobile-source"></div>
 </div>
 
+<!-- SATELLITE OVERLAY -->
+<div id="satellite-overlay">
+  <div class="spinner"></div>
+  <h3>Connecting to satellite</h3>
+  <p>Fetching today's Amazon deforestation data<br>from Global Forest Watch</p>
+</div>
+
+<!-- RUNNER SVG -->
 <div id="runner">
   <svg width="26" height="34" viewBox="278 147 372 810" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 0 5px rgba(255,200,100,.6))">
     <g transform="translate(0,1024) scale(0.1,-0.1)">
@@ -531,7 +452,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 </div>
 
 <script>
-let DAILY_KM2 = 6.1; // fallback: INPE/Imazon Aug 2025-Mar 2026 average
+let DAILY_KM2 = 6.1;
 let DATA_SOURCE = 'INPE/Imazon 2025-2026';
 const DAY_S = 86400;
 const ANNUAL_LOSS = {
@@ -550,26 +471,8 @@ let clearCircle = null, trailLine = null, trailCoords = [];
 let histCircle = null, tlPlaying = false, tlTimer = null, tlMode = 'cumulative';
 let searchTimer = null;
 
-// Fetch real daily deforestation figure from GFW satellite data
-async function fetchDailyRate() {
-  try {
-    const res = await fetch('/api/alerts');
-    if (!res.ok) return;
-    const data = await res.json();
-    if (data.estimated_area_km2 && data.estimated_area_km2 > 0) {
-      DAILY_KM2 = data.estimated_area_km2;
-      DATA_SOURCE = data.source || 'GFW Integrated Alerts';
-    }
-  } catch(e) {
-    console.warn('Could not fetch daily rate, using fallback');
-  }
-}
-
-// Fetch land-clipped circle from Vercel serverless function
-// Client-side land clipping engine
-let landData = null;
-let landLoading = false;
-let landLoadCallbacks = [];
+// ── CLIENT-SIDE LAND CLIPPING ──────────────────────────────
+let landData = null, landLoading = false, landLoadCallbacks = [];
 const circleCache = new Map();
 
 async function loadLandData() {
@@ -588,25 +491,39 @@ async function loadLandData() {
 }
 
 function clipCircleToLand(lat, lng, radiusKm) {
-  const cacheKey = `${lat.toFixed(4)},${lng.toFixed(4)},${radiusKm.toFixed(1)}`;
-  if (circleCache.has(cacheKey)) return circleCache.get(cacheKey);
+  const key = `${lat.toFixed(4)},${lng.toFixed(4)},${radiusKm.toFixed(1)}`;
+  if (circleCache.has(key)) return circleCache.get(key);
   const circ = turf.circle([lng, lat], radiusKm, { steps:128, units:'kilometers' });
   if (!landData) return circ;
-  const circBbox = turf.bbox(circ);
+  const cb = turf.bbox(circ);
   const clipped = [];
-  for (const feature of landData.features) {
+  for (const f of landData.features) {
     try {
-      const fb = turf.bbox(feature);
-      if (fb[2] < circBbox[0] || fb[0] > circBbox[2] || fb[3] < circBbox[1] || fb[1] > circBbox[3]) continue;
-      const ix = turf.intersect(circ, feature);
+      const fb = turf.bbox(f);
+      if (fb[2]<cb[0]||fb[0]>cb[2]||fb[3]<cb[1]||fb[1]>cb[3]) continue;
+      const ix = turf.intersect(circ, f);
       if (ix) clipped.push(ix);
     } catch(e) {}
   }
   const result = turf.featureCollection(clipped.length ? clipped : [circ]);
-  circleCache.set(cacheKey, result);
+  circleCache.set(key, result);
   return result;
 }
 
+// ── DAILY RATE ─────────────────────────────────────────────
+async function fetchDailyRate() {
+  try {
+    const res = await fetch('/api/alerts');
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data.estimated_area_km2 && data.estimated_area_km2 > 0) {
+      DAILY_KM2 = data.estimated_area_km2;
+      DATA_SOURCE = data.source || 'GFW Integrated Alerts';
+    }
+  } catch(e) { console.warn('Could not fetch daily rate, using fallback'); }
+}
+
+// ── MAP ────────────────────────────────────────────────────
 function initMap() {
   map = L.map('map', { center:[20,0], zoom:3, zoomControl:false });
   const zoomPos = window.innerWidth <= 600 ? 'topleft' : 'bottomright';
@@ -616,28 +533,25 @@ function initMap() {
   map.on('moveend zoomend', onMapMove);
 }
 
+// ── UTILS ──────────────────────────────────────────────────
 function dayFraction() {
   const n = new Date();
   return (n.getHours()*3600 + n.getMinutes()*60 + n.getSeconds()) / DAY_S;
 }
 function fmtTime(d) { return d.toTimeString().slice(0,8); }
 function fmtDate(d) { return d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).toUpperCase(); }
-
 function show(...ids) { ids.forEach(id => { const el=document.getElementById(id); if(el) el.style.display = id==='controls'?'flex':'block'; }); }
 function hide(...ids) { ids.forEach(id => { const el=document.getElementById(id); if(el) el.style.display='none'; }); }
 
 function contextText(km2, rad, name) {
-  let scale = km2<2?'smaller than most city parks':km2<8?'covering a large suburb':km2<18?'spanning several neighbourhoods':km2<25?'large enough to swallow a city centre':'an area most cities would call enormous';
+  const scale = km2<2?'smaller than most city parks':km2<8?'covering a large suburb':km2<18?'spanning several neighbourhoods':km2<25?'large enough to swallow a city centre':'an area most cities would call enormous';
   return `${km2.toFixed(1)} km² cleared today — ${scale}, ${rad.toFixed(1)} km from ${name||'your pin'}.`;
 }
-function sourceText() {
-  return `Based on ${DATA_SOURCE}.`;
-}
 
+// ── TICK ───────────────────────────────────────────────────
 function updateRunnerPos(lat, lng) {
   const pt = map.latLngToContainerPoint([lat, lng]);
-  const mapEl = document.getElementById('map');
-  const rect = mapEl.getBoundingClientRect();
+  const rect = document.getElementById('map').getBoundingClientRect();
   runnerEl.style.left = (rect.left + pt.x) + 'px';
   runnerEl.style.top = (rect.top + pt.y) + 'px';
   runnerEl.style.display = 'flex';
@@ -671,13 +585,13 @@ function tick(ts) {
   document.getElementById('clock').textContent = fmtTime(now);
   document.getElementById('date-str').textContent = fmtDate(now);
 
-  // Update daily circle — fetch clipped version when radius changes meaningfully
+  // Update daily circle
   if (!clearCircle._lastClipRad || Math.abs(rad - clearCircle._lastClipRad) > 0.1) {
     clearCircle._lastClipRad = rad;
     clearCircle.setRadius(rad * 1000);
     if (landData) {
       const geojson = clipCircleToLand(pinLat, pinLng, rad);
-      if (clearCircle._clipped) { map.removeLayer(clearCircle._clipped); }
+      if (clearCircle._clipped) map.removeLayer(clearCircle._clipped);
       clearCircle._clipped = L.geoJSON(geojson, {
         style: { color:'#c8531a', fillColor:'#c8531a', fillOpacity:.18, weight:1 }
       }).addTo(map);
@@ -686,7 +600,7 @@ function tick(ts) {
       loadLandData().then(() => {
         if (!clearCircle) return;
         const geojson = clipCircleToLand(pinLat, pinLng, clearCircle._lastClipRad);
-        if (clearCircle._clipped) { map.removeLayer(clearCircle._clipped); }
+        if (clearCircle._clipped) map.removeLayer(clearCircle._clipped);
         clearCircle._clipped = L.geoJSON(geojson, {
           style: { color:'#c8531a', fillColor:'#c8531a', fillOpacity:.18, weight:1 }
         }).addTo(map);
@@ -702,9 +616,13 @@ function tick(ts) {
   if (trailLine) trailLine.setLatLngs(trailCoords);
   updateRunnerPos(rLat, rLng);
 
-  document.getElementById('s-ctx').textContent = contextText(km2, rad, placeName);
-  document.getElementById('s-source').textContent = sourceText();
-  // Update mobile bar
+  // Update context text
+  const sCtx = document.getElementById('s-ctx');
+  const sSrc = document.getElementById('s-source');
+  if (sCtx) sCtx.textContent = contextText(km2, rad, placeName);
+  if (sSrc) sSrc.textContent = `Based on ${DATA_SOURCE}.`;
+
+  // Mobile bar
   const mKm2 = document.getElementById('mobile-km2');
   const mSrc = document.getElementById('mobile-source');
   if (mKm2) mKm2.innerHTML = km2.toFixed(1) + '<span>km²</span>';
@@ -712,20 +630,12 @@ function tick(ts) {
 
   if (simSec < DAY_S) {
     raf = requestAnimationFrame(tick);
-  } else {
-    document.getElementById('quote').textContent = '"I\'m pretty tired. I think I\'ll go home now."';
-    document.getElementById('quote').style.color = 'rgba(232,220,200,.6)';
   }
 }
 
+// ── START RUN ──────────────────────────────────────────────
 function startRun(lat, lng, name) {
   pinLat=lat; pinLng=lng; placeName=name;
-  const pill = document.getElementById('location-pill');
-  const pillName = document.getElementById('location-pill-name');
-  if (pill && pillName) {
-    pillName.textContent = name || 'My location';
-    pill.style.display = 'flex';
-  }
   map.setView([lat,lng], 14);
 
   L.circleMarker([lat,lng], {radius:5, color:'#c8531a', fillColor:'#c8531a', fillOpacity:.9, weight:2}).addTo(map);
@@ -734,10 +644,17 @@ function startRun(lat, lng, name) {
   trailLine = L.polyline([], {color:'#c8531a', weight:1.5, opacity:.5}).addTo(map);
 
   document.getElementById('loc-name').textContent = name||'';
-  show('hdr','stats','clock-block','progress','controls','repin');
+
+  // Location pill
+  const pill = document.getElementById('location-pill');
+  const pillName = document.getElementById('location-pill-name');
+  if (pill && pillName) { pillName.textContent = name||'My location'; pill.style.display='flex'; }
+
+  // Share button
   const shareBtn = document.getElementById('share-btn');
-  if (shareBtn) shareBtn.style.display = 'flex';
-  // Show mobile bar on small screens
+  if (shareBtn) shareBtn.style.display='flex';
+
+  show('hdr','stats','clock-block');
   if (window.innerWidth <= 600) {
     const mb = document.getElementById('mobile-bar');
     if (mb) mb.style.display = 'block';
@@ -755,10 +672,7 @@ function startRun(lat, lng, name) {
   }, 1500);
 }
 
-function cumulativeLoss(yr) {
-  return Object.entries(ANNUAL_LOSS).filter(([y])=>parseInt(y)<=yr).reduce((s,[,v])=>s+v,0);
-}
-
+// ── HIST CIRCLE ────────────────────────────────────────────
 let drawDebounceTimer = null;
 function drawHistCircle(yr) {
   if (!pinLat) return;
@@ -772,23 +686,18 @@ function drawHistCircle(yr) {
     : `${yr}: −${annual.toLocaleString()} km² cleared that year · radius ${radiusKm.toFixed(0)} km`;
   if (histCircle) { map.removeLayer(histCircle); histCircle=null; }
   histCircle = L.circle([pinLat,pinLng], {
-    radius: radiusKm*1000,
-    color:'#8b1a1a', fillColor:'#8b1a1a',
+    radius: radiusKm*1000, color:'#8b1a1a', fillColor:'#8b1a1a',
     fillOpacity: tlMode==='annual'?0.20:0.12,
-    weight:2, dashArray:tlMode==='annual'?null:'10 6',
-    opacity:0.85, interactive:false
+    weight:2, dashArray:tlMode==='annual'?null:'10 6', opacity:0.85, interactive:false
   }).addTo(map);
   clearTimeout(drawDebounceTimer);
   drawDebounceTimer = setTimeout(() => {
-    if (!landData) {
-      loadLandData().then(() => renderClippedHistCircle(yr, radiusKm));
-    } else {
-      renderClippedHistCircle(yr, radiusKm);
-    }
+    if (!landData) { loadLandData().then(() => renderClippedHist(radiusKm)); }
+    else { renderClippedHist(radiusKm); }
   }, 120);
 }
 
-function renderClippedHistCircle(yr, radiusKm) {
+function renderClippedHist(radiusKm) {
   const geojson = clipCircleToLand(pinLat, pinLng, radiusKm);
   if (!geojson) return;
   if (histCircle) { map.removeLayer(histCircle); histCircle=null; }
@@ -801,6 +710,11 @@ function renderClippedHistCircle(yr, radiusKm) {
   }).addTo(map);
 }
 
+function cumulativeLoss(yr) {
+  return Object.entries(ANNUAL_LOSS).filter(([y])=>parseInt(y)<=yr).reduce((s,[,v])=>s+v,0);
+}
+
+// ── TIMELINE PLAY ──────────────────────────────────────────
 function playTimeline() {
   if (tlPlaying) {
     tlPlaying=false; clearInterval(tlTimer);
@@ -817,6 +731,26 @@ function playTimeline() {
   },250);
 }
 
+// ── RESET ──────────────────────────────────────────────────
+function resetAll() {
+  running=false; cancelAnimationFrame(raf);
+  if(clearCircle){ if(clearCircle._clipped) map.removeLayer(clearCircle._clipped); map.removeLayer(clearCircle); clearCircle=null; }
+  if(trailLine){ map.removeLayer(trailLine); trailLine=null; }
+  if(histCircle){ map.removeLayer(histCircle); histCircle=null; }
+  if(tlTimer){ clearInterval(tlTimer); tlPlaying=false; }
+  runnerEl.style.display='none'; trailCoords=[];
+  circleCache.clear();
+  hide('hdr','stats','clock-block','timeline');
+  const mb = document.getElementById('mobile-bar'); if(mb) mb.style.display='none';
+  const pill = document.getElementById('location-pill'); if(pill) pill.style.display='none';
+  const shareBtn = document.getElementById('share-btn'); if(shareBtn) shareBtn.style.display='none';
+  setTimeout(showPinScreen, 100);
+  document.getElementById('search-results').innerHTML='';
+  document.getElementById('search-inp').value='';
+  document.getElementById('pin-err').textContent='';
+}
+
+// ── SEARCH & GEO ───────────────────────────────────────────
 function doSearch() {
   const q=document.getElementById('search-inp').value.trim();
   if(!q) return;
@@ -860,55 +794,37 @@ function hidePinScreen() {
   s.style.opacity='0'; setTimeout(()=>s.style.display='none',500);
 }
 function hideSplash() {
-  const s = document.getElementById('splash');
-  s.style.opacity = '0';
-  setTimeout(() => {
-    s.style.display = 'none';
-    // Show pin screen first so white card is visible
+  const s=document.getElementById('splash');
+  s.style.opacity='0';
+  setTimeout(()=>{
+    s.style.display='none';
     showPinScreen();
-    // Then show overlay on top
-    const overlay = document.getElementById('satellite-overlay');
-    if (overlay) {
-      overlay.style.display = 'flex';
-      overlay.style.opacity = '1';
-    }
-    fetchDailyRate().then(() => {
-      if (overlay) {
-        overlay.style.transition = 'opacity .6s ease';
-        overlay.style.opacity = '0';
-        setTimeout(() => {
-          overlay.style.display = 'none';
-          overlay.style.opacity = '';
-          overlay.style.transition = '';
-        }, 600);
+    const overlay=document.getElementById('satellite-overlay');
+    if(overlay){ overlay.style.display='flex'; overlay.style.opacity='1'; }
+    fetchDailyRate().then(()=>{
+      if(overlay){
+        overlay.style.transition='opacity .6s ease';
+        overlay.style.opacity='0';
+        setTimeout(()=>{ overlay.style.display='none'; overlay.style.opacity=''; overlay.style.transition=''; },600);
       }
     });
-  }, 800);
-}
-function resetAll() {
-  running=false; cancelAnimationFrame(raf);
-  if(clearCircle){
-    if(clearCircle._clipped) map.removeLayer(clearCircle._clipped);
-    map.removeLayer(clearCircle); clearCircle=null;
-  }
-  if(trailLine){map.removeLayer(trailLine);trailLine=null;}
-  if(histCircle){map.removeLayer(histCircle);histCircle=null;}
-  if(tlTimer){clearInterval(tlTimer);tlPlaying=false;}
-  runnerEl.style.display='none'; trailCoords=[];
-  hide('hdr','stats','clock-block','progress','controls','repin','timeline');
-  const mb = document.getElementById('mobile-bar');
-  if (mb) mb.style.display = 'none';
-  const pill = document.getElementById('location-pill');
-  if (pill) pill.style.display = 'none';
-  setTimeout(showPinScreen,100);
-  document.getElementById('search-results').innerHTML='';
-  document.getElementById('search-inp').value='';
-  document.getElementById('pin-err').textContent='';
+  },800);
 }
 
-// Events
+// ── MOBILE TIMELINE OFFSET ────────────────────────────────
+function updateTimelineOffset() {
+  if (window.innerWidth > 600) return;
+  const tl = document.getElementById('timeline');
+  if (!tl || tl.style.display === 'none') return;
+  const h = tl.offsetHeight;
+  if (h > 0) document.documentElement.style.setProperty('--tl-height', h + 'px');
+}
+window.addEventListener('resize', updateTimelineOffset);
+new MutationObserver(updateTimelineOffset)
+  .observe(document.getElementById('timeline'), { attributes:true, attributeFilter:['style'] });
+
+// ── EVENTS ─────────────────────────────────────────────────
 document.getElementById('splash-cta').addEventListener('click', hideSplash);
-document.getElementById('repin-btn').addEventListener('click', resetAll);
 document.getElementById('location-pill').addEventListener('click', resetAll);
 document.getElementById('search-btn').addEventListener('click', doSearch);
 document.getElementById('geo-btn').addEventListener('click', useGeo);
@@ -925,52 +841,30 @@ document.querySelectorAll('.tl-mode').forEach(btn=>btn.addEventListener('click',
   btn.classList.add('active'); tlMode=btn.dataset.mode;
   drawHistCircle(parseInt(document.getElementById('tl-slider').value));
 }));
-// Speed toggle — cycles Real time → Fast → Ultra on each click
-const SPEEDS = [
-  { spd: 1,    label: 'Real time' },
-  { spd: 60,   label: 'Fast' },
-  { spd: 3600, label: 'Ultra' }
-];
+
+// Speed toggle — cycles Real time → Fast → Ultra
+const SPEEDS = [{spd:1,label:'Real time'},{spd:60,label:'Fast'},{spd:3600,label:'Ultra'}];
 let speedIdx = 0;
-document.getElementById('tl-speed').addEventListener('click', () => {
-  speedIdx = (speedIdx + 1) % SPEEDS.length;
-  speed = SPEEDS[speedIdx].spd;
-  lastTs = null;
+document.getElementById('tl-speed').addEventListener('click', ()=>{
+  speedIdx = (speedIdx+1) % SPEEDS.length;
+  speed = SPEEDS[speedIdx].spd; lastTs = null;
   document.getElementById('tl-speed').textContent = SPEEDS[speedIdx].label;
 });
 
-// Keep legacy ctrl-btn wired for hidden elements
-document.querySelectorAll('.ctrl-btn').forEach(btn=>btn.addEventListener('click',()=>{
-  speed=parseInt(btn.dataset.spd); lastTs=null;
-}));
-
-// Keep --tl-height in sync so mobile-bar sits correctly above the timeline
-function updateTimelineOffset() {
-  if (window.innerWidth > 600) return;
-  const tl = document.getElementById('timeline');
-  if (!tl || tl.style.display === 'none') return;
-  const h = tl.offsetHeight;
-  if (h > 0) document.documentElement.style.setProperty('--tl-height', h + 'px');
-}
-window.addEventListener('resize', updateTimelineOffset);
-new MutationObserver(updateTimelineOffset)
-  .observe(document.getElementById('timeline'), { attributes:true, attributeFilter:['style'] });
-
 // Share
-document.getElementById('share-btn').addEventListener('click', async () => {
+document.getElementById('share-btn').addEventListener('click', async ()=>{
   const km2 = parseFloat(document.getElementById('v-km2').textContent) || DAILY_KM2;
   const name = placeName || 'your neighbourhood';
   const url = window.location.href.split('?')[0];
   const text = `${km2.toFixed(1)} km² of Amazon forest cleared today — the size of ${name}. See what it looks like near you.`;
   if (navigator.share) {
-    try { await navigator.share({ title:'Run Forest Run', text, url }); }
-    catch(e) {}
+    try { await navigator.share({ title:'Run Forest Run', text, url }); } catch(e) {}
   } else {
     try {
       await navigator.clipboard.writeText(`${text}\n${url}`);
       const toast = document.getElementById('share-toast');
-      toast.style.opacity = '1';
-      setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+      toast.style.opacity='1';
+      setTimeout(()=>{ toast.style.opacity='0'; },2000);
     } catch(e) {}
   }
 });
@@ -979,7 +873,7 @@ document.getElementById('share-btn').addEventListener('click', async () => {
 setTimeout(()=>{ const bg=document.getElementById('splash-bg'); if(bg) bg.style.transform='scale(1.0)'; },100);
 
 initMap();
-loadLandData(); // pre-load in background so it's ready when user pins
+loadLandData(); // pre-load in background
 </script>
 </body>
 </html>
