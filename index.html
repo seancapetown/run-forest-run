@@ -167,17 +167,19 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 #location-pill:hover { background:rgba(200,83,26,.15); border-color:rgba(200,83,26,.4); }
 #location-pill svg { flex-shrink:0; width:10px; height:10px; stroke:var(--burn); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
 #location-pill-name { font-family:var(--mono); font-size:9px; color:var(--parch); letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:120px; }
-#location-pill-action { font-family:var(--mono); font-size:9px; color:var(--dim); letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; border-left:0.5px solid rgba(232,220,200,.15); padding-left:8px; margin-left:2px; }
+#location-pill-action { font-family:var(--mono); font-size:9px; color:var(--parch); letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; border-left:0.5px solid rgba(232,220,200,.15); padding-left:8px; margin-left:2px; }
 
 #hdr-inner { display:flex; align-items:center; gap:12px; }
 #hdr-wm { display:flex; gap:5px; align-items:baseline; }
 #hdr-wm span { font-family:var(--display); font-size:18px; line-height:1; }
 #hdr-tag { font-size:8px; letter-spacing:.16em; text-transform:uppercase; color:var(--dim); margin-top:2px; }
 
-#stats { position:fixed; top:72px; left:20px; z-index:100; display:none; pointer-events:none; }
-.s-label { font-size:8px; letter-spacing:.14em; text-transform:uppercase; color:var(--data); margin-bottom:2px; }
-.s-value { font-size:22px; font-weight:300; color:var(--parch); line-height:1; margin-bottom:14px; }
+#stats { position:fixed; top:58px; left:20px; z-index:100; display:none; pointer-events:none; }
+#stats-inner { display:flex; gap:28px; align-items:flex-end; }
+.s-col { display:flex; flex-direction:column; }
+.s-value { font-size:26px; font-weight:300; color:var(--parch); line-height:1; }
 .s-unit { font-size:9px; color:var(--data); margin-left:2px; }
+.s-label { font-size:7px; letter-spacing:.14em; text-transform:uppercase; color:var(--data); margin-top:3px; }
 
 #clock-block { position:fixed; top:72px; right:20px; z-index:100; text-align:right; display:none; pointer-events:none; }
 #clock { font-size:26px; font-weight:300; color:var(--parch); letter-spacing:.06em; }
@@ -443,12 +445,20 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 <div id="share-toast">Link copied ✓</div>
 
 <div id="stats">
-  <div class="s-label">Cleared today</div>
-  <div class="s-value"><span id="v-km2">—</span><span class="s-unit">km²</span></div>
-  <div class="s-label">Radius from your pin</div>
-  <div class="s-value"><span id="v-rad">—</span><span class="s-unit">km</span></div>
-  <div class="s-label">Forest has run</div>
-  <div class="s-value"><span id="v-run">—</span><span class="s-unit">km</span></div>
+  <div id="stats-inner">
+    <div class="s-col">
+      <div class="s-value"><span id="v-km2">—</span><span class="s-unit">km²</span></div>
+      <div class="s-label">Cleared</div>
+    </div>
+    <div class="s-col">
+      <div class="s-value"><span id="v-rad">—</span><span class="s-unit">km</span></div>
+      <div class="s-label">Radius</div>
+    </div>
+    <div class="s-col">
+      <div class="s-value"><span id="v-run">—</span><span class="s-unit">km</span></div>
+      <div class="s-label">Run</div>
+    </div>
+  </div>
 </div>
 
 <div id="clock-block">
