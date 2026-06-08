@@ -155,18 +155,19 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 
 /* UI ELEMENTS — all above map */
 #hdr { position:fixed; top:0; left:0; right:0; z-index:100; padding:14px 20px 10px; background:linear-gradient(to bottom, rgba(8,14,8,.95) 60%, transparent); display:none; pointer-events:none; }
-/* LOCATION PILL */
+/* LOCATION PILL — combined place name + change pin action */
 #location-pill {
-  display:none; align-items:center; gap:5px;
-  background:rgba(74,122,42,.12);
-  border:0.5px solid rgba(74,122,42,.3);
-  padding:5px 10px 5px 8px;
+  display:none; align-items:center; gap:8px;
+  background:rgba(8,14,8,.7);
+  border:0.5px solid rgba(232,220,200,.15);
+  padding:6px 12px 6px 10px;
   cursor:pointer; transition:all .2s;
-  max-width:160px;
+  pointer-events:all;
 }
-#location-pill:hover { background:rgba(74,122,42,.22); border-color:rgba(74,122,42,.5); }
-#location-pill svg { flex-shrink:0; width:10px; height:10px; stroke:var(--living); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
-#location-pill-name { font-family:var(--mono); font-size:9px; color:var(--parch); letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#location-pill:hover { background:rgba(200,83,26,.15); border-color:rgba(200,83,26,.4); }
+#location-pill svg { flex-shrink:0; width:10px; height:10px; stroke:var(--burn); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+#location-pill-name { font-family:var(--mono); font-size:9px; color:var(--parch); letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:120px; }
+#location-pill-action { font-family:var(--mono); font-size:9px; color:var(--dim); letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; border-left:0.5px solid rgba(232,220,200,.15); padding-left:8px; margin-left:2px; }
 
 #hdr-inner { display:flex; align-items:center; gap:12px; }
 #hdr-wm { display:flex; gap:5px; align-items:baseline; }
@@ -199,14 +200,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 .ctrl-btn:hover { background:rgba(74,122,42,.22); }
 .ctrl-btn.active { background:rgba(74,122,42,.26); border-color:rgba(74,122,42,.6); }
 
-#repin { position:fixed; bottom:28px; left:24px; z-index:400; display:none; }
-#repin-btn {
-  background:rgba(8,14,8,.75); border:1px solid rgba(74,122,42,.4);
-  color:var(--parch); font-family:var(--mono); font-size:11px;
-  padding:8px 16px; cursor:pointer; letter-spacing:.1em; text-transform:uppercase;
-  transition:all .2s;
-}
-#repin-btn:hover { background:rgba(74,122,42,.2); border-color:rgba(74,122,42,.7); color:#8aaa7a; }
+#repin { display:none !important; }
 
 /* TIMELINE */
 #timeline {
@@ -442,6 +436,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
     <div id="location-pill" title="Change location">
       <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
       <span id="location-pill-name">—</span>
+      <span id="location-pill-action">Change Pin</span>
     </div>
   </div>
 </div>
