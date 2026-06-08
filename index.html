@@ -174,12 +174,13 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 #hdr-wm span { font-family:var(--display); font-size:18px; line-height:1; }
 #hdr-tag { font-size:8px; letter-spacing:.16em; text-transform:uppercase; color:var(--dim); margin-top:2px; }
 
-#stats { position:fixed; top:58px; left:20px; z-index:100; display:none; pointer-events:none; }
+#stats { position:fixed; top:58px; left:0; z-index:100; display:none; pointer-events:none; padding:12px 20px 14px; background:linear-gradient(to right, rgba(8,14,8,.85) 70%, transparent); }
 #stats-inner { display:flex; gap:28px; align-items:flex-end; }
 .s-col { display:flex; flex-direction:column; }
 .s-value { font-size:26px; font-weight:300; color:var(--parch); line-height:1; }
 .s-unit { font-size:9px; color:var(--data); margin-left:2px; }
 .s-label { font-size:7px; letter-spacing:.14em; text-transform:uppercase; color:var(--data); margin-top:3px; }
+#s-ctx { font-size:9px; color:rgba(200,200,170,.55); letter-spacing:.03em; line-height:1.4; margin-top:8px; max-width:340px; }
 
 #clock-block { position:fixed; top:72px; right:20px; z-index:100; text-align:right; display:none; pointer-events:none; }
 #clock { font-size:26px; font-weight:300; color:var(--parch); letter-spacing:.06em; }
@@ -190,7 +191,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 #info-panel { display:none !important; }
 
 /* CONTEXT LINE — inside timeline panel */
-#tl-ctx { font-size:9px; color:rgba(200,200,170,.55); letter-spacing:.04em; line-height:1.5; margin-bottom:8px; border-bottom:0.5px solid rgba(74,122,42,.15); padding-bottom:8px; }
+/* context line lives in stats block as #s-ctx */
 
 #progress { position:fixed; bottom:52px; left:20px; right:140px; z-index:100; display:none; pointer-events:none; }
 #prog-labels { display:flex; justify-content:space-between; font-size:8px; color:var(--dim); letter-spacing:.1em; text-transform:uppercase; margin-bottom:6px; }
@@ -459,6 +460,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
       <div class="s-label">Run</div>
     </div>
   </div>
+  <div id="s-ctx"></div>
 </div>
 
 <div id="clock-block">
@@ -491,7 +493,6 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
       <button class="tl-mode" data-mode="annual">Annual</button>
     </div>
   </div>
-  <div id="tl-ctx"></div>
   <div id="tl-legend">
     <div class="tll-item">
       <div class="tll-swatch tll-solid"></div>
@@ -697,7 +698,7 @@ function tick(ts) {
   if (trailLine) trailLine.setLatLngs(trailCoords);
   updateRunnerPos(rLat, rLng);
 
-  document.getElementById('tl-ctx').textContent = contextText(km2, rad, placeName);
+  document.getElementById('s-ctx').textContent = contextText(km2, rad, placeName);
   // Update mobile bar
   const mKm2 = document.getElementById('mobile-km2');
   const mSrc = document.getElementById('mobile-source');
