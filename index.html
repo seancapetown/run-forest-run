@@ -184,8 +184,11 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 #date-str { font-size:8px; color:var(--dim); letter-spacing:.1em; text-transform:uppercase; margin-top:2px; }
 #loc-name { font-size:9px; color:#8aaa7a; margin-top:4px; font-style:italic; }
 
-#ctx-bar { position:fixed; bottom:120px; left:20px; z-index:100; display:none; pointer-events:none; max-width:220px; }
-#ctx-text { font-size:11px; color:rgba(200,200,170,.65); line-height:1.7; letter-spacing:.02em; }
+#ctx-bar { display:none !important; }
+#info-panel { display:none !important; }
+
+/* CONTEXT LINE — inside timeline panel */
+#tl-ctx { font-size:9px; color:rgba(200,200,170,.55); letter-spacing:.04em; line-height:1.5; margin-bottom:8px; border-bottom:0.5px solid rgba(74,122,42,.15); padding-bottom:8px; }
 
 #progress { position:fixed; bottom:52px; left:20px; right:140px; z-index:100; display:none; pointer-events:none; }
 #prog-labels { display:flex; justify-content:space-between; font-size:8px; color:var(--dim); letter-spacing:.1em; text-transform:uppercase; margin-bottom:6px; }
@@ -223,15 +226,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 #tl-play-btn:hover { background:rgba(74,122,42,.15); }
 #tl-info { font-size:9px; color:var(--burn); letter-spacing:.06em; line-height:1.5; }
 
-/* INFO PANEL */
-#info-panel {
-  position:fixed; top:72px; left:50%; transform:translateX(-50%);
-  z-index:100; display:none; pointer-events:none;
-  background:rgba(8,14,8,.88); border:0.5px solid rgba(74,122,42,.2);
-  padding:10px 18px; text-align:center; white-space:nowrap;
-}
-.info-row { display:flex; align-items:center; gap:10px; font-size:9px; color:var(--data); letter-spacing:.08em; margin:3px 0; }
-.info-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+/* INFO PANEL — removed, legend lives in timeline */
 
 /* SATELLITE DATA OVERLAY */
 #satellite-overlay {
@@ -462,7 +457,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   <div id="loc-name"></div>
 </div>
 
-<div id="ctx-bar"><div id="ctx-text"></div></div>
+
 
 <div id="progress">
   <div id="prog-labels"><span>00:00</span><span id="prog-pct">0%</span><span>24:00</span></div>
@@ -486,6 +481,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
       <button class="tl-mode" data-mode="annual">Annual</button>
     </div>
   </div>
+  <div id="tl-ctx"></div>
   <div id="tl-legend">
     <div class="tll-item">
       <div class="tll-swatch tll-solid"></div>
@@ -504,16 +500,6 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   <div id="tl-info"></div>
 </div>
 
-<div id="info-panel">
-  <div class="info-row">
-    <div class="info-dot" style="background:#c8531a"></div>
-    <span>Today's Amazon clearing — Forest is running this perimeter</span>
-  </div>
-  <div class="info-row">
-    <div class="info-dot" style="background:#8b1a1a; opacity:0.8"></div>
-    <span>Cumulative loss since 1972 — drag the timeline to explore</span>
-  </div>
-</div>
 
 <div id="mobile-bar">
   <div id="mobile-km2">—<span>km²</span></div>
@@ -701,7 +687,7 @@ function tick(ts) {
   if (trailLine) trailLine.setLatLngs(trailCoords);
   updateRunnerPos(rLat, rLng);
 
-  document.getElementById('ctx-text').textContent = contextText(km2, rad, placeName);
+  document.getElementById('tl-ctx').textContent = contextText(km2, rad, placeName);
   // Update mobile bar
   const mKm2 = document.getElementById('mobile-km2');
   const mSrc = document.getElementById('mobile-source');
@@ -732,7 +718,7 @@ function startRun(lat, lng, name) {
   trailLine = L.polyline([], {color:'#c8531a', weight:1.5, opacity:.5}).addTo(map);
 
   document.getElementById('loc-name').textContent = name||'';
-  show('hdr','stats','clock-block','ctx-bar','progress','controls','repin','info-panel');
+  show('hdr','stats','clock-block','progress','controls','repin');
   const shareBtn = document.getElementById('share-btn');
   if (shareBtn) shareBtn.style.display = 'flex';
   // Show mobile bar on small screens
@@ -893,7 +879,7 @@ function resetAll() {
   if(histCircle){map.removeLayer(histCircle);histCircle=null;}
   if(tlTimer){clearInterval(tlTimer);tlPlaying=false;}
   runnerEl.style.display='none'; trailCoords=[];
-  hide('hdr','stats','clock-block','ctx-bar','progress','controls','repin','timeline','info-panel');
+  hide('hdr','stats','clock-block','progress','controls','repin','timeline');
   const mb = document.getElementById('mobile-bar');
   if (mb) mb.style.display = 'none';
   const pill = document.getElementById('location-pill');
