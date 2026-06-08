@@ -456,15 +456,15 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   <div id="stats-inner">
     <div class="s-col">
       <div class="s-value"><span id="v-km2">—</span><span class="s-unit">km²</span></div>
-      <div class="s-label">Cleared</div>
+      <div class="s-label">Cleared today</div>
     </div>
     <div class="s-col">
       <div class="s-value"><span id="v-rad">—</span><span class="s-unit">km</span></div>
-      <div class="s-label">Radius</div>
+      <div class="s-label">Radius from pin</div>
     </div>
     <div class="s-col">
       <div class="s-value"><span id="v-run">—</span><span class="s-unit">km</span></div>
-      <div class="s-label">Run</div>
+      <div class="s-label">Forest has run</div>
     </div>
   </div>
   <div id="s-ctx"></div>
@@ -666,8 +666,6 @@ function tick(ts) {
   document.getElementById('v-km2').textContent = km2.toFixed(2);
   document.getElementById('v-rad').textContent = rad.toFixed(2);
   document.getElementById('v-run').textContent = (frac * 2 * Math.PI * Math.sqrt(DAILY_KM2/Math.PI) * 1.05).toFixed(2);
-  document.getElementById('prog-fill').style.width = (frac*100) + '%';
-  document.getElementById('prog-pct').textContent = (frac*100).toFixed(1) + '%';
 
   const now = new Date();
   document.getElementById('clock').textContent = fmtTime(now);
