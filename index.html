@@ -180,7 +180,8 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 .s-value { font-size:26px; font-weight:300; color:var(--parch); line-height:1; }
 .s-unit { font-size:9px; color:var(--data); margin-left:2px; }
 .s-label { font-size:7px; letter-spacing:.14em; text-transform:uppercase; color:var(--data); margin-top:3px; }
-#s-ctx { font-size:9px; color:rgba(200,200,170,.55); letter-spacing:.03em; line-height:1.4; margin-top:8px; max-width:340px; }
+#s-ctx { font-size:10px; color:rgba(200,200,170,.8); letter-spacing:.03em; line-height:1.4; margin-top:8px; max-width:340px; }
+#s-source { font-size:8px; color:rgba(200,200,170,.35); letter-spacing:.03em; margin-top:3px; max-width:340px; }
 
 #clock-block { position:fixed; top:72px; right:20px; z-index:100; text-align:right; display:none; pointer-events:none; }
 #clock { font-size:26px; font-weight:300; color:var(--parch); letter-spacing:.06em; }
@@ -193,27 +194,24 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 /* CONTEXT LINE — inside timeline panel */
 /* context line lives in stats block as #s-ctx */
 
-#progress { position:fixed; bottom:52px; left:20px; right:140px; z-index:100; display:none; pointer-events:none; }
-#prog-labels { display:flex; justify-content:space-between; font-size:8px; color:var(--dim); letter-spacing:.1em; text-transform:uppercase; margin-bottom:6px; }
-#prog-track { height:2px; background:rgba(74,122,42,.2); }
-#prog-fill { height:100%; background:var(--data); width:0%; transition:width .5s linear; }
+/* PROGRESS — removed, clock handles time context */
+#progress { display:none !important; }
 
-
-
-#controls { position:fixed; bottom:52px; right:20px; z-index:100; display:none; align-items:center; gap:6px; }
-.ctrl-label { font-size:8px; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
-.ctrl-btn { background:rgba(74,122,42,.1); border:0.5px solid rgba(74,122,42,.25); color:var(--parch); font-family:var(--mono); font-size:9px; padding:4px 9px; cursor:pointer; }
-.ctrl-btn:hover { background:rgba(74,122,42,.22); }
-.ctrl-btn.active { background:rgba(74,122,42,.26); border-color:rgba(74,122,42,.6); }
+/* SPEED CONTROLS — removed, moved into timeline panel */
+#controls { display:none !important; }
 
 #repin { display:none !important; }
 
+/* SPEED TOGGLE inside timeline */
+#tl-speed { background:none; border:0.5px solid rgba(74,122,42,.3); color:var(--data); font-family:var(--mono); font-size:9px; padding:4px 10px; cursor:pointer; letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; transition:all .2s; }
+#tl-speed:hover { background:rgba(74,122,42,.15); }
+
 /* TIMELINE */
 #timeline {
-  position:fixed; bottom:90px; left:50%; transform:translateX(-50%);
+  position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
   z-index:100; display:none;
   background:rgba(8,14,8,.92); border:0.5px solid rgba(74,122,42,.25);
-  padding:14px 20px; width:90%; max-width:480px; text-align:center;
+  padding:14px 20px; width:90%; max-width:560px; text-align:center;
 }
 #tl-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
 #tl-heading { font-size:8px; letter-spacing:.16em; text-transform:uppercase; color:var(--dim); }
@@ -222,8 +220,17 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 .tl-mode:first-child { border-right:none; }
 .tl-mode.active { background:rgba(200,83,26,.2); border-color:rgba(200,83,26,.5); color:var(--burn); }
 #tl-controls { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
-#tl-slider { flex:1; -webkit-appearance:none; height:2px; background:rgba(74,122,42,.2); outline:none; cursor:pointer; }
-#tl-slider::-webkit-slider-thumb { -webkit-appearance:none; width:12px; height:12px; border-radius:50%; background:var(--burn); cursor:pointer; }
+#tl-slider {
+  flex:1; -webkit-appearance:none;
+  height:4px; background:rgba(74,122,42,.3);
+  outline:none; cursor:pointer; border-radius:2px;
+}
+#tl-slider::-webkit-slider-thumb {
+  -webkit-appearance:none; width:16px; height:16px;
+  border-radius:50%; background:var(--burn);
+  cursor:pointer; border:2px solid rgba(8,14,8,.8);
+  box-shadow:0 0 6px rgba(200,83,26,.5);
+}
 #tl-year { font-family:var(--display); font-size:20px; color:var(--parch); min-width:44px; }
 #tl-play-btn { background:none; border:0.5px solid rgba(74,122,42,.3); color:var(--data); font-family:var(--mono); font-size:9px; padding:4px 10px; cursor:pointer; letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; }
 #tl-play-btn:hover { background:rgba(74,122,42,.15); }
@@ -461,6 +468,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
     </div>
   </div>
   <div id="s-ctx"></div>
+  <div id="s-source"></div>
 </div>
 
 <div id="clock-block">
@@ -471,19 +479,13 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 
 
 
-<div id="progress">
-  <div id="prog-labels"><span>00:00</span><span id="prog-pct">0%</span><span>24:00</span></div>
-  <div id="prog-track"><div id="prog-fill"></div></div>
-</div>
-
-<div id="controls">
-  <span class="ctrl-label">Speed</span>
+<div id="progress" style="display:none"></div>
+<div id="controls" style="display:none">
   <button class="ctrl-btn active" data-spd="1">1×</button>
   <button class="ctrl-btn" data-spd="60">1min/s</button>
   <button class="ctrl-btn" data-spd="3600">1hr/s</button>
 </div>
-
-<div id="repin"><button id="repin-btn">↩ change pin</button></div>
+<div id="repin" style="display:none"><button id="repin-btn">↩ change pin</button></div>
 
 <div id="timeline">
   <div id="tl-top">
@@ -507,6 +509,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
     <input id="tl-slider" type="range" min="1972" max="2025" value="2025">
     <div id="tl-year">2025</div>
     <button id="tl-play-btn">▶ Play</button>
+    <button id="tl-speed" data-spd="1">Real time</button>
   </div>
   <div id="tl-info"></div>
 </div>
@@ -625,7 +628,10 @@ function hide(...ids) { ids.forEach(id => { const el=document.getElementById(id)
 
 function contextText(km2, rad, name) {
   let scale = km2<2?'smaller than most city parks':km2<8?'covering a large suburb':km2<18?'spanning several neighbourhoods':km2<25?'large enough to swallow a city centre':'an area most cities would call enormous';
-  return `${km2.toFixed(1)} km² cleared so far today — ${scale}, ${rad.toFixed(1)} km from ${name||'your pin'}. Based on ${DATA_SOURCE}.`;
+  return `${km2.toFixed(1)} km² cleared today — ${scale}, ${rad.toFixed(1)} km from ${name||'your pin'}.`;
+}
+function sourceText() {
+  return `Based on ${DATA_SOURCE}.`;
 }
 
 function updateRunnerPos(lat, lng) {
@@ -699,6 +705,7 @@ function tick(ts) {
   updateRunnerPos(rLat, rLng);
 
   document.getElementById('s-ctx').textContent = contextText(km2, rad, placeName);
+  document.getElementById('s-source').textContent = sourceText();
   // Update mobile bar
   const mKm2 = document.getElementById('mobile-km2');
   const mSrc = document.getElementById('mobile-source');
@@ -920,10 +927,23 @@ document.querySelectorAll('.tl-mode').forEach(btn=>btn.addEventListener('click',
   btn.classList.add('active'); tlMode=btn.dataset.mode;
   drawHistCircle(parseInt(document.getElementById('tl-slider').value));
 }));
+// Speed toggle — cycles Real time → Fast → Ultra on each click
+const SPEEDS = [
+  { spd: 1,    label: 'Real time' },
+  { spd: 60,   label: 'Fast' },
+  { spd: 3600, label: 'Ultra' }
+];
+let speedIdx = 0;
+document.getElementById('tl-speed').addEventListener('click', () => {
+  speedIdx = (speedIdx + 1) % SPEEDS.length;
+  speed = SPEEDS[speedIdx].spd;
+  lastTs = null;
+  document.getElementById('tl-speed').textContent = SPEEDS[speedIdx].label;
+});
+
+// Keep legacy ctrl-btn wired for hidden elements
 document.querySelectorAll('.ctrl-btn').forEach(btn=>btn.addEventListener('click',()=>{
   speed=parseInt(btn.dataset.spd); lastTs=null;
-  document.querySelectorAll('.ctrl-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
 }));
 
 // Keep --tl-height in sync so mobile-bar sits correctly above the timeline
