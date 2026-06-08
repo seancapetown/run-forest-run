@@ -5,6 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light">
 <title>Run Forest Run · The forest is running out</title>
+
+<!-- SEO -->
+<meta name="description" content="See today's Amazon deforestation visualised on streets you know. Real satellite data. Updated daily.">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://runforestrun.earth">
+<meta property="og:title" content="Run Forest Run · The forest is running out">
+<meta property="og:description" content="See today's Amazon deforestation visualised on streets you know. Real satellite data. Updated daily.">
+<meta property="og:image" content="https://runforestrun.earth/og-image.png">
+
+<!-- Twitter/X -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://runforestrun.earth">
+<meta name="twitter:title" content="Run Forest Run · The forest is running out">
+<meta name="twitter:description" content="See today's Amazon deforestation visualised on streets you know. Real satellite data. Updated daily.">
+<meta name="twitter:image" content="https://runforestrun.earth/og-image.png">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
@@ -138,6 +155,19 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 
 /* UI ELEMENTS — all above map */
 #hdr { position:fixed; top:0; left:0; right:0; z-index:100; padding:14px 20px 10px; background:linear-gradient(to bottom, rgba(8,14,8,.95) 60%, transparent); display:none; pointer-events:none; }
+/* LOCATION PILL */
+#location-pill {
+  display:none; align-items:center; gap:5px;
+  background:rgba(74,122,42,.12);
+  border:0.5px solid rgba(74,122,42,.3);
+  padding:5px 10px 5px 8px;
+  cursor:pointer; transition:all .2s;
+  max-width:160px;
+}
+#location-pill:hover { background:rgba(74,122,42,.22); border-color:rgba(74,122,42,.5); }
+#location-pill svg { flex-shrink:0; width:10px; height:10px; stroke:var(--living); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+#location-pill-name { font-family:var(--mono); font-size:9px; color:var(--parch); letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
 #hdr-inner { display:flex; align-items:center; gap:12px; }
 #hdr-wm { display:flex; gap:5px; align-items:baseline; }
 #hdr-wm span { font-family:var(--display); font-size:18px; line-height:1; }
@@ -180,13 +210,6 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   background:rgba(8,14,8,.92); border:0.5px solid rgba(74,122,42,.25);
   padding:14px 20px; width:90%; max-width:480px; text-align:center;
 }
-#tl-legend { display:flex; gap:16px; margin-bottom:10px; }
-.tll-item { display:flex; align-items:center; gap:7px; }
-.tll-swatch { flex-shrink:0; width:20px; height:2px; }
-.tll-solid { background:#c8531a; }
-.tll-dash { background:transparent; border-top:2px dashed rgba(139,26,26,.9); }
-.tll-label { font-size:8px; color:var(--data); letter-spacing:.08em; text-transform:uppercase; }
-
 #tl-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
 #tl-heading { font-size:8px; letter-spacing:.16em; text-transform:uppercase; color:var(--dim); }
 #tl-toggle { display:flex; }
@@ -338,6 +361,13 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   .leaflet-control-zoom { margin:0 !important; }
 }
 
+#tl-legend { display:flex; gap:16px; margin-bottom:10px; }
+.tll-item { display:flex; align-items:center; gap:7px; }
+.tll-swatch { flex-shrink:0; width:20px; height:2px; }
+.tll-solid { background:#c8531a; }
+.tll-dash { background:transparent; border-top:2px dashed rgba(139,26,26,.9); }
+.tll-label { font-size:8px; color:var(--data); letter-spacing:.08em; text-transform:uppercase; }
+
 /* SHARE */
 #share-btn {
   position:fixed; top:12px; right:16px; z-index:200;
@@ -404,6 +434,10 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
       </div>
       <div id="hdr-tag">The forest is running out</div>
     </div>
+    <div id="location-pill" title="Change location">
+      <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+      <span id="location-pill-name">—</span>
+    </div>
   </div>
 </div>
 
@@ -434,8 +468,6 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   <div id="prog-labels"><span>00:00</span><span id="prog-pct">0%</span><span>24:00</span></div>
   <div id="prog-track"><div id="prog-fill"></div></div>
 </div>
-
-
 
 <div id="controls">
   <span class="ctrl-label">Speed</span>
@@ -533,27 +565,22 @@ async function fetchDailyRate() {
   }
 }
 
+// Fetch land-clipped circle from Vercel serverless function
 // Client-side land clipping engine
-// Land data loaded once, cached in memory, intersection done locally with Turf
 let landData = null;
 let landLoading = false;
 let landLoadCallbacks = [];
-const circleCache = new Map(); // keyed by "radius:1dp" — reused across years and modes
+const circleCache = new Map();
 
 async function loadLandData() {
   if (landData) return landData;
-  if (landLoading) {
-    return new Promise(resolve => landLoadCallbacks.push(resolve));
-  }
+  if (landLoading) return new Promise(resolve => landLoadCallbacks.push(resolve));
   landLoading = true;
   try {
     const res = await fetch('/ne_10m_land.geojson');
-    if (!res.ok) throw new Error('Failed to load land data');
+    if (!res.ok) throw new Error('Failed');
     landData = await res.json();
-  } catch(e) {
-    console.warn('Land data unavailable, circles will be unclipped');
-    landData = null;
-  }
+  } catch(e) { landData = null; }
   landLoading = false;
   landLoadCallbacks.forEach(cb => cb(landData));
   landLoadCallbacks = [];
@@ -563,11 +590,8 @@ async function loadLandData() {
 function clipCircleToLand(lat, lng, radiusKm) {
   const cacheKey = `${lat.toFixed(4)},${lng.toFixed(4)},${radiusKm.toFixed(1)}`;
   if (circleCache.has(cacheKey)) return circleCache.get(cacheKey);
-
   const circ = turf.circle([lng, lat], radiusKm, { steps:128, units:'kilometers' });
   if (!landData) return circ;
-
-  // Bbox pre-filter — discard features that can't possibly intersect
   const circBbox = turf.bbox(circ);
   const clipped = [];
   for (const feature of landData.features) {
@@ -578,12 +602,10 @@ function clipCircleToLand(lat, lng, radiusKm) {
       if (ix) clipped.push(ix);
     } catch(e) {}
   }
-
   const result = turf.featureCollection(clipped.length ? clipped : [circ]);
   circleCache.set(cacheKey, result);
   return result;
 }
-
 
 function initMap() {
   map = L.map('map', { center:[20,0], zoom:3, zoomControl:false });
@@ -648,10 +670,10 @@ function tick(ts) {
   document.getElementById('clock').textContent = fmtTime(now);
   document.getElementById('date-str').textContent = fmtDate(now);
 
-  // Update daily circle — use client-side clip when radius changes meaningfully
+  // Update daily circle — fetch clipped version when radius changes meaningfully
   if (!clearCircle._lastClipRad || Math.abs(rad - clearCircle._lastClipRad) > 0.1) {
     clearCircle._lastClipRad = rad;
-    clearCircle.setRadius(rad * 1000); // update plain circle immediately
+    clearCircle.setRadius(rad * 1000);
     if (landData) {
       const geojson = clipCircleToLand(pinLat, pinLng, rad);
       if (clearCircle._clipped) { map.removeLayer(clearCircle._clipped); }
@@ -660,7 +682,6 @@ function tick(ts) {
       }).addTo(map);
       clearCircle.setRadius(0);
     } else {
-      // Land not loaded yet — load once then update
       loadLandData().then(() => {
         if (!clearCircle) return;
         const geojson = clipCircleToLand(pinLat, pinLng, clearCircle._lastClipRad);
@@ -697,6 +718,12 @@ function tick(ts) {
 
 function startRun(lat, lng, name) {
   pinLat=lat; pinLng=lng; placeName=name;
+  const pill = document.getElementById('location-pill');
+  const pillName = document.getElementById('location-pill-name');
+  if (pill && pillName) {
+    pillName.textContent = name || 'My location';
+    pill.style.display = 'flex';
+  }
   map.setView([lat,lng], 14);
 
   L.circleMarker([lat,lng], {radius:5, color:'#c8531a', fillColor:'#c8531a', fillOpacity:.9, weight:2}).addTo(map);
@@ -737,14 +764,10 @@ function drawHistCircle(yr) {
   const annual = ANNUAL_LOSS[yr]||0;
   const km2 = tlMode==='cumulative' ? total : annual;
   const radiusKm = Math.sqrt(Math.max(km2,1)/Math.PI);
-
-  // Update UI text immediately
   document.getElementById('tl-year').textContent = yr;
   document.getElementById('tl-info').textContent = tlMode==='cumulative'
     ? `${yr}: −${annual.toLocaleString()} km² that year · −${total.toLocaleString()} km² total since 1972`
     : `${yr}: −${annual.toLocaleString()} km² cleared that year · radius ${radiusKm.toFixed(0)} km`;
-
-  // Draw plain circle immediately as visual feedback
   if (histCircle) { map.removeLayer(histCircle); histCircle=null; }
   histCircle = L.circle([pinLat,pinLng], {
     radius: radiusKm*1000,
@@ -753,12 +776,9 @@ function drawHistCircle(yr) {
     weight:2, dashArray:tlMode==='annual'?null:'10 6',
     opacity:0.85, interactive:false
   }).addTo(map);
-
-  // Debounce the clipped version — only fires when slider stops moving
   clearTimeout(drawDebounceTimer);
   drawDebounceTimer = setTimeout(() => {
     if (!landData) {
-      // Land not loaded yet — load it then draw
       loadLandData().then(() => renderClippedHistCircle(yr, radiusKm));
     } else {
       renderClippedHistCircle(yr, radiusKm);
@@ -873,12 +893,11 @@ function resetAll() {
   if(histCircle){map.removeLayer(histCircle);histCircle=null;}
   if(tlTimer){clearInterval(tlTimer);tlPlaying=false;}
   runnerEl.style.display='none'; trailCoords=[];
-  circleCache.clear(); // clear cache on new pin — different location, different geometry
   hide('hdr','stats','clock-block','ctx-bar','progress','controls','repin','timeline','info-panel');
   const mb = document.getElementById('mobile-bar');
   if (mb) mb.style.display = 'none';
-  const shareBtn = document.getElementById('share-btn');
-  if (shareBtn) shareBtn.style.display = 'none';
+  const pill = document.getElementById('location-pill');
+  if (pill) pill.style.display = 'none';
   setTimeout(showPinScreen,100);
   document.getElementById('search-results').innerHTML='';
   document.getElementById('search-inp').value='';
@@ -888,6 +907,7 @@ function resetAll() {
 // Events
 document.getElementById('splash-cta').addEventListener('click', hideSplash);
 document.getElementById('repin-btn').addEventListener('click', resetAll);
+document.getElementById('location-pill').addEventListener('click', resetAll);
 document.getElementById('search-btn').addEventListener('click', doSearch);
 document.getElementById('geo-btn').addEventListener('click', useGeo);
 document.getElementById('search-inp').addEventListener('keydown', e=>{ if(e.key==='Enter'){clearTimeout(searchTimer);doSearch();} });
