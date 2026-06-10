@@ -274,33 +274,20 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 .tll-dash { background:transparent; border-top:2px dashed rgba(200,83,26,.6); }
 .tll-label { font-size:8px; color:var(--data); letter-spacing:.08em; text-transform:uppercase; }
 #tl-controls { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+#tl-start { font-family:var(--mono); font-size:11px; color:var(--dim); letter-spacing:.04em; flex-shrink:0; }
 #tl-slider {
   flex:1; -webkit-appearance:none;
   height:4px; background:rgba(232,220,200,.12);
-  outline:none; cursor:pointer; border-radius:var(--radius-pill);
+  outline:none; cursor:ew-resize; border-radius:var(--radius-pill);
 }
 #tl-slider::-webkit-slider-thumb {
   -webkit-appearance:none; width:18px; height:18px;
   border-radius:50%; background:var(--burn);
-  cursor:pointer;
+  cursor:ew-resize;
   border:2px solid rgba(232,220,200,.2);
   box-shadow:0 2px 8px rgba(200,83,26,.6), 0 0 0 1px rgba(200,83,26,.2);
 }
 #tl-year { font-family:var(--display); font-size:20px; color:var(--parch); min-width:44px; }
-#tl-play-btn {
-  background:rgba(232,220,200,.06); border:0.5px solid var(--glass-border);
-  border-radius:var(--radius-pill);
-  color:var(--data); font-family:var(--mono); font-size:9px;
-  padding:5px 12px; cursor:pointer; letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; transition:all .2s;
-}
-#tl-play-btn:hover { background:rgba(74,122,42,.2); }
-#tl-speed {
-  background:rgba(232,220,200,.06); border:0.5px solid var(--glass-border);
-  border-radius:var(--radius-pill);
-  color:var(--data); font-family:var(--mono); font-size:9px;
-  padding:5px 12px; cursor:pointer; letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; transition:all .2s;
-}
-#tl-speed:hover { background:rgba(74,122,42,.2); }
 #tl-info { font-size:9px; color:rgba(200,83,26,.8); letter-spacing:.06em; line-height:1.5; }
 
 /* ZOOM CONTROLS — glass */
@@ -478,10 +465,6 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
       <div class="s-value"><span id="v-rad">—</span><span class="s-unit">km</span></div>
       <div class="s-label">Radius from pin</div>
     </div>
-    <div class="s-col">
-      <div class="s-value"><span id="v-run">—</span><span class="s-unit">km</span></div>
-      <div class="s-label">Forest has run</div>
-    </div>
   </div>
   <div id="s-divider"></div>
   <div id="s-ctx"></div>
@@ -509,10 +492,9 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
     <div class="tll-item"><div class="tll-swatch tll-dash"></div><div class="tll-label">Cumulative since 1972</div></div>
   </div>
   <div id="tl-controls">
+    <div id="tl-start">1972</div>
     <input id="tl-slider" type="range" min="1972" max="2025" value="2025">
     <div id="tl-year">2025</div>
-    <button id="tl-play-btn">▶ Play</button>
-    <button id="tl-speed">Real time</button>
   </div>
   <div id="tl-info"></div>
 </div>
@@ -558,7 +540,7 @@ let map, runnerEl;
 let pinLat = null, pinLng = null, placeName = '';
 let simSec = 0, speed = 1, raf = null, lastTs = null, running = false;
 let clearCircle = null, trailLine = null, trailCoords = [];
-let histCircle = null, tlPlaying = false, tlTimer = null, tlMode = 'cumulative';
+let histCircle = null, tlMode = 'cumulative';
 let searchTimer = null;
 
 // ── CLIENT-SIDE LAND CLIPPING ──────────────────────────────
@@ -630,7 +612,7 @@ function dayFraction() {
 }
 function fmtTime(d) { return d.toTimeString().slice(0,8); }
 function fmtDate(d) { return d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).toUpperCase(); }
-function show(...ids) { ids.forEach(id => { const el=document.getElementById(id); if(el) el.style.display = id==='controls'?'flex':'block'; }); }
+function show(...ids) { ids.forEach(id => { const el=document.getElementById(id); if(el) el.style.display='block'; }); }
 function hide(...ids) { ids.forEach(id => { const el=document.getElementById(id); if(el) el.style.display='none'; }); }
 
 function contextText(km2, rad, name) {
@@ -669,7 +651,6 @@ function tick(ts) {
 
   document.getElementById('v-km2').textContent = km2.toFixed(2);
   document.getElementById('v-rad').textContent = rad.toFixed(2);
-  document.getElementById('v-run').textContent = (frac * 2 * Math.PI * Math.sqrt(DAILY_KM2/Math.PI) * 1.05).toFixed(2);
 
   const now = new Date();
   document.getElementById('clock').textContent = fmtTime(now);
@@ -804,35 +785,12 @@ function cumulativeLoss(yr) {
   return Object.entries(ANNUAL_LOSS).filter(([y])=>parseInt(y)<=yr).reduce((s,[,v])=>s+v,0);
 }
 
-// ── TIMELINE PLAY ──────────────────────────────────────────
-function playTimeline() {
-  if (tlPlaying) {
-    tlPlaying=false; clearInterval(tlTimer);
-    document.getElementById('tl-play-btn').textContent='▶ Play'; return;
-  }
-  tlPlaying=true;
-  document.getElementById('tl-play-btn').textContent='⏸ Pause';
-  const slider = document.getElementById('tl-slider');
-  slider.value=1972; drawHistCircle(1972);
-  tlTimer = setInterval(()=>{
-    const yr=parseInt(slider.value);
-    if(yr>=2025){
-      clearInterval(tlTimer); tlPlaying=false;
-      document.getElementById('tl-play-btn').textContent='▶ Play';
-      return;
-    }
-    slider.value=yr+1; drawHistCircle(yr+1);
-  },250);
-  // Timeline play is isolated — does NOT affect daily simulation speed or tick
-}
-
 // ── RESET ──────────────────────────────────────────────────
 function resetAll() {
   running=false; cancelAnimationFrame(raf);
   if(clearCircle){ if(clearCircle._clipped) map.removeLayer(clearCircle._clipped); map.removeLayer(clearCircle); clearCircle=null; }
   if(trailLine){ map.removeLayer(trailLine); trailLine=null; }
   if(histCircle){ map.removeLayer(histCircle); histCircle=null; }
-  if(tlTimer){ clearInterval(tlTimer); tlPlaying=false; }
   runnerEl.style.display='none'; trailCoords=[];
   circleCache.clear();
   hide('hdr','stats','clock-block','timeline');
@@ -924,21 +882,11 @@ document.getElementById('search-inp').addEventListener('input', e=>{
   searchTimer=setTimeout(doSearch,400);
 });
 document.getElementById('tl-slider').addEventListener('input', e=>drawHistCircle(parseInt(e.target.value)));
-document.getElementById('tl-play-btn').addEventListener('click', playTimeline);
 document.querySelectorAll('.tl-mode').forEach(btn=>btn.addEventListener('click',()=>{
   document.querySelectorAll('.tl-mode').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active'); tlMode=btn.dataset.mode;
   drawHistCircle(parseInt(document.getElementById('tl-slider').value));
 }));
-
-// Speed toggle — cycles Real time → Fast → Ultra
-const SPEEDS = [{spd:1,label:'Real time'},{spd:60,label:'Fast'},{spd:3600,label:'Ultra'}];
-let speedIdx = 0;
-document.getElementById('tl-speed').addEventListener('click', ()=>{
-  speedIdx = (speedIdx+1) % SPEEDS.length;
-  speed = SPEEDS[speedIdx].spd; lastTs = null;
-  document.getElementById('tl-speed').textContent = SPEEDS[speedIdx].label;
-});
 
 // Share
 document.getElementById('share-btn').addEventListener('click', async ()=>{
