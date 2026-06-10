@@ -893,16 +893,10 @@ function hideSplash() {
   s.style.opacity='0';
   setTimeout(()=>{
     s.style.display='none';
+    // Show pin screen immediately — user can start searching straight away
     showPinScreen();
-    const overlay=document.getElementById('satellite-overlay');
-    if(overlay){ overlay.style.display='flex'; overlay.style.opacity='1'; }
-    fetchDailyRate().then(()=>{
-      if(overlay){
-        overlay.style.transition='opacity .6s ease';
-        overlay.style.opacity='0';
-        setTimeout(()=>{ overlay.style.display='none'; overlay.style.opacity=''; overlay.style.transition=''; },600);
-      }
-    });
+    // Fetch data silently in background — no overlay
+    fetchDailyRate();
   },800);
 }
 
