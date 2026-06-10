@@ -301,19 +301,6 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 }
 .leaflet-control-zoom a:hover { background:rgba(200,83,26,.2)!important; }
 
-/* SATELLITE DATA OVERLAY */
-#satellite-overlay {
-  position:fixed; inset:0; z-index:950; background:rgba(8,14,8,.92);
-  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
-  display:none; flex-direction:column; align-items:center; justify-content:center; gap:24px; padding:40px 24px;
-}
-#satellite-overlay .spinner {
-  width:28px; height:28px; border:2px solid rgba(74,122,42,.2);
-  border-top-color:var(--living); border-radius:50%; animation:spin .8s linear infinite;
-}
-#satellite-overlay h3 { font-family:var(--display); font-size:16px; color:var(--parch); font-weight:700; text-align:center; }
-#satellite-overlay p { font-size:9px; color:var(--data); letter-spacing:.12em; text-transform:uppercase; text-align:center; line-height:1.8; }
-
 /* RUNNER */
 #runner { position:fixed; z-index:201; pointer-events:none; transform:translate(-50%,-50%); display:none; flex-direction:column; align-items:center; }
 #runner-label { font-family:var(--display); font-size:8px; color:var(--parch); white-space:nowrap; margin-top:2px; text-shadow:0 0 10px #000, 0 0 20px #000; }
@@ -396,12 +383,6 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   #tl-year { font-size:16px; min-width:38px; }
   #tl-heading { font-size:7px; }
   #tl-info { font-size:8px; white-space:normal; }
-  #tl-speed { display:none; }
-
-  /* Satellite overlay */
-  #sat-title { font-size:clamp(20px,6vw,28px); }
-  .sat-stat-value { font-size:20px; }
-  .sat-stat-label { font-size:7px; }
 }
 </style>
 </head>
@@ -524,13 +505,6 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   <span id="mobile-change-pin-name">—</span>
   <span id="mobile-change-pin-divider"></span>
   <span id="mobile-change-pin-action">Change Pin</span>
-</div>
-
-<!-- SATELLITE OVERLAY -->
-<div id="satellite-overlay">
-  <div class="spinner"></div>
-  <h3>Connecting to satellite</h3>
-  <p>Fetching today's Amazon deforestation data<br>from Global Forest Watch</p>
 </div>
 
 <!-- RUNNER SVG -->
@@ -770,22 +744,41 @@ function startRun(lat, lng, name) {
 
 // ── HIST CIRCLE ────────────────────────────────────────────
 let drawDebounceTimer = null;
+let histCirclePlain = null; // persistent plain circle — reused via setRadius, never recreated
+
 function drawHistCircle(yr) {
   if (!pinLat) return;
   const total = cumulativeLoss(yr);
   const annual = ANNUAL_LOSS[yr]||0;
   const km2 = tlMode==='cumulative' ? total : annual;
   const radiusKm = Math.sqrt(Math.max(km2,1)/Math.PI);
+
+  // Update text immediately — zero cost
   document.getElementById('tl-year').textContent = yr;
   document.getElementById('tl-info').textContent = tlMode==='cumulative'
     ? `${yr}: −${annual.toLocaleString()} km² that year · −${total.toLocaleString()} km² total since 1972`
     : `${yr}: −${annual.toLocaleString()} km² cleared that year · radius ${radiusKm.toFixed(0)} km`;
-  if (histCircle) { map.removeLayer(histCircle); histCircle=null; }
-  histCircle = L.circle([pinLat,pinLng], {
-    radius: radiusKm*1000, color:'#8b1a1a', fillColor:'#8b1a1a',
+
+  // Reuse plain circle — setRadius is a single DOM update, not destroy/recreate
+  const plainStyle = {
     fillOpacity: tlMode==='annual'?0.20:0.12,
-    weight:2, dashArray:tlMode==='annual'?null:'10 6', opacity:0.85, interactive:false
-  }).addTo(map);
+    dashArray: tlMode==='annual'?null:'10 6',
+    opacity: 0.85
+  };
+  if (!histCirclePlain) {
+    histCirclePlain = L.circle([pinLat,pinLng], {
+      radius: radiusKm*1000, color:'#8b1a1a', fillColor:'#8b1a1a',
+      weight:2, interactive:false, ...plainStyle
+    }).addTo(map);
+  } else {
+    histCirclePlain.setRadius(radiusKm*1000);
+    histCirclePlain.setStyle(plainStyle);
+  }
+
+  // Remove previous clipped GeoJSON layer
+  if (histCircle) { map.removeLayer(histCircle); histCircle=null; }
+
+  // Debounce the expensive Turf clipping — only fires when slider stops
   clearTimeout(drawDebounceTimer);
   drawDebounceTimer = setTimeout(() => {
     if (!landData) { loadLandData().then(() => renderClippedHist(radiusKm)); }
@@ -794,8 +787,11 @@ function drawHistCircle(yr) {
 }
 
 function renderClippedHist(radiusKm) {
+  if (!pinLat) return; // guard against resetAll firing mid-debounce
   const geojson = clipCircleToLand(pinLat, pinLng, radiusKm);
   if (!geojson) return;
+  // Hide plain circle once clipped version is ready
+  if (histCirclePlain) histCirclePlain.setStyle({ opacity:0, fillOpacity:0 });
   if (histCircle) { map.removeLayer(histCircle); histCircle=null; }
   histCircle = L.geoJSON(geojson, {
     style: {
@@ -806,9 +802,15 @@ function renderClippedHist(radiusKm) {
   }).addTo(map);
 }
 
-function cumulativeLoss(yr) {
-  return Object.entries(ANNUAL_LOSS).filter(([y])=>parseInt(y)<=yr).reduce((s,[,v])=>s+v,0);
-}
+// Pre-computed cumulative loss lookup — O(1) per year, computed once at startup
+const CUMULATIVE_LOSS = {};
+let _cum = 0;
+Object.keys(ANNUAL_LOSS).sort((a,b)=>a-b).forEach(yr => {
+  _cum += ANNUAL_LOSS[yr];
+  CUMULATIVE_LOSS[yr] = _cum;
+});
+
+function cumulativeLoss(yr) { return CUMULATIVE_LOSS[yr] || 0; }
 
 // ── RESET ──────────────────────────────────────────────────
 function resetAll() {
@@ -816,6 +818,7 @@ function resetAll() {
   if(clearCircle){ if(clearCircle._clipped) map.removeLayer(clearCircle._clipped); map.removeLayer(clearCircle); clearCircle=null; }
   if(trailLine){ map.removeLayer(trailLine); trailLine=null; }
   if(histCircle){ map.removeLayer(histCircle); histCircle=null; }
+  if(histCirclePlain){ map.removeLayer(histCirclePlain); histCirclePlain=null; }
   runnerEl.style.display='none'; trailCoords=[];
   circleCache.clear();
   hide('hdr','stats','clock-block','timeline');
@@ -912,6 +915,8 @@ document.getElementById('tl-slider').addEventListener('input', e=>drawHistCircle
 document.querySelectorAll('.tl-mode').forEach(btn=>btn.addEventListener('click',()=>{
   document.querySelectorAll('.tl-mode').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active'); tlMode=btn.dataset.mode;
+  // Restore plain circle visibility before new clipped version renders
+  if (histCirclePlain) histCirclePlain.setStyle({ opacity:0.85, fillOpacity: tlMode==='annual'?0.20:0.12 });
   drawHistCircle(parseInt(document.getElementById('tl-slider').value));
 }));
 
