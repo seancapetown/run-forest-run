@@ -156,31 +156,27 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   border-bottom:0.5px solid var(--glass-border);
   display:none; pointer-events:none;
 }
-#hdr-inner { display:flex; align-items:center; gap:12px; pointer-events:all; }
+#hdr-inner { display:flex; align-items:center; pointer-events:all; }
 #hdr-wm { display:flex; gap:5px; align-items:baseline; }
 #hdr-wm span { font-family:var(--display); font-size:18px; line-height:1; }
 #hdr-tag { font-size:8px; letter-spacing:.16em; text-transform:uppercase; color:var(--dim); margin-top:2px; }
 
-/* LOCATION PILL — glass pill */
+/* LOCATION PILL — sits below stats card, above context text */
 #location-pill {
   display:none; align-items:center; gap:8px;
-  background:var(--glass-bg);
-  backdrop-filter:var(--glass-blur);
-  -webkit-backdrop-filter:var(--glass-blur);
-  border:0.5px solid var(--glass-border);
+  background:rgba(200,83,26,.12);
+  border:0.5px solid rgba(200,83,26,.25);
   border-radius:var(--radius-pill);
   box-shadow:var(--glass-shadow);
   padding:7px 14px 7px 10px;
   cursor:pointer; transition:all .25s; pointer-events:all;
+  margin-top:10px; align-self:flex-start;
 }
-#location-pill:hover {
-  background:rgba(200,83,26,.18);
-  border-color:rgba(200,83,26,.35);
-}
+#location-pill:hover { background:rgba(200,83,26,.22); border-color:rgba(200,83,26,.5); }
 #location-pill svg { flex-shrink:0; width:10px; height:10px; stroke:var(--burn); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
-#location-pill-name { font-family:var(--mono); font-size:9px; color:var(--parch); letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:120px; }
-#location-pill-divider { width:0.5px; height:10px; background:var(--glass-border); margin:0 2px; }
-#location-pill-action { font-family:var(--mono); font-size:9px; color:rgba(232,220,200,.6); letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; }
+#location-pill-name { font-family:var(--mono); font-size:9px; color:var(--parch); letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:140px; }
+#location-pill-divider { width:0.5px; height:10px; background:rgba(200,83,26,.3); margin:0 2px; }
+#location-pill-action { font-family:var(--mono); font-size:9px; color:rgba(232,220,200,.7); letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; }
 
 /* SHARE BUTTON — glass pill */
 #share-btn {
@@ -345,14 +341,30 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   #clock-block { display:none !important; }
   #stats { display:none !important; }
   #share-btn { display:none !important; }
+  #location-pill { display:none !important; }
+
+  /* Mobile change pin pill — above mobile bar, centred */
+  #mobile-change-pin {
+    position:fixed; bottom:calc(var(--tl-height, 170px) + 56px);
+    left:50%; transform:translateX(-50%);
+    z-index:500; display:none; align-items:center; gap:8px;
+    background:var(--glass-bg);
+    backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
+    border:0.5px solid var(--glass-border);
+    border-radius:var(--radius-pill);
+    box-shadow:var(--glass-shadow);
+    padding:8px 18px 8px 12px;
+    cursor:pointer; pointer-events:all; white-space:nowrap;
+  }
+  #mobile-change-pin svg { width:11px; height:11px; stroke:var(--burn); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
+  #mobile-change-pin-name { font-family:var(--mono); font-size:10px; color:var(--parch); letter-spacing:.08em; text-transform:uppercase; }
+  #mobile-change-pin-divider { width:0.5px; height:10px; background:var(--glass-border); margin:0 2px; }
+  #mobile-change-pin-action { font-family:var(--mono); font-size:10px; color:rgba(232,220,200,.6); letter-spacing:.08em; text-transform:uppercase; }
 
   /* Header */
   #hdr { padding:10px 14px 8px; }
   #hdr-wm span { font-size:14px; }
   #hdr-tag { font-size:7px; }
-  #location-pill-action { display:none; }
-
-  /* Zoom — top left, below status bar */
   .leaflet-top.leaflet-left { top:56px !important; left:10px !important; }
   .leaflet-control-zoom { margin:0 !important; }
 
@@ -439,12 +451,6 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
       </div>
       <div id="hdr-tag">The forest is running out</div>
     </div>
-    <div id="location-pill">
-      <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-      <span id="location-pill-name">—</span>
-      <span id="location-pill-divider"></span>
-      <span id="location-pill-action">Change Pin</span>
-    </div>
   </div>
 </div>
 
@@ -465,6 +471,12 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
       <div class="s-value"><span id="v-rad">—</span><span class="s-unit">km</span></div>
       <div class="s-label">Radius from pin</div>
     </div>
+  </div>
+  <div id="location-pill">
+    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+    <span id="location-pill-name">—</span>
+    <span id="location-pill-divider"></span>
+    <span id="location-pill-action">Change Pin</span>
   </div>
   <div id="s-divider"></div>
   <div id="s-ctx"></div>
@@ -504,6 +516,14 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   <div id="mobile-km2">—<span>km²</span></div>
   <div id="mobile-label">Cleared today in the Amazon</div>
   <div id="mobile-source"></div>
+</div>
+
+<!-- MOBILE CHANGE PIN -->
+<div id="mobile-change-pin">
+  <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+  <span id="mobile-change-pin-name">—</span>
+  <span id="mobile-change-pin-divider"></span>
+  <span id="mobile-change-pin-action">Change Pin</span>
 </div>
 
 <!-- SATELLITE OVERLAY -->
@@ -716,10 +736,15 @@ function startRun(lat, lng, name) {
 
   document.getElementById('loc-name').textContent = name||'';
 
-  // Location pill
+  // Location pill — desktop
   const pill = document.getElementById('location-pill');
   const pillName = document.getElementById('location-pill-name');
   if (pill && pillName) { pillName.textContent = name||'My location'; pill.style.display='flex'; }
+
+  // Mobile change pin
+  const mcp = document.getElementById('mobile-change-pin');
+  const mcpName = document.getElementById('mobile-change-pin-name');
+  if (mcp && mcpName) { mcpName.textContent = name||'My location'; mcp.style.display='flex'; }
 
   // Share button
   const shareBtn = document.getElementById('share-btn');
@@ -796,6 +821,7 @@ function resetAll() {
   hide('hdr','stats','clock-block','timeline');
   const mb = document.getElementById('mobile-bar'); if(mb) mb.style.display='none';
   const pill = document.getElementById('location-pill'); if(pill) pill.style.display='none';
+  const mcp = document.getElementById('mobile-change-pin'); if(mcp) mcp.style.display='none';
   const shareBtn = document.getElementById('share-btn'); if(shareBtn) shareBtn.style.display='none';
   setTimeout(showPinScreen, 100);
   document.getElementById('search-results').innerHTML='';
@@ -873,6 +899,7 @@ new MutationObserver(updateTimelineOffset)
 // ── EVENTS ─────────────────────────────────────────────────
 document.getElementById('splash-cta').addEventListener('click', hideSplash);
 document.getElementById('location-pill').addEventListener('click', resetAll);
+document.getElementById('mobile-change-pin').addEventListener('click', resetAll);
 document.getElementById('search-btn').addEventListener('click', doSearch);
 document.getElementById('geo-btn').addEventListener('click', useGeo);
 document.getElementById('search-inp').addEventListener('keydown', e=>{ if(e.key==='Enter'){clearTimeout(searchTimer);doSearch();} });
