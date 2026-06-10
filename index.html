@@ -32,8 +32,8 @@
   --burn:   #c8531a;
   --living: #4a7a2a;
   --parch:  #e8dcc8;
-  --dim:    #3a5a2a;
-  --data:   #6a8a5a;
+  --dim:    rgba(232,220,200,.35);
+  --data:   #8a9a7a;
   --display:'Playfair Display', Georgia, serif;
   --mono:   'IBM Plex Mono', monospace;
 }
@@ -137,11 +137,11 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
    - subtle outer shadow lifts element off the map
 ──────────────────────────────────────────────────────── */
 :root {
-  --glass-bg:    rgba(18, 22, 18, 0.55);
-  --glass-tint:  rgba(232, 220, 200, 0.04);
-  --glass-border: rgba(232, 220, 200, 0.12);
+  --glass-bg:    rgba(22, 28, 22, 0.65);
+  --glass-tint:  rgba(232, 220, 200, 0.05);
+  --glass-border: rgba(232, 220, 200, 0.14);
   --glass-blur:  blur(20px) saturate(1.4);
-  --glass-shadow: 0 4px 32px rgba(0,0,0,.35), inset 0 0.5px 0 rgba(232,220,200,.12);
+  --glass-shadow: 0 4px 32px rgba(0,0,0,.4), inset 0 0.5px 0 rgba(232,220,200,.14);
   --radius-pill: 100px;
   --radius-card: 20px;
 }
@@ -200,7 +200,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
   border:0.5px solid rgba(74,122,42,.3);
   border-radius:var(--radius-pill);
-  color:#8aaa7a; font-family:var(--mono); font-size:9px;
+  color:var(--data); font-family:var(--mono); font-size:9px;
   letter-spacing:.1em; padding:6px 14px;
   opacity:0; transition:opacity .3s ease; pointer-events:none;
 }
@@ -240,7 +240,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 }
 #clock { font-size:26px; font-weight:300; color:var(--parch); letter-spacing:.06em; }
 #date-str { font-size:8px; color:rgba(232,220,200,.55); letter-spacing:.1em; text-transform:uppercase; margin-top:3px; }
-#loc-name { font-size:9px; color:#8aaa7a; margin-top:4px; font-style:italic; }
+#loc-name { font-size:9px; color:var(--living); margin-top:4px; font-style:italic; opacity:0.8; }
 
 /* TIMELINE — glass card, bottom centre */
 #timeline {
