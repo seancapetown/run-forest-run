@@ -22,6 +22,8 @@
 <meta name="twitter:description" content="See today's Amazon deforestation visualised on streets you know. Real satellite data. Updated daily.">
 <meta name="twitter:image" content="https://runforestrun.earth/og-image.png">
 
+<link rel="preload" href="forest-runner.png" as="image">
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=IBM+Plex+Mono:wght@300;400&display=swap" as="style">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -59,9 +61,11 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   position:fixed; inset:0; z-index:1000;
   display:flex; align-items:flex-end; padding:48px 52px;
   overflow:hidden; transition:opacity .8s ease;
+  background-color:#0d1a0a;
 }
 #splash-bg {
   position:absolute; inset:0;
+  background-color:#0d1a0a;
   background:url('forest-runner.png') center/cover no-repeat;
   transform:scale(1.04); transition:transform 6s ease-out;
 }
