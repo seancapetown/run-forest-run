@@ -23,7 +23,6 @@
 <meta name="twitter:image" content="https://runforestrun.earth/og-image.png">
 
 <link rel="preload" href="forest-runner.png" as="image">
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=IBM+Plex+Mono:wght@300;400&display=swap" as="style">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -65,8 +64,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 }
 #splash-bg {
   position:absolute; inset:0;
-  background-color:#0d1a0a;
-  background:url('forest-runner.png') center/cover no-repeat;
+  background:#0d1a0a url('forest-runner.png') center/cover no-repeat;
   transform:scale(1.04); transition:transform 6s ease-out;
 }
 #splash-bg::after {
@@ -246,6 +244,9 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 #date-str { font-size:8px; color:rgba(232,220,200,.55); letter-spacing:.1em; text-transform:uppercase; margin-top:3px; }
 #loc-name { font-size:9px; color:var(--living); margin-top:4px; font-style:italic; opacity:0.8; }
 
+/* Mobile stats row — hidden on desktop, shown on mobile via media query */
+#tl-mobile-stats { display:none; }
+
 /* TIMELINE — glass card, bottom centre */
 #timeline {
   position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
@@ -334,23 +335,9 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   #share-btn { display:none !important; }
   #location-pill { display:none !important; }
 
-  /* Mobile change pin pill — above mobile bar, centred */
-  #mobile-change-pin {
-    position:fixed; bottom:calc(var(--tl-height, 170px) + 56px);
-    left:50%; transform:translateX(-50%);
-    z-index:500; display:none; align-items:center; gap:8px;
-    background:var(--glass-bg);
-    backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
-    border:0.5px solid var(--glass-border);
-    border-radius:var(--radius-pill);
-    box-shadow:var(--glass-shadow);
-    padding:8px 18px 8px 12px;
-    cursor:pointer; pointer-events:all; white-space:nowrap;
-  }
-  #mobile-change-pin svg { width:11px; height:11px; stroke:var(--burn); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
-  #mobile-change-pin-name { font-family:var(--mono); font-size:10px; color:var(--parch); letter-spacing:.08em; text-transform:uppercase; }
-  #mobile-change-pin-divider { width:0.5px; height:10px; background:var(--glass-border); margin:0 2px; }
-  #mobile-change-pin-action { font-family:var(--mono); font-size:10px; color:rgba(232,220,200,.6); letter-spacing:.08em; text-transform:uppercase; }
+  /* Hide separate mobile elements — unified into timeline panel */
+  #mobile-bar { display:none !important; }
+  #mobile-change-pin { display:none !important; }
 
   /* Header */
   #hdr { padding:10px 14px 8px; }
@@ -375,18 +362,46 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   .result { font-size:14px !important; padding:12px 20px !important; }
   #search-results { max-height:200px !important; }
 
-  /* Timeline — full width, flush bottom, glass */
+  /* UNIFIED BOTTOM PANEL — timeline is the single source of truth on mobile */
   #timeline {
     bottom:0 !important; left:0 !important; right:0 !important;
     width:100% !important; max-width:100% !important;
-    transform:none !important; border-radius:20px 20px 0 0 !important;
+    transform:none !important;
+    border-radius:20px 20px 0 0 !important;
     border-left:none !important; border-right:none !important; border-bottom:none !important;
-    padding:12px 16px env(safe-area-inset-bottom,16px) !important;
+    padding:16px 20px env(safe-area-inset-bottom,20px) !important;
   }
-  #tl-top { flex-wrap:wrap; gap:6px; }
+
+  /* Mobile stats row inside timeline — hero number + location */
+  #tl-mobile-stats {
+    display:flex !important;
+    align-items:flex-end; justify-content:space-between;
+    margin-bottom:14px;
+  }
+  #tl-mobile-km2 { font-family:var(--display); font-size:42px; font-weight:700; color:var(--parch); line-height:1; }
+  #tl-mobile-km2 span { font-size:14px; color:var(--data); margin-left:3px; }
+  #tl-mobile-label { font-size:8px; color:var(--data); letter-spacing:.12em; text-transform:uppercase; margin-top:3px; }
+  #tl-mobile-right { display:flex; flex-direction:column; align-items:flex-end; gap:6px; }
+  #tl-mobile-pin {
+    display:flex; align-items:center; gap:6px;
+    background:rgba(200,83,26,.12); border:0.5px solid rgba(200,83,26,.25);
+    border-radius:var(--radius-pill); padding:5px 12px 5px 8px;
+    cursor:pointer; pointer-events:all;
+  }
+  #tl-mobile-pin svg { width:9px; height:9px; stroke:var(--burn); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  #tl-mobile-pin-name { font-family:var(--mono); font-size:8px; color:var(--parch); letter-spacing:.08em; text-transform:uppercase; }
+  #tl-mobile-pin-action { font-family:var(--mono); font-size:8px; color:rgba(232,220,200,.55); letter-spacing:.06em; text-transform:uppercase; }
+  #tl-mobile-source { font-size:7px; color:rgba(232,220,200,.3); letter-spacing:.03em; text-align:right; }
+
+  /* Hide redundant elements on mobile */
+  #tl-heading { display:none !important; }
+  #tl-legend { display:none !important; }
+
+  /* Timeline controls */
+  #tl-top { margin-bottom:12px !important; }
+  #tl-toggle { margin-left:auto; }
   #tl-year { font-size:16px; min-width:38px; }
-  #tl-heading { font-size:7px; }
-  #tl-info { font-size:8px; white-space:normal; }
+  #tl-info { font-size:8px; white-space:normal; margin-top:6px; }
 }
 </style>
 </head>
@@ -477,6 +492,21 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 
 <!-- TIMELINE -->
 <div id="timeline">
+  <!-- Mobile stats — only shown on mobile via CSS -->
+  <div id="tl-mobile-stats">
+    <div>
+      <div id="tl-mobile-km2">—<span>km²</span></div>
+      <div id="tl-mobile-label">Cleared today in the Amazon</div>
+    </div>
+    <div id="tl-mobile-right">
+      <div id="tl-mobile-pin">
+        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+        <span id="tl-mobile-pin-name">—</span>
+        <span id="tl-mobile-pin-action">Change Pin</span>
+      </div>
+      <div id="tl-mobile-source"></div>
+    </div>
+  </div>
   <div id="tl-top">
     <div id="tl-heading">← Drag to explore Amazon loss year by year</div>
     <div id="tl-toggle">
@@ -691,9 +721,9 @@ function tick(ts) {
   if (sCtx) sCtx.textContent = contextText(km2, rad, placeName);
   if (sSrc) sSrc.textContent = `Based on ${DATA_SOURCE}.`;
 
-  // Mobile bar
-  const mKm2 = document.getElementById('mobile-km2');
-  const mSrc = document.getElementById('mobile-source');
+  // Mobile stats inside timeline panel
+  const mKm2 = document.getElementById('tl-mobile-km2');
+  const mSrc = document.getElementById('tl-mobile-source');
   if (mKm2) mKm2.innerHTML = km2.toFixed(1) + '<span>km²</span>';
   if (mSrc) mSrc.textContent = DATA_SOURCE;
 
@@ -724,15 +754,15 @@ function startRun(lat, lng, name) {
   const mcpName = document.getElementById('mobile-change-pin-name');
   if (mcp && mcpName) { mcpName.textContent = name||'My location'; mcp.style.display='flex'; }
 
+  // Mobile change pin inside timeline
+  const mpin = document.getElementById('tl-mobile-pin-name');
+  if (mpin) mpin.textContent = name||'My location';
+
   // Share button
   const shareBtn = document.getElementById('share-btn');
   if (shareBtn) shareBtn.style.display='flex';
 
   show('hdr','stats','clock-block');
-  if (window.innerWidth <= 600) {
-    const mb = document.getElementById('mobile-bar');
-    if (mb) mb.style.display = 'block';
-  }
 
   simSec = dayFraction() * DAY_S;
   running = true; lastTs = null;
@@ -826,7 +856,6 @@ function resetAll() {
   runnerEl.style.display='none'; trailCoords=[];
   circleCache.clear();
   hide('hdr','stats','clock-block','timeline');
-  const mb = document.getElementById('mobile-bar'); if(mb) mb.style.display='none';
   const pill = document.getElementById('location-pill'); if(pill) pill.style.display='none';
   const mcp = document.getElementById('mobile-change-pin'); if(mcp) mcp.style.display='none';
   const shareBtn = document.getElementById('share-btn'); if(shareBtn) shareBtn.style.display='none';
@@ -907,6 +936,7 @@ new MutationObserver(updateTimelineOffset)
 document.getElementById('splash-cta').addEventListener('click', hideSplash);
 document.getElementById('location-pill').addEventListener('click', resetAll);
 document.getElementById('mobile-change-pin').addEventListener('click', resetAll);
+document.getElementById('tl-mobile-pin').addEventListener('click', resetAll);
 document.getElementById('search-btn').addEventListener('click', doSearch);
 document.getElementById('geo-btn').addEventListener('click', useGeo);
 document.getElementById('search-inp').addEventListener('keydown', e=>{ if(e.key==='Enter'){clearTimeout(searchTimer);doSearch();} });
