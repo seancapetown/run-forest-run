@@ -247,6 +247,17 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 /* Mobile stats row — hidden on desktop, shown on mobile via media query */
 #tl-mobile-stats { display:none; }
 
+/* FOOTER — barely there */
+#footer {
+  position:fixed; bottom:8px; left:0; right:0; z-index:90;
+  display:none; text-align:center; pointer-events:none;
+}
+#footer span {
+  font-family:var(--mono); font-size:8px;
+  color:rgba(232,220,200,.18);
+  letter-spacing:.2em; text-transform:uppercase;
+}
+
 /* TIMELINE — glass card, bottom centre */
 #timeline {
   position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
@@ -334,6 +345,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   #stats { display:none !important; }
   #share-btn { display:none !important; }
   #location-pill { display:none !important; }
+  #footer { display:none !important; }
 
   /* Hide separate mobile elements — unified into timeline panel */
   #mobile-bar { display:none !important; }
@@ -459,6 +471,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   Share
 </button>
 <div id="share-toast">Link copied ✓</div>
+<div id="footer"><span>made of stars</span></div>
 
 <!-- STATS — desktop only -->
 <div id="stats">
@@ -762,7 +775,7 @@ function startRun(lat, lng, name) {
   const shareBtn = document.getElementById('share-btn');
   if (shareBtn) shareBtn.style.display='flex';
 
-  show('hdr','stats','clock-block');
+  show('hdr','stats','clock-block','footer');
 
   simSec = dayFraction() * DAY_S;
   running = true; lastTs = null;
@@ -855,7 +868,7 @@ function resetAll() {
   if(histCirclePlain){ map.removeLayer(histCirclePlain); histCirclePlain=null; }
   runnerEl.style.display='none'; trailCoords=[];
   circleCache.clear();
-  hide('hdr','stats','clock-block','timeline');
+  hide('hdr','stats','clock-block','timeline','footer');
   const pill = document.getElementById('location-pill'); if(pill) pill.style.display='none';
   const mcp = document.getElementById('mobile-change-pin'); if(mcp) mcp.style.display='none';
   const shareBtn = document.getElementById('share-btn'); if(shareBtn) shareBtn.style.display='none';
