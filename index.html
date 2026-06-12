@@ -667,7 +667,7 @@ function clipCircleToLandArea(lat, lng, targetKm2) {
     }
 
     const ratio = targetKm2 / landAreaKm2;
-    if (Math.abs(ratio - 1) < 0.03) break; // within 3% — good enough
+    if (Math.abs(ratio - 1) < 0.01) break; // within 1% — negligible cost, tighter correctness
 
     // Expand radius proportionally. Area scales ~ r², so adjust by sqrt(ratio).
     // Damped slightly to avoid overshoot oscillation.
@@ -1002,10 +1002,9 @@ function hideSplash() {
   s.style.opacity='0';
   setTimeout(()=>{
     s.style.display='none';
-    // Show pin screen immediately — user can start searching straight away
+    // Show pin screen immediately — user can start searching straight away.
+    // Daily rate and land data are already loading from page load.
     showPinScreen();
-    // Fetch data silently in background — no overlay
-    fetchDailyRate();
   },800);
 }
 
@@ -1065,7 +1064,8 @@ document.getElementById('share-btn').addEventListener('click', async ()=>{
 setTimeout(()=>{ const bg=document.getElementById('splash-bg'); if(bg) bg.style.transform='scale(1.0)'; },100);
 
 initMap();
-loadLandData(); // pre-load in background
+loadLandData();   // pre-load land geometry in background
+fetchDailyRate(); // pre-fetch GFW daily rate — ready before user finishes pinning
 </script>
 </body>
 </html>
