@@ -667,7 +667,14 @@ function clipCircleToLandArea(lat, lng, targetKm2) {
     }
 
     const ratio = targetKm2 / landAreaKm2;
-    if (Math.abs(ratio - 1) < 0.01) break; // within 1% — negligible cost, tighter correctness
+    if (Math.abs(ratio - 1) < 0.01) {
+      // TEMP AUDIT LOGGING — remove after verification
+      console.log(`[clip audit] target=${targetKm2.toFixed(2)}km² actual=${landAreaKm2.toFixed(2)}km² diff=${((landAreaKm2-targetKm2)/targetKm2*100).toFixed(2)}% iterations=${i+1}`);
+      break;
+    }
+    if (i === 5) {
+      console.log(`[clip audit] target=${targetKm2.toFixed(2)}km² actual=${landAreaKm2.toFixed(2)}km² diff=${((landAreaKm2-targetKm2)/targetKm2*100).toFixed(2)}% iterations=6 (HIT CAP — did not converge to 1%)`);
+    }
 
     // Expand radius proportionally. Area scales ~ r², so adjust by sqrt(ratio).
     // Damped slightly to avoid overshoot oscillation.
