@@ -603,14 +603,90 @@ async function loadLandData() {
   return landData;
 }
 
-function clipCircleToLand(lat, lng, radiusKm) {
-  const key = `${lat.toFixed(4)},${lng.toFixed(4)},${radiusKm.toFixed(1)}`;
+// Per-pin pre-filter cache: avoids re-running turf.bbox() on every global land
+// polygon for every clip call. Computed once per pin (on startRun), reused for
+// every slider movement and daily tick at that pin.
+let relevantLandFeatures = null;
+let relevantLandPinKey = null;
+
+function prepareRelevantLand(lat, lng) {
+  const pinKey = `${lat.toFixed(2)},${lng.toFixed(2)}`;
+  if (relevantLandPinKey === pinKey && relevantLandFeatures) return relevantLandFeatures;
+  if (!landData) return null;
+
+  // Generous bbox around the pin — ~2000km in each direction, covers any
+  // plausible clearing visualization radius even for huge cumulative totals.
+  const buf = 2000 / 111; // ~degrees per km at the equator, good enough as a buffer
+  const minLng = lng - buf, maxLng = lng + buf;
+  const minLat = lat - buf, maxLat = lat + buf;
+
+  relevantLandFeatures = landData.features.filter(f => {
+    try {
+      const fb = turf.bbox(f);
+      return !(fb[2]<minLng || fb[0]>maxLng || fb[3]<minLat || fb[1]>maxLat);
+    } catch(e) { return false; }
+  });
+  relevantLandPinKey = pinKey;
+  return relevantLandFeatures;
+}
+
+// Clips a circle to land, then iteratively expands the radius until the
+// LAND area of the clipped shape equals targetKm2. This ensures the visible
+// orange area always represents exactly the stated km² — critical for coastal
+// pins where ocean would otherwise be silently subtracted from the total.
+function clipCircleToLandArea(lat, lng, targetKm2) {
+  // Cache key rounded to the precision that actually matters visually:
+  // cumulative totals are in the hundreds of thousands — 1km² is invisible.
+  // Annual/daily totals are much smaller — 0.1km² is the right granularity.
+  const precision = targetKm2 > 1000 ? Math.round(targetKm2) : Math.round(targetKm2 * 10) / 10;
+  const key = `${lat.toFixed(4)},${lng.toFixed(4)},a${precision}`;
   if (circleCache.has(key)) return circleCache.get(key);
+
+  if (!landData) {
+    // No land data yet — return a plain circle sized for targetKm2
+    const radiusKm = Math.sqrt(targetKm2 / Math.PI);
+    return turf.featureCollection([turf.circle([lng, lat], radiusKm, { steps:128, units:'kilometers' })]);
+  }
+
+  const features = prepareRelevantLand(lat, lng) || landData.features;
+  let radiusKm = Math.sqrt(targetKm2 / Math.PI);
+  let result = null;
+
+  // Up to 6 iterations — each iteration corrects the radius based on the
+  // ratio of target to actual land area. Converges fast: ratio-based
+  // correction means even a circle 90% over ocean converges in ~3-4 steps.
+  for (let i = 0; i < 6; i++) {
+    const clipped = clipCircleRaw(lat, lng, radiusKm, features);
+    const landAreaKm2 = turf.area(clipped) / 1e6; // m² → km²
+    result = clipped;
+
+    if (landAreaKm2 <= 0) {
+      // Entirely ocean at this radius — double it and try again
+      radiusKm *= 2;
+      continue;
+    }
+
+    const ratio = targetKm2 / landAreaKm2;
+    if (Math.abs(ratio - 1) < 0.03) break; // within 3% — good enough
+
+    // Expand radius proportionally. Area scales ~ r², so adjust by sqrt(ratio).
+    // Damped slightly to avoid overshoot oscillation.
+    radiusKm *= Math.sqrt(ratio) * 0.95 + 0.05;
+  }
+
+  circleCache.set(key, result);
+  return result;
+}
+
+// Raw clip — circle of given radius intersected with the pre-filtered land
+// feature subset for this pin. No area correction.
+function clipCircleRaw(lat, lng, radiusKm, features) {
   const circ = turf.circle([lng, lat], radiusKm, { steps:128, units:'kilometers' });
   if (!landData) return circ;
+  const list = features || landData.features;
   const cb = turf.bbox(circ);
   const clipped = [];
-  for (const f of landData.features) {
+  for (const f of list) {
     try {
       const fb = turf.bbox(f);
       if (fb[2]<cb[0]||fb[0]>cb[2]||fb[3]<cb[1]||fb[1]>cb[3]) continue;
@@ -618,9 +694,7 @@ function clipCircleToLand(lat, lng, radiusKm) {
       if (ix) clipped.push(ix);
     } catch(e) {}
   }
-  const result = turf.featureCollection(clipped.length ? clipped : [circ]);
-  circleCache.set(key, result);
-  return result;
+  return turf.featureCollection(clipped.length ? clipped : [circ]);
 }
 
 // ── DAILY RATE ─────────────────────────────────────────────
@@ -697,12 +771,12 @@ function tick(ts) {
   document.getElementById('clock').textContent = fmtTime(now);
   document.getElementById('date-str').textContent = fmtDate(now);
 
-  // Update daily circle
-  if (!clearCircle._lastClipRad || Math.abs(rad - clearCircle._lastClipRad) > 0.1) {
-    clearCircle._lastClipRad = rad;
+  // Update daily circle — clip target is km2 (land area), not nominal radius
+  if (!clearCircle._lastClipKm2 || Math.abs(km2 - clearCircle._lastClipKm2) > 0.05) {
+    clearCircle._lastClipKm2 = km2;
     clearCircle.setRadius(rad * 1000);
     if (landData) {
-      const geojson = clipCircleToLand(pinLat, pinLng, rad);
+      const geojson = clipCircleToLandArea(pinLat, pinLng, km2);
       if (clearCircle._clipped) map.removeLayer(clearCircle._clipped);
       clearCircle._clipped = L.geoJSON(geojson, {
         style: { color:'#c8531a', fillColor:'#c8531a', fillOpacity:.18, weight:1 }
@@ -711,7 +785,7 @@ function tick(ts) {
     } else {
       loadLandData().then(() => {
         if (!clearCircle) return;
-        const geojson = clipCircleToLand(pinLat, pinLng, clearCircle._lastClipRad);
+        const geojson = clipCircleToLandArea(pinLat, pinLng, clearCircle._lastClipKm2);
         if (clearCircle._clipped) map.removeLayer(clearCircle._clipped);
         clearCircle._clipped = L.geoJSON(geojson, {
           style: { color:'#c8531a', fillColor:'#c8531a', fillOpacity:.18, weight:1 }
@@ -828,14 +902,14 @@ function drawHistCircle(yr) {
   // Debounce the expensive Turf clipping — only fires when slider stops
   clearTimeout(drawDebounceTimer);
   drawDebounceTimer = setTimeout(() => {
-    if (!landData) { loadLandData().then(() => renderClippedHist(radiusKm)); }
-    else { renderClippedHist(radiusKm); }
+    if (!landData) { loadLandData().then(() => renderClippedHist(Math.max(km2,1))); }
+    else { renderClippedHist(Math.max(km2,1)); }
   }, 120);
 }
 
-function renderClippedHist(radiusKm) {
+function renderClippedHist(km2) {
   if (!pinLat) return; // guard against resetAll firing mid-debounce
-  const geojson = clipCircleToLand(pinLat, pinLng, radiusKm);
+  const geojson = clipCircleToLandArea(pinLat, pinLng, km2);
   if (!geojson) return;
   // Hide plain circle once clipped version is ready
   if (histCirclePlain) histCirclePlain.setStyle({ opacity:0, fillOpacity:0 });
@@ -868,6 +942,8 @@ function resetAll() {
   if(histCirclePlain){ map.removeLayer(histCirclePlain); histCirclePlain=null; }
   runnerEl.style.display='none'; trailCoords=[];
   circleCache.clear();
+  relevantLandFeatures = null;
+  relevantLandPinKey = null;
   hide('hdr','stats','clock-block','timeline','footer');
   const pill = document.getElementById('location-pill'); if(pill) pill.style.display='none';
   const mcp = document.getElementById('mobile-change-pin'); if(mcp) mcp.style.display='none';
