@@ -5,7 +5,7 @@
 // Methodology: UMD/GLAD primary forest loss, Amazon biome geostore boundary,
 // 30% canopy density threshold — same as GFW's own Amazon dashboard.
 
-const GFW_API_KEY = 'hIyRUn5LinL4zxvnwAm68k9zCSgz07I5aCfaIXtd';
+const GFW_API_KEY = '9c287e9c-3ada-4a28-97be-b5c3017a2039';
 const BASE = 'https://data-api.globalforestwatch.org';
 
 // GFW's internal geostore ID for the Amazon biome boundary (RAISG biogeographic limit).
