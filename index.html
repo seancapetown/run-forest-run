@@ -301,6 +301,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 }
 #tl-year { font-family:var(--display); font-size:20px; color:var(--parch); min-width:44px; }
 #tl-info { font-size:9px; color:rgba(200,83,26,.8); letter-spacing:.06em; line-height:1.5; }
+#tl-methodology { font-size:8px; color:rgba(232,220,200,.3); letter-spacing:.03em; line-height:1.5; margin-top:5px; }
 
 /* ZOOM CONTROLS — glass */
 .leaflet-control-zoom { border:none!important; box-shadow:none!important; }
@@ -414,6 +415,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   #tl-toggle { margin-left:auto; }
   #tl-year { font-size:16px; min-width:38px; }
   #tl-info { font-size:8px; white-space:normal; margin-top:6px; }
+  #tl-methodology { display:none; }
 }
 </style>
 </head>
@@ -537,6 +539,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
     <div id="tl-year">2025</div>
   </div>
   <div id="tl-info"></div>
+  <div id="tl-methodology">1972–2001: INPE/PRODES (Brazil, clear-cut only) · 2002–2025: GFW/UMD (Amazon biome, 9 countries, all causes including fire) · Source: GFW Data API v1.9.1</div>
 </div>
 
 <!-- MOBILE BAR -->
@@ -568,13 +571,38 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 let DAILY_KM2 = 6.1;
 let DATA_SOURCE = 'INPE/Imazon 2025-2026';
 const DAY_S = 86400;
+// ── ANNUAL FOREST LOSS DATA ────────────────────────────────
+// Sources and methodology:
+// 1972–1987: INPE/PRODES estimates, Brazil only, clear-cut deforestation.
+//            Pre-satellite era — no basin-wide data exists. INPE reports an
+//            average of ~21,050 km²/yr for 1985-88. Year-by-year figures are
+//            interpolated from INPE decadal estimates. Brazil accounted for
+//            ~90%+ of Amazon deforestation in this era.
+// 1988–2001: INPE/PRODES official annual figures, Brazil only, clear-cut.
+//            Source: INPE/worldrainforests.com (Mongabay).
+// 2002–2025: UMD/GLAD primary forest loss, Amazon biome (RAISG boundary,
+//            6,752,028 km²), all 9 countries, non-fire disturbance.
+//            Queried directly from GFW Data API v1.9.1 via geostore
+//            d44bb24653ce755b02a2bacf49223e41.
+//            Field: is__umd_regional_primary_forest_2001 = true.
+//            Includes all causes of loss: deforestation, fire, degradation.
+//            Nearly all Amazon fires are human-caused (MAAP #189).
+//            Methodology shift at 2002: pre-2002 figures are Brazil-only
+//            clear-cut; 2002+ are basin-wide non-fire primary forest loss.
 const ANNUAL_LOSS = {
-  1972:11000,1973:11500,1974:12000,1975:13000,1976:14000,1977:15000,1978:16000,1979:17000,1980:18000,1981:20000,
-  1982:21000,1983:22000,1984:27700,1985:25800,1986:22000,1987:28000,1988:21050,1989:17770,1990:13810,1991:11030,
-  1992:13786,1993:14896,1994:14896,1995:29059,1996:18161,1997:13227,1998:17383,1999:17259,2000:18226,2001:18165,
-  2002:21651,2003:25396,2004:27772,2005:19014,2006:14286,2007:11651,2008:12911,2009:7464,2010:7000,2011:6418,
-  2012:4571,2013:5891,2014:5012,2015:6207,2016:7893,2017:6947,2018:7900,2019:10129,2020:11088,2021:13235,
-  2022:11568,2023:9001,2024:9500,2025:9712
+  // 1972–1987: INPE pre-PRODES Brazil estimates (interpolated from decadal averages)
+  1972:11000,1973:12000,1974:14000,1975:16000,1976:18000,1977:20000,
+  1978:22000,1979:23000,1980:24000,1981:24500,1982:25000,1983:26000,
+  1984:27000,1985:21050,1986:21050,1987:21050,
+  // 1988–2001: INPE/PRODES official annual figures (Brazil only, clear-cut)
+  1988:21050,1989:17770,1990:13810,1991:11030,
+  1992:13786,1993:14896,1994:14896,1995:29059,1996:18161,1997:13227,
+  1998:17383,1999:17259,2000:18226,2001:18165,
+  // 2002–2025: GFW Data API — UMD primary forest loss, Amazon biome, 9 countries
+  2002:15687,2003:14651,2004:19501,2005:18984,2006:14783,2007:12876,
+  2008:12270,2009:9012,2010:13786,2011:9801,2012:13555,2013:8277,
+  2014:11691,2015:9643,2016:30385,2017:23694,2018:16537,2019:16985,
+  2020:19316,2021:17924,2022:21461,2023:15844,2024:38172,2025:21957
 };
 
 let map, runnerEl;
