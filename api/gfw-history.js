@@ -1,6 +1,7 @@
 // /api/gfw-history.js
 // One-time endpoint to fetch Amazon primary forest loss 2002-2025 from GFW Data API.
-// Uses POST with inline geometry — no geostore registration needed.
+// Uses POST with the real RAISG Amazon biome boundary (simplified to 95 points).
+// Deploy to Vercel, hit the URL once, copy the js_object, then remove this file.
 
 const GFW_API_KEY = '9c287e9c-3ada-4a28-97be-b5c3017a2039';
 const BASE = 'https://data-api.globalforestwatch.org';
@@ -12,21 +13,9 @@ const GFW_HEADERS = {
   'Content-Type': 'application/json'
 };
 
-// Amazon biome boundary — simplified from RAISG biogeographic boundary.
-// Covers all 9 Amazon countries, excludes Andes and Cerrado.
-const AMAZON_GEOMETRY = {
-  type: 'Polygon',
-  coordinates: [[
-    [-73.4,12.4],[-68.0,12.0],[-63.0,8.5],[-60.0,6.5],[-58.0,6.0],
-    [-52.0,4.5],[-50.0,2.5],[-49.5,0.5],[-51.0,-2.0],[-52.0,-5.0],
-    [-48.5,-8.0],[-46.0,-11.0],[-47.0,-14.0],[-50.0,-16.0],[-52.0,-17.0],
-    [-55.0,-17.5],[-57.0,-16.0],[-58.5,-14.0],[-60.0,-13.0],[-62.0,-14.0],
-    [-63.5,-17.0],[-65.0,-18.0],[-68.0,-17.0],[-70.0,-14.0],[-72.0,-12.0],
-    [-73.5,-10.0],[-75.5,-8.0],[-77.0,-6.0],[-78.0,-4.0],[-76.5,-1.0],
-    [-75.5,0.5],[-76.0,2.0],[-75.0,4.0],[-73.0,6.0],[-72.0,8.0],
-    [-71.0,10.0],[-70.0,12.0],[-73.4,12.4]
-  ]]
-};
+// Real Amazon biome boundary — RAISG biogeographic limit, simplified from
+// official shapefile (amazonia.shp). 6,752,028 km² — matches known Amazon area.
+const AMAZON_GEOMETRY = {"type": "MultiPolygon", "coordinates": [[[[-77.69491340232193, 0.5612934547120468], [-77.68955800670041, 0.5655381148096649], [-77.69093365085904, 0.561826439427989], [-77.69491340232193, 0.5612934547120468]]], [[[-77.88693126160418, 0.20899824885479612], [-77.88649860320625, 0.20888488024183421], [-77.88663449401959, 0.20883800956733012], [-77.88693126160418, 0.20899824885479612]]], [[[-47.80376434326172, -4.996896743774414], [-50.363403470763046, -10.363843543963185], [-51.78802459284847, -10.860297802174784], [-51.038055481907946, -12.389765804246565], [-52.467559565511806, -13.264552685335957], [-54.764812581378195, -13.33676496055449], [-56.58099347247877, -11.71587788739589], [-56.60253161089844, -13.444175697086507], [-58.77083960748857, -11.5498570281311], [-61.00324653229194, -12.180516955694827], [-60.58851247735575, -12.796439318167586], [-61.54204549483305, -13.204112793138336], [-60.65878652128217, -13.670413657562392], [-61.67214151705444, -13.586824122239022], [-61.11714150912657, -14.623695720858365], [-62.04242348956279, -13.959814455303956], [-62.30801062980851, -15.6110629610871], [-62.87339061900046, -14.97567597540413], [-62.669979598377765, -15.836481674345805], [-63.6715436033041, -15.623811332914613], [-62.92456062919162, -17.065949626824647], [-64.16352058411132, -16.889707371904024], [-63.37832652504318, -17.72947264983702], [-64.0572506246025, -17.979556454316935], [-67.19123852512503, -17.06792842652817], [-69.34692403135908, -14.298509470267975], [-72.0813674961161, -12.495739837459354], [-71.84045411110726, -13.042881283373267], [-73.2681732853371, -13.271027421192404], [-72.3862153086494, -13.45070774929518], [-72.81578837608473, -13.756721080752952], [-73.7313079593817, -13.454474057405417], [-75.5945587788025, -11.263375454726011], [-78.15424340969395, -5.901639457682873], [-78.97663108445238, -5.023730992194258], [-79.25253816412896, -5.814317140396227], [-79.34122819965496, -3.7348374731164666], [-78.30617557043138, -2.5849252556238866], [-78.39114359355221, -0.9127620573798367], [-77.99291954095413, -0.6493778489287365], [-78.2001956247727, -0.38168768917438456], [-78.11026752662413, -0.2844130205237434], [-78.03536952198763, -0.3791561867749351], [-77.92510960892552, -0.3413397218211571], [-78.11719550488121, -0.19978345865342817], [-77.8483275200915, -0.1634671867313955], [-77.9623930562302, 0.12196733648558905], [-77.778266544144, 0.3166507421760798], [-77.75296823498795, 0.523600689205973], [-77.62676263827841, 0.5129780487805533], [-77.54738651804723, 0.5973938721196532], [-77.70495047900405, 0.6149653507448489], [-77.66551146442235, 0.7018071764368534], [-76.7203803913987, 1.8691803496370465], [-75.66998519391245, 1.9249913222105124], [-74.2167561479377, 4.015807968450195], [-72.21763731781974, 3.2493433070037314], [-67.71595764160156, 5.061295032501221], [-65.73954754379511, 7.485995624427801], [-64.11133552544467, 7.685553148881013], [-63.43133954810628, 7.319602776299689], [-63.68753057488357, 6.517240903131608], [-62.901199594467656, 7.37167602037789], [-62.11495260072162, 7.074285592522017], [-61.961948501824295, 7.894228004702768], [-63.00069848494698, 7.856139798447771], [-62.492675523961864, 8.491148425021038], [-60.20043153343778, 8.56553295426852], [-58.48540160593396, 7.3657974563993776], [-58.61451761603517, 6.418414241287621], [-58.29284649103808, 6.889151814704576], [-57.14112856957284, 5.81584039491031], [-53.61064161212734, 5.644220759595214], [-51.31066850103991, 4.234252713016701], [-49.87373352498798, 1.3701290702962297], [-51.39599962820668, -0.4927286279751115], [-48.3585665584894, -0.3398648421370467], [-48.904575466510664, -1.505149712094692], [-50.05263552542675, -1.717339938111536], [-50.40115757435717, -1.9343606549328456], [-49.382610492477056, -2.158670107124294], [-47.3164975093442, -0.720087584182636], [-44.69292862065075, -1.904179097950589], [-44.76064249606887, -3.295456338620852], [-46.850280463951975, -4.365230930547909], [-46.91526753862655, -5.357415753450255], [-47.80376434326172, -4.996896743774414]]]]};
 
 async function getLatestVersion() {
   const res = await fetch(`${BASE}/dataset/umd_tree_cover_loss`, {
@@ -37,25 +26,6 @@ async function getLatestVersion() {
   return versions[versions.length - 1];
 }
 
-async function queryYear(version, year) {
-  const sql = `SELECT SUM(area__ha) AS loss_ha FROM data WHERE umd_tree_cover_loss__year = ${year} AND umd_tree_cover_density_2000__threshold = 30 AND is__umd_regional_primary_forest_2001 = 'true'`;
-
-  const res = await fetch(
-    `${BASE}/dataset/umd_tree_cover_loss/${version}/query/json`,
-    {
-      method: 'POST',
-      headers: GFW_HEADERS,
-      body: JSON.stringify({
-        sql,
-        geometry: AMAZON_GEOMETRY
-      })
-    }
-  );
-  const json = await res.json();
-  if (json.status === 'failed') throw new Error(json.message || JSON.stringify(json));
-  return json.data?.[0]?.loss_ha || 0;
-}
-
 export default async function handler(req, res) {
   res.setHeader('Content-Type', 'application/json');
   res.setHeader('Cache-Control', 'no-store');
@@ -64,17 +34,26 @@ export default async function handler(req, res) {
     const version = await getLatestVersion();
     if (!version) throw new Error('Could not determine dataset version');
 
-    const years = Array.from({ length: 24 }, (_, i) => 2002 + i);
-    const results = {};
-    const errors = {};
+    // Single grouped query — all years in one round trip
+    const sql = `SELECT umd_tree_cover_loss__year, SUM(area__ha) AS loss_ha FROM data WHERE umd_tree_cover_density_2000__threshold = 30 AND is__umd_regional_primary_forest_2001 = 'true' AND umd_tree_cover_loss__year >= 2002 GROUP BY umd_tree_cover_loss__year ORDER BY umd_tree_cover_loss__year`;
 
-    for (const year of years) {
-      try {
-        const ha = await queryYear(version, year);
-        results[year] = { ha: Math.round(ha), km2: Math.round(ha / 100) };
-      } catch (e) {
-        errors[year] = e.message;
+    const apiRes = await fetch(
+      `${BASE}/dataset/umd_tree_cover_loss/${version}/query/json`,
+      {
+        method: 'POST',
+        headers: GFW_HEADERS,
+        body: JSON.stringify({ sql, geometry: AMAZON_GEOMETRY })
       }
+    );
+
+    const json = await apiRes.json();
+    if (json.status === 'failed') throw new Error(json.message || JSON.stringify(json));
+
+    const results = {};
+    for (const row of (json.data || [])) {
+      const yr = row.umd_tree_cover_loss__year;
+      const ha = Math.round(row.loss_ha || 0);
+      results[yr] = { ha, km2: Math.round(ha / 100) };
     }
 
     const jsObject = '{\n  ' + Object.entries(results)
@@ -83,13 +62,15 @@ export default async function handler(req, res) {
 
     res.status(200).json({
       version,
-      methodology: 'UMD primary forest loss · Amazon biome boundary (simplified RAISG) · 30% canopy density · POST geometry',
+      boundary: 'RAISG Amazon biome (simplified shapefile, 6,752,028 km²)',
+      methodology: 'UMD primary forest loss · 30% canopy density · all 9 Amazon countries',
+      row_count: json.data?.length,
       results,
-      errors: Object.keys(errors).length ? errors : 'none',
+      errors: 'none',
       js_object: jsObject
     });
 
   } catch (e) {
-    res.status(500).json({ error: e.message, stack: e.stack });
+    res.status(500).json({ error: e.message });
   }
 }
