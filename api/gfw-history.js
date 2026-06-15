@@ -1,8 +1,13 @@
-// /api/gfw-history.js — field inspection version
+// /api/gfw-history.js
+// Fetches Amazon primary forest loss 2002-2025 from GFW Data API.
+// Uses registered RAISG geostore ID + primary forest filter (no threshold).
+// Remove this file after running once and copying the js_object.
 
 const GFW_API_KEY = '9c287e9c-3ada-4a28-97be-b5c3017a2039';
 const BASE = 'https://data-api.globalforestwatch.org';
 const ORIGIN = 'https://runforestrun.earth';
+
+// Pre-registered RAISG Amazon biome geostore (6,752,028 km²)
 const GEOSTORE_ID = 'd44bb24653ce755b02a2bacf49223e41';
 
 const GFW_HEADERS = {
@@ -11,68 +16,57 @@ const GFW_HEADERS = {
   'Content-Type': 'application/json'
 };
 
+async function getLatestVersion() {
+  const res = await fetch(`${BASE}/dataset/umd_tree_cover_loss`, { headers: GFW_HEADERS });
+  const json = await res.json();
+  return (json.data?.versions || []).slice(-1)[0];
+}
+
 export default async function handler(req, res) {
   res.setHeader('Content-Type', 'application/json');
   res.setHeader('Cache-Control', 'no-store');
 
   try {
-    // Get dataset version
-    const dsRes = await fetch(`${BASE}/dataset/umd_tree_cover_loss`, { headers: GFW_HEADERS });
-    const dsJson = await dsRes.json();
-    const version = (dsJson.data?.versions || []).slice(-1)[0];
+    const version = await getLatestVersion();
+    if (!version) throw new Error('Could not determine dataset version');
 
-    // Get available fields
-    const fieldsRes = await fetch(`${BASE}/dataset/umd_tree_cover_loss/${version}/fields`, { headers: GFW_HEADERS });
-    const fieldsJson = await fieldsRes.json();
-
-    // Try a simple query with NO filters — just year and area — to see raw totals
-    const sqlSimple = encodeURIComponent(
+    // Primary forest loss only — no threshold filter (threshold filter
+    // selects exact bucket, not >=30%, which destroys the results)
+    const sql = encodeURIComponent(
       `SELECT umd_tree_cover_loss__year, SUM(area__ha) AS loss_ha FROM data ` +
-      `WHERE umd_tree_cover_loss__year = 2024 ` +
-      `GROUP BY umd_tree_cover_loss__year`
+      `WHERE is__umd_regional_primary_forest_2001 = 'true' ` +
+      `AND umd_tree_cover_loss__year >= 2002 ` +
+      `GROUP BY umd_tree_cover_loss__year ` +
+      `ORDER BY umd_tree_cover_loss__year`
     );
 
-    const simpleRes = await fetch(
-      `${BASE}/dataset/umd_tree_cover_loss/${version}/query/json?sql=${sqlSimple}&geostore_id=${GEOSTORE_ID}`,
+    const apiRes = await fetch(
+      `${BASE}/dataset/umd_tree_cover_loss/${version}/query/json?sql=${sql}&geostore_id=${GEOSTORE_ID}`,
       { headers: GFW_HEADERS }
     );
-    const simpleJson = await simpleRes.json();
 
-    // Try with just threshold filter
-    const sqlThreshold = encodeURIComponent(
-      `SELECT umd_tree_cover_loss__year, SUM(area__ha) AS loss_ha FROM data ` +
-      `WHERE umd_tree_cover_loss__year = 2024 ` +
-      `AND umd_tree_cover_density_2000__threshold = 30 ` +
-      `GROUP BY umd_tree_cover_loss__year`
-    );
+    const json = await apiRes.json();
+    if (json.status === 'failed') throw new Error(json.message || JSON.stringify(json));
 
-    const threshRes = await fetch(
-      `${BASE}/dataset/umd_tree_cover_loss/${version}/query/json?sql=${sqlThreshold}&geostore_id=${GEOSTORE_ID}`,
-      { headers: GFW_HEADERS }
-    );
-    const threshJson = await threshRes.json();
+    const results = {};
+    for (const row of (json.data || [])) {
+      const yr = row.umd_tree_cover_loss__year;
+      const ha = Math.round(row.loss_ha || 0);
+      results[yr] = { ha, km2: Math.round(ha / 100) };
+    }
 
-    // Try with primary forest filter only
-    const sqlPrimary = encodeURIComponent(
-      `SELECT umd_tree_cover_loss__year, SUM(area__ha) AS loss_ha FROM data ` +
-      `WHERE umd_tree_cover_loss__year = 2024 ` +
-      `AND is__umd_regional_primary_forest_2001 = 'true' ` +
-      `GROUP BY umd_tree_cover_loss__year`
-    );
-
-    const primaryRes = await fetch(
-      `${BASE}/dataset/umd_tree_cover_loss/${version}/query/json?sql=${sqlPrimary}&geostore_id=${GEOSTORE_ID}`,
-      { headers: GFW_HEADERS }
-    );
-    const primaryJson = await primaryRes.json();
+    const jsObject = '{\n  ' + Object.entries(results)
+      .map(([yr, { km2 }]) => `${yr}:${km2}`)
+      .join(',') + '\n}';
 
     res.status(200).json({
       version,
       geostore_id: GEOSTORE_ID,
-      fields_sample: fieldsJson.data?.slice(0, 20),
-      query_2024_no_filter: simpleJson.data,
-      query_2024_threshold_only: threshJson.data,
-      query_2024_primary_only: primaryJson.data
+      boundary: 'RAISG Amazon biome (6,752,028 km²)',
+      methodology: 'UMD primary forest loss · is__umd_regional_primary_forest_2001 · no threshold filter · all 9 Amazon countries',
+      row_count: json.data?.length,
+      results,
+      js_object: jsObject
     });
 
   } catch (e) {
