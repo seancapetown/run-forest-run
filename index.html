@@ -799,29 +799,8 @@ function tick(ts) {
   document.getElementById('clock').textContent = fmtTime(now);
   document.getElementById('date-str').textContent = fmtDate(now);
 
-  // Update daily circle — clip target is km2 (land area), not nominal radius
-  if (!clearCircle._lastClipKm2 || Math.abs(km2 - clearCircle._lastClipKm2) > 0.05) {
-    clearCircle._lastClipKm2 = km2;
-    clearCircle.setRadius(rad * 1000);
-    if (landData) {
-      const geojson = clipCircleToLandArea(pinLat, pinLng, km2);
-      if (clearCircle._clipped) map.removeLayer(clearCircle._clipped);
-      clearCircle._clipped = L.geoJSON(geojson, {
-        style: { color:'#c8531a', fillColor:'#c8531a', fillOpacity:.18, weight:1 }
-      }).addTo(map);
-      clearCircle.setRadius(0);
-    } else {
-      loadLandData().then(() => {
-        if (!clearCircle) return;
-        const geojson = clipCircleToLandArea(pinLat, pinLng, clearCircle._lastClipKm2);
-        if (clearCircle._clipped) map.removeLayer(clearCircle._clipped);
-        clearCircle._clipped = L.geoJSON(geojson, {
-          style: { color:'#c8531a', fillColor:'#c8531a', fillOpacity:.18, weight:1 }
-        }).addTo(map);
-        clearCircle.setRadius(0);
-      });
-    }
-  }
+  // Update daily circle — plain radius, no land clipping (scale indicator, not area map)
+  clearCircle.setRadius(rad * 1000);
 
   const angle = frac * 2 * Math.PI;
   const rLat = pinLat + (rad/111) * Math.cos(angle);
@@ -964,7 +943,7 @@ function cumulativeLoss(yr) { return CUMULATIVE_LOSS[yr] || 0; }
 // ── RESET ──────────────────────────────────────────────────
 function resetAll() {
   running=false; cancelAnimationFrame(raf);
-  if(clearCircle){ if(clearCircle._clipped) map.removeLayer(clearCircle._clipped); map.removeLayer(clearCircle); clearCircle=null; }
+  if(clearCircle){ map.removeLayer(clearCircle); clearCircle=null; }
   if(trailLine){ map.removeLayer(trailLine); trailLine=null; }
   if(histCircle){ map.removeLayer(histCircle); histCircle=null; }
   if(histCirclePlain){ map.removeLayer(histCirclePlain); histCirclePlain=null; }
