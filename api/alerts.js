@@ -5,15 +5,6 @@ const AMAZON_BBOX = {
   coordinates: [[[-73,-18],[-44,-18],[-44,5],[-73,5],[-73,-18]]]
 };
 
-const ANNUAL_LOSS = {
-  1972:11000,1973:11500,1974:12000,1975:13000,1976:14000,1977:15000,1978:16000,1979:17000,1980:18000,1981:20000,
-  1982:21000,1983:22000,1984:27700,1985:25800,1986:22000,1987:28000,1988:21050,1989:17770,1990:13810,1991:11030,
-  1992:13786,1993:14896,1994:14896,1995:29059,1996:18161,1997:13227,1998:17383,1999:17259,2000:18226,2001:18165,
-  2002:21651,2003:25396,2004:27772,2005:19014,2006:14286,2007:11651,2008:12911,2009:7464,2010:7000,2011:6418,
-  2012:4571,2013:5891,2014:5012,2015:6207,2016:7893,2017:6947,2018:7900,2019:10129,2020:11088,2021:13235,
-  2022:11568,2023:9001,2024:9500,2025:9712
-};
-
 function daysAgo(n) {
   const d = new Date();
   d.setDate(d.getDate() - n);
@@ -22,10 +13,9 @@ function daysAgo(n) {
 
 function fallback() {
   return {
-    source: 'INPE/Imazon 2025-2026 annual average (GFW unavailable)',
-    estimated_area_km2: 6.1,
-    data_period: 'Aug 2025 - Mar 2026',
-    annual_loss: ANNUAL_LOSS
+    source: 'GFW/UMD 2025 annual average (live API unavailable)',
+    estimated_area_km2: parseFloat((21957 / 365).toFixed(2)),
+    data_period: '2025 annual average'
   };
 }
 
@@ -66,8 +56,7 @@ module.exports = async function handler(req, res) {
       source: 'GFW Integrated Deforestation Alerts · Satellite data · 3-8 day lag',
       data_period: `${since} to today`,
       total_km2_30_days: parseFloat(totalKm2.toFixed(2)),
-      estimated_area_km2: parseFloat(dailyKm2.toFixed(2)),
-      annual_loss: ANNUAL_LOSS
+      estimated_area_km2: parseFloat(dailyKm2.toFixed(2))
     });
 
   } catch(e) {
