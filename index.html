@@ -816,7 +816,7 @@ function tick(ts) {
 // ── START RUN ──────────────────────────────────────────────
 function startRun(lat, lng, name) {
   pinLat=lat; pinLng=lng; placeName=name;
-  map.setView([lat,lng], 14);
+  map.setView([lat,lng], window.innerWidth <= 600 ? 12 : 14);
 
   L.circleMarker([lat,lng], {radius:5, color:'#c8531a', fillColor:'#c8531a', fillOpacity:.9, weight:2}).addTo(map);
   clearCircle = L.circle([lat,lng], {radius:1, color:'#c8531a', fillColor:'#c8531a', fillOpacity:.18, weight:1}).addTo(map);
