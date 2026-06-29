@@ -99,6 +99,14 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   transition:all .2s; align-self:flex-start;
 }
 #splash-cta:hover { background:rgba(200,83,26,.25); border-color:rgba(200,83,26,.7); }
+#splash-facts {
+  font-family:var(--mono); font-size:9px; color:rgba(232,220,200,.45);
+  letter-spacing:.14em; text-transform:uppercase;
+  margin-top:12px; align-self:flex-start;
+  text-decoration:none; border-bottom:0.5px solid rgba(232,220,200,.2);
+  padding-bottom:1px; transition:color .2s, border-color .2s;
+}
+#splash-facts:hover { color:rgba(232,220,200,.8); border-color:rgba(232,220,200,.5); }
 
 /* PIN SCREEN */
 #pin-screen {
@@ -211,6 +219,23 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 }
 #share-btn:hover { background:rgba(200,83,26,.2); border-color:rgba(200,83,26,.4); }
 #share-btn svg { width:11px; height:11px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+
+/* FACTS PILL — sits left of share button */
+#facts-btn {
+  position:fixed; top:11px; right:110px; z-index:200;
+  display:none; align-items:center; gap:6px;
+  background:var(--glass-bg);
+  backdrop-filter:var(--glass-blur);
+  -webkit-backdrop-filter:var(--glass-blur);
+  border:0.5px solid var(--glass-border);
+  border-radius:var(--radius-pill);
+  box-shadow:var(--glass-shadow);
+  color:var(--parch); font-family:var(--mono); font-size:9px;
+  letter-spacing:.12em; text-transform:uppercase;
+  padding:7px 14px; cursor:pointer; transition:all .25s;
+  text-decoration:none; pointer-events:all;
+}
+#facts-btn:hover { background:rgba(200,83,26,.2); border-color:rgba(200,83,26,.4); }
 #share-toast {
   position:fixed; top:52px; right:16px; z-index:300;
   background:rgba(74,122,42,.25);
@@ -375,6 +400,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   #clock-block { display:none !important; }
   #stats { display:none !important; }
   #share-btn { display:none !important; }
+  #facts-btn { display:none !important; }
   #location-pill { display:none !important; }
   #footer { display:none !important; }
 
@@ -463,6 +489,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
     <span class="sw sw-3">Run.</span>
     <div id="splash-tag">runforestrun.earth · real satellite data · global forest watch</div>
     <button id="splash-cta">The forest is running out →</button>
+    <a id="splash-facts" href="/facts">The evidence →</a>
   </div>
 </div>
 
@@ -504,6 +531,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
   <svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
   Share
 </button>
+<a id="facts-btn" href="/facts">The Evidence</a>
 <div id="share-toast">Link copied ✓</div>
 <div id="footer"><span>made of stars</span></div>
 
@@ -571,7 +599,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
     <div id="tl-year">2025</div>
   </div>
   <div id="tl-info"></div>
-  <div id="tl-methodology">1972–2001: INPE/PRODES (Brazil, clear-cut only) · 2002–2025: GFW/UMD (Amazon biome, 9 countries, all causes including fire) · Source: GFW Data API v1.9.1</div>
+  <div id="tl-methodology">1972–2001: INPE/PRODES (Brazil, clear-cut only) · 2002–2025: GFW/UMD (Amazon biome, 9 countries, all causes including fire) · Source: GFW Data API v1.9.1 · <a href="/facts" style="color:var(--burn);text-decoration:none;border-bottom:0.5px solid rgba(200,83,26,.4);">The Evidence →</a></div>
 </div>
 
 <!-- MOBILE BAR -->
@@ -860,6 +888,9 @@ function startRun(lat, lng, name) {
   const shareBtn = document.getElementById('share-btn');
   if (shareBtn) shareBtn.style.display='flex';
 
+  const factsBtn = document.getElementById('facts-btn');
+  if (factsBtn) factsBtn.style.display='flex';
+
   show('hdr','stats','clock-block','footer');
 
   simSec = dayFraction() * DAY_S;
@@ -953,6 +984,7 @@ function resetAll() {
   const pill = document.getElementById('location-pill'); if(pill) pill.style.display='none';
   const mcp = document.getElementById('mobile-change-pin'); if(mcp) mcp.style.display='none';
   const shareBtn = document.getElementById('share-btn'); if(shareBtn) shareBtn.style.display='none';
+  const factsBtn = document.getElementById('facts-btn'); if(factsBtn) factsBtn.style.display='none';
   setTimeout(showPinScreen, 100);
   document.getElementById('search-results').innerHTML='';
   document.getElementById('search-inp').value='';
