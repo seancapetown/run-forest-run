@@ -94,19 +94,19 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 #splash-tag { font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:rgba(200,213,185,.45); margin-top:10px; margin-bottom:24px; }
 #splash-cta {
   font-family:var(--mono); font-size:11px; color:var(--parch);
-  background:rgba(8,14,8,.5); border:0.5px solid rgba(232,220,200,.3);
-  padding:12px 28px; cursor:pointer; letter-spacing:.14em; text-transform:uppercase;
+  background:rgba(200,83,26,.2); border:0.5px solid rgba(200,83,26,.6);
+  padding:13px 28px; cursor:pointer; letter-spacing:.14em; text-transform:uppercase;
   transition:all .2s; align-self:flex-start;
 }
-#splash-cta:hover { background:rgba(200,83,26,.25); border-color:rgba(200,83,26,.7); }
+#splash-cta:hover { background:rgba(200,83,26,.4); border-color:rgba(200,83,26,.9); }
 #splash-facts {
-  font-family:var(--mono); font-size:9px; color:rgba(232,220,200,.45);
-  letter-spacing:.14em; text-transform:uppercase;
-  margin-top:12px; align-self:flex-start;
-  text-decoration:none; border-bottom:0.5px solid rgba(232,220,200,.2);
-  padding-bottom:1px; transition:color .2s, border-color .2s;
+  font-family:var(--mono); font-size:11px; color:rgba(232,220,200,.75);
+  background:rgba(8,14,8,.4); border:0.5px solid rgba(232,220,200,.25);
+  padding:13px 28px; cursor:pointer; letter-spacing:.14em; text-transform:uppercase;
+  margin-top:10px; align-self:flex-start;
+  text-decoration:none; transition:all .2s;
 }
-#splash-facts:hover { color:rgba(232,220,200,.8); border-color:rgba(232,220,200,.5); }
+#splash-facts:hover { background:rgba(232,220,200,.08); border-color:rgba(232,220,200,.5); color:var(--parch); }
 
 /* PIN SCREEN */
 #pin-screen {
@@ -220,7 +220,35 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 #share-btn:hover { background:rgba(200,83,26,.2); border-color:rgba(200,83,26,.4); }
 #share-btn svg { width:11px; height:11px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
 
-/* FACTS PILL — sits left of share button */
+/* MOBILE FACTS BUTTON — hidden on desktop */
+#mobile-facts-btn {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  #mobile-facts-btn {
+    display: block;
+    margin-bottom: 14px;
+    padding: 10px 16px;
+    background: rgba(200,83,26,.1);
+    border: 0.5px solid rgba(200,83,26,.3);
+    border-radius: 8px;
+    color: var(--burn);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+    transition: background .2s, border-color .2s;
+  }
+  #mobile-facts-btn:active {
+    background: rgba(200,83,26,.22);
+    border-color: rgba(200,83,26,.55);
+  }
+}
 #facts-btn {
   position:fixed; top:11px; right:110px; z-index:200;
   display:none; align-items:center; gap:6px;
@@ -488,8 +516,8 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
     <span class="sw sw-2">Forest</span>
     <span class="sw sw-3">Run.</span>
     <div id="splash-tag">runforestrun.earth · real satellite data · global forest watch</div>
-    <button id="splash-cta">The forest is running out →</button>
-    <a id="splash-facts" href="/facts">The evidence →</a>
+    <button id="splash-cta">See it on your streets →</button>
+    <a id="splash-facts" href="/facts">What are we losing? →</a>
   </div>
 </div>
 
@@ -567,6 +595,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
 
 <!-- TIMELINE -->
 <div id="timeline">
+  <a id="mobile-facts-btn" href="/facts">What are we losing? →</a>
   <!-- Mobile stats — only shown on mobile via CSS -->
   <div id="tl-mobile-stats">
     <div>
@@ -599,7 +628,7 @@ html, body { height:100%; min-height:100vh; background:var(--night); color:var(-
     <div id="tl-year">2025</div>
   </div>
   <div id="tl-info"></div>
-  <div id="tl-methodology">1972–2001: INPE/PRODES (Brazil, clear-cut only) · 2002–2025: GFW/UMD (Amazon biome, 9 countries, all causes including fire) · Source: GFW Data API v1.9.1 · <a href="/facts" style="color:var(--burn);text-decoration:none;border-bottom:0.5px solid rgba(200,83,26,.4);">The Evidence →</a></div>
+  <div id="tl-methodology">1972–2001: INPE/PRODES (Brazil, clear-cut only) · 2002–2025: GFW/UMD (Amazon biome, 9 countries, all causes including fire) · Source: GFW Data API v1.9.1</div>
 </div>
 
 <!-- MOBILE BAR -->
