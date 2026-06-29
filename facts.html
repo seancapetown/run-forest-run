@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Reckoning — Run Forest Run</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+
+<!-- SEO -->
+<meta name="description" content="The hard facts about Amazon deforestation — what we are erasing, what it means for humanity, and who is actually stopping it.">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://runforestrun.earth/facts">
+<meta property="og:title" content="The Reckoning — Run Forest Run">
+<meta property="og:description" content="The hard facts about Amazon deforestation — what we are erasing, what it means for humanity, and who is actually stopping it.">
+<meta property="og:image" content="https://runforestrun.earth/og-image.png">
+<!-- Twitter/X -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://runforestrun.earth/facts">
+<meta name="twitter:title" content="The Reckoning — Run Forest Run">
+<meta name="twitter:description" content="The hard facts about Amazon deforestation — what we are erasing, what it means for humanity, and who is actually stopping it.">
+<meta name="twitter:image" content="https://runforestrun.earth/og-image.png">
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TX7ZRJHDBJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-TX7ZRJHDBJ');
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --forest-night: #f7f4f0;
+    --canopy: #f0ebe3;
+    --living: #2a5a0a;
+    --burn: #c8531a;
+    --parchment: #1a1a18;
+    --ash: #5a5a52;
+    --char: #e8e3da;
+    --ember: #e8741a;
+    --rule: rgba(26,26,24,0.1);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--forest-night);
+    color: var(--parchment);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    padding: 1.25rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    background: linear-gradient(to bottom, rgba(247,244,240,0.97) 0%, transparent 100%);
+    border-bottom: 1px solid rgba(26,26,24,0.06);
+  }
+  .nav-logo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: var(--ash);
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--burn); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8rem 2rem 4rem;
+    position: relative;
+  }
+
+  .hero-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--burn);
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+  }
+
+  .hero-title {
+    font-family: 'Special Elite', serif;
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    line-height: 1;
+    color: var(--parchment);
+    margin-bottom: 2rem;
+    max-width: 14ch;
+  }
+
+  .hero-title em {
+    font-style: normal;
+    color: var(--burn);
+  }
+
+  .hero-subtitle {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 300;
+    font-size: 1.1rem;
+    color: var(--ash);
+    max-width: 52ch;
+    line-height: 1.8;
+    margin-bottom: 4rem;
+  }
+
+  /* LIVE COUNTER */
+  .counter-block {
+    border: 1px solid rgba(200,83,26,0.25);
+    padding: 2.5rem 4rem;
+    text-align: center;
+    background: rgba(200,83,26,0.04);
+    position: relative;
+    margin-top: 1rem;
+  }
+  .counter-block::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3rem; height: 1px;
+    background: var(--burn);
+  }
+  .counter-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    color: var(--ash);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .counter-value {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 500;
+    color: var(--burn);
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+  .counter-unit {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--ash);
+    margin-top: 0.75rem;
+    letter-spacing: 0.1em;
+  }
+  .counter-sub {
+    font-size: 0.8rem;
+    color: rgba(138,154,122,0.6);
+    margin-top: 0.4rem;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  /* SCROLL INDICATOR */
+  .scroll-cue {
+    margin-top: 5rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    color: rgba(90,90,82,0.4);
+    text-transform: uppercase;
+    animation: breathe 3s ease-in-out infinite;
+  }
+  @keyframes breathe { 0%,100%{opacity:.3} 50%{opacity:.8} }
+
+  /* SECTIONS */
+  .section {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 6rem 2rem;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .section.visible { opacity: 1; transform: translateY(0); }
+
+  .section-rule {
+    width: 100%;
+    border: none;
+    border-top: 1px solid rgba(26,26,24,0.1);
+    margin: 0;
+  }
+
+  .section-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--burn);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title {
+    font-family: 'Special Elite', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    line-height: 1.15;
+    color: var(--parchment);
+    margin-bottom: 2rem;
+    max-width: 22ch;
+  }
+
+  .section-body {
+    font-size: 1rem;
+    color: var(--ash);
+    line-height: 1.9;
+    margin-bottom: 1.5rem;
+    max-width: 65ch;
+  }
+
+  .section-body strong {
+    color: var(--parchment);
+    font-weight: 400;
+  }
+
+  .section-body .burn { color: var(--burn); font-weight: 400; }
+
+  /* STAT GRID */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    background: rgba(26,26,24,0.08);
+    margin: 3rem 0;
+  }
+
+  .stat-cell {
+    background: #ffffff;
+    padding: 2rem 1.75rem;
+  }
+
+  .stat-number {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 2.2rem;
+    font-weight: 500;
+    color: var(--burn);
+    line-height: 1;
+    margin-bottom: 0.6rem;
+  }
+
+  .stat-desc {
+    font-size: 0.8rem;
+    color: var(--ash);
+    line-height: 1.5;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  /* SPECIES TABLE */
+  .species-list {
+    margin: 2.5rem 0;
+    border-top: 1px solid rgba(26,26,24,0.1);
+  }
+
+  .species-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid rgba(26,26,24,0.06);
+    gap: 1.5rem;
+  }
+
+  .species-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--parchment);
+    margin-bottom: 0.25rem;
+  }
+
+  .species-detail {
+    font-size: 0.78rem;
+    color: var(--ash);
+    line-height: 1.5;
+  }
+
+  .species-status {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    padding: 0.3rem 0.7rem;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .status-critical { border: 1px solid var(--burn); color: var(--burn); }
+  .status-endangered { border: 1px solid #e8a01a; color: #e8a01a; }
+  .status-vulnerable { border: 1px solid #7aaa3a; color: #7aaa3a; }
+
+  /* CONSEQUENCES LIST */
+  .consequence-list {
+    border-top: 1px solid rgba(138,154,122,0.15);
+  }
+
+  .consequence-row {
+    display: grid;
+    grid-template-columns: 3.5rem 1fr;
+    gap: 2rem;
+    padding: 2.25rem 0;
+    border-bottom: 1px solid rgba(26,26,24,0.07);
+  }
+
+  .consequence-number {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--burn);
+    letter-spacing: 0.15em;
+    padding-top: 0.3rem;
+    opacity: 0.7;
+  }
+
+  .consequence-title {
+    font-family: 'Special Elite', serif;
+    font-size: 1.15rem;
+    color: var(--parchment);
+    line-height: 1.3;
+    margin-bottom: 0.75rem;
+  }
+
+  .consequence-body {
+    font-size: 0.875rem;
+    color: var(--ash);
+    line-height: 1.8;
+  }
+
+  .consequence-source {
+    display: block;
+    margin-top: 0.6rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    color: rgba(90,90,82,0.5);
+    letter-spacing: 0.05em;
+  }
+
+  @media (max-width: 600px) {
+    .consequence-row { grid-template-columns: 2rem 1fr; gap: 1rem; }
+  }
+
+
+  .threshold-bar {
+    margin: 3rem 0 2rem;
+    position: relative;
+    height: 4px;
+    background: rgba(26,26,24,0.1);
+  }
+
+  .threshold-fill {
+    height: 100%;
+    background: var(--burn);
+    transition: width 2s ease;
+    width: 0%;
+  }
+
+  .threshold-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.75rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--ash);
+    letter-spacing: 0.05em;
+  }
+
+  .threshold-marker {
+    position: absolute;
+    top: -8px;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 20px;
+    background: var(--parchment);
+    opacity: 0.25;
+  }
+
+  .threshold-marker-label {
+    position: absolute;
+    top: -28px;
+    transform: translateX(-50%);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--parchment);
+    white-space: nowrap;
+    opacity: 0.6;
+  }
+
+  /* PULL QUOTES */
+  .pull-quote {
+    border-left: 2px solid var(--burn);
+    padding: 1rem 0 1rem 2rem;
+    margin: 3rem 0;
+  }
+
+  .pull-quote p {
+    font-family: 'Special Elite', serif;
+    font-size: 1.3rem;
+    color: var(--parchment);
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+  }
+
+  .pull-quote cite {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--ash);
+    letter-spacing: 0.1em;
+    font-style: normal;
+  }
+
+  /* FLYING RIVERS */
+  .river-diagram {
+    margin: 3rem 0;
+    padding: 2rem;
+    background: rgba(42,90,10,0.04);
+    border: 1px solid rgba(42,90,10,0.12);
+    position: relative;
+  }
+
+  .river-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    color: var(--living);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  .river-row {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 1rem;
+    align-items: start;
+    margin-bottom: 1.25rem;
+  }
+
+  .river-icon {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--living);
+    padding-top: 0.15rem;
+  }
+
+  .river-text {
+    font-size: 0.875rem;
+    color: var(--ash);
+    line-height: 1.7;
+  }
+
+  .river-text strong { color: var(--parchment); font-weight: 400; }
+
+  /* ECONOMIC CASE */
+  .econ-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: rgba(26,26,24,0.08);
+    margin: 2.5rem 0;
+  }
+
+  @media (max-width: 600px) { .econ-compare { grid-template-columns: 1fr; } }
+
+  .econ-cell {
+    background: #ffffff;
+    padding: 2rem 1.75rem;
+  }
+
+  .econ-cell-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    color: var(--ash);
+  }
+
+  .econ-cell-value {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1.6rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .econ-cell-value.loss { color: var(--burn); }
+  .econ-cell-value.gain { color: var(--living); }
+
+  .econ-cell-note {
+    font-size: 0.8rem;
+    color: var(--ash);
+    line-height: 1.5;
+  }
+
+  /* FINAL CTA */
+  .final-section {
+    text-align: center;
+    padding: 8rem 2rem 10rem;
+    max-width: 700px;
+    margin: 0 auto;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .final-section.visible { opacity: 1; transform: translateY(0); }
+
+  .final-title {
+    font-family: 'Special Elite', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    color: var(--parchment);
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+  }
+
+  .final-body {
+    font-size: 1rem;
+    color: var(--ash);
+    line-height: 1.9;
+    margin-bottom: 3rem;
+  }
+
+  .cta-btn {
+    display: inline-block;
+    border: 1px solid var(--burn);
+    color: var(--burn);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 1rem 2.5rem;
+    text-decoration: none;
+    transition: background 0.3s, color 0.3s;
+  }
+  .cta-btn:hover { background: var(--burn); color: var(--forest-night); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid rgba(26,26,24,0.1);
+    padding: 2rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    color: rgba(90,90,82,0.5);
+    letter-spacing: 0.1em;
+  }
+    color: rgba(138,154,122,0.4);
+    letter-spacing: 0.1em;
+  }
+
+  @media (max-width: 600px) {
+    footer { flex-direction: column; gap: 0.75rem; text-align: center; }
+    .counter-block { padding: 2rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">Run<span>Forest</span>Run</a>
+  <div style="display:flex;align-items:center;gap:2rem;">
+    <a href="/" style="font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:rgba(90,90,82,0.5);letter-spacing:0.15em;text-transform:uppercase;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='#c8531a'" onmouseout="this.style.color='rgba(90,90,82,0.5)'">← Map</a>
+    <span style="font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:rgba(90,90,82,0.4);letter-spacing:0.15em;text-transform:uppercase;">The Reckoning</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">Amazon Deforestation — The Evidence</p>
+  <h1 class="hero-title">What We Are <em>Erasing</em></h1>
+  <p class="hero-subtitle">This is not a distant environmental concern. It is the most consequential act of environmental destruction in human history and it's happening right now. Every single day.</p>
+
+  <div class="counter-block">
+    <p class="counter-label">Hectares cleared since you opened this page</p>
+    <div class="counter-value" id="live-counter">0.00</div>
+    <p class="counter-unit">hectares of Amazon primary forest</p>
+    <p class="counter-sub" id="football-fields">— football fields</p>
+    <p class="counter-sub" style="margin-top:1rem;font-size:0.6rem;opacity:0.5;line-height:1.6">Based on the 10-year average primary forest loss (2015–2024): ~2.6M ha/year.<br>All causes: deforestation and fire. Source: GFW/UMD via MAAP. Consistent with Run Forest Run visualisation data.</p>
+  </div>
+
+  <p class="scroll-cue">↓ &nbsp; The evidence &nbsp; ↓</p>
+</section>
+
+<hr class="section-rule">
+
+<!-- SECTION 0: CONSEQUENCES OF COLLAPSE -->
+<section class="section" id="s0">
+  <p class="section-eyebrow">The Consequences of Collapse</p>
+  <h2 class="section-title">If the Amazon Falls</h2>
+  <p class="section-body" style="font-style:italic;color:rgba(138,154,122,0.7);margin-bottom:3rem;">The following are not predictions. They are the documented conclusions of peer-reviewed science.</p>
+
+  <div class="consequence-list">
+
+    <div class="consequence-row">
+      <div class="consequence-number">01</div>
+      <div class="consequence-content">
+        <div class="consequence-title">The climate becomes uncontrollable.</div>
+        <div class="consequence-body">Over 200 billion tonnes of CO₂ locked in the Amazon's trees and soil would be released. Every climate target set by every government on Earth becomes mathematically unreachable. Not difficult. Unreachable. <span class="consequence-source">— Dr. Carlos Nobre, University of São Paulo</span></div>
+      </div>
+    </div>
+
+    <div class="consequence-row">
+      <div class="consequence-number">02</div>
+      <div class="consequence-content">
+        <div class="consequence-title">South America's water system fails. Permanently.</div>
+        <div class="consequence-body">The Amazon generates its own rainfall and distributes it across a continent via invisible atmospheric rivers. Collapse means permanent drought — not a bad season, not a decade of difficulty. Permanent. The agricultural regions that feed hundreds of millions of people dry out and do not recover. <span class="consequence-source">— Nature, February 2024; Science Panel for the Amazon, 2025</span></div>
+      </div>
+    </div>
+
+    <div class="consequence-row">
+      <div class="consequence-number">03</div>
+      <div class="consequence-content">
+        <div class="consequence-title">The sixth mass extinction accelerates beyond any point of return.</div>
+        <div class="consequence-body">One in ten of all species on Earth lives here. When the forest goes, they go. Not eventually. Immediately. Most will vanish before science has named them. <span class="consequence-source">— IUCN; INPA (Brazil's National Institute for Amazon Research)</span></div>
+      </div>
+    </div>
+
+    <div class="consequence-row">
+      <div class="consequence-number">04</div>
+      <div class="consequence-content">
+        <div class="consequence-title">Global temperatures rise faster than any model has prepared us for.</div>
+        <div class="consequence-body">The Amazon cools its surrounding region through evapotranspiration. Collapse replaces forest canopy with savannah, raising local temperatures by an estimated 3–5°C, feeding directly back into global warming. A regional event with no regional boundary. <span class="consequence-source">— PNAS, December 2025; Potsdam Institute for Climate Impact Research</span></div>
+      </div>
+    </div>
+
+    <div class="consequence-row">
+      <div class="consequence-number">05</div>
+      <div class="consequence-content">
+        <div class="consequence-title">The global food system fractures.</div>
+        <div class="consequence-body">Brazil is the world's largest exporter of soy, beef, coffee, sugar and chicken — all dependent on Amazon-regulated rainfall. Permanent drought collapses that output. Food prices rise on every continent. Supply chains built over decades fail in years. <span class="consequence-source">— FAO; Brazilian Ministry of Agriculture</span></div>
+      </div>
+    </div>
+
+    <div class="consequence-row">
+      <div class="consequence-number">06</div>
+      <div class="consequence-content">
+        <div class="consequence-title">A quarter of all medicine disappears before it is found.</div>
+        <div class="consequence-body">25% of Western pharmaceuticals originate from rainforest plants. The Amazon's pharmacopoeia is less than 1% explored. Cancer treatments, antivirals, compounds we do not yet know we need — gone before they are discovered. <span class="consequence-source">— WHO; National Cancer Institute; Royal Botanic Gardens, Kew</span></div>
+      </div>
+    </div>
+
+    <div class="consequence-row">
+      <div class="consequence-number">07</div>
+      <div class="consequence-content">
+        <div class="consequence-title">Tens of millions of people are displaced.</div>
+        <div class="consequence-body">Unliveable temperatures and crop failure across Brazil, Bolivia, Peru and neighbouring countries would trigger one of the largest climate displacement events in recorded history. People do not stay where there is no water. <span class="consequence-source">— UNHCR climate displacement modelling; Science Panel for the Amazon, 2025</span></div>
+      </div>
+    </div>
+
+    <div class="consequence-row" style="border-bottom:none;">
+      <div class="consequence-number">08</div>
+      <div class="consequence-content">
+        <div class="consequence-title">Other planetary tipping points fall.</div>
+        <div class="consequence-body">Scientists identify the Amazon as one of several interconnected planetary systems. Its collapse accelerates Arctic permafrost thaw, threatens the West Antarctic ice sheet, and disrupts the West African monsoon. The Amazon is not one domino. It is the first. <span class="consequence-source">— Lenton et al., Nature Communications, 2024; Potsdam Institute for Climate Impact Research</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- SECTION 1: SCALE -->
+<section class="section" id="s1">
+  <p class="section-eyebrow">01 — The Scale</p>
+  <h2 class="section-title">A Forest Larger Than Western Europe. Disappearing.</h2>
+  <p class="section-body">
+    The Amazon covers 5.5 million km² across nine countries. It is not a forest — it is a <strong>planetary system</strong>. Home to 10% of all species on Earth. Generator of 20% of the world's freshwater discharge. A living machine that recycles its own rainfall and pumps moisture across a continent.
+  </p>
+  <p class="section-body">
+    Since 1970, an estimated <span class="burn">971,160 km²</span> of primary forest has been razed. That is an area larger than Egypt. In 2024 alone, <span class="burn">4.5 million hectares</span> of primary forest were lost to deforestation and fire combined — including a record-breaking 2.8 million hectares destroyed by fire, shattering the previous record by 65%.
+  </p>
+
+  <div class="stat-grid">
+    <div class="stat-cell">
+      <div class="stat-number">~18%</div>
+      <div class="stat-desc">of Amazon lost since 1970 to deforestation</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-number">38%</div>
+      <div class="stat-desc">of remaining forest is degraded or fragmented — in addition to what has been cleared. Source: Lapola et al., <em>Science</em>, 2023.</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-number">4.5M</div>
+      <div class="stat-desc">hectares of primary forest lost in 2024 alone</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-number">+92%</div>
+      <div class="stat-desc">increase in deforestation, May 2024 to May 2025</div>
+    </div>
+  </div>
+
+  <p class="section-body">
+    The driver is not mystery. <strong>80% of deforestation</strong> is for cattle pasture and soy — but the mechanics are more entangled than they appear, and more damning for all of us.
+  </p>
+  <p class="section-body">
+    <strong>Beef</strong> is the primary direct driver — responsible for the majority of clearcut. But over <span class="burn">60% of Amazon beef is consumed domestically within Brazil</span>, not exported. This is not a story of Europe or China eating the forest. It is a story of a domestic food system with no mechanism to price the cost of what it destroys.
+  </p>
+  <p class="section-body">
+    <strong>Soy</strong> is more complex. In 2006, the Amazon Soy Moratorium — a voluntary commitment by over 25 trading companies including Cargill, Bunge and Louis Dreyfus — banned the purchase of soy from land deforested after 2008. It worked. Before the moratorium, <span class="burn">30% of soy expansion meant deforestation</span>. By 2013 that figure had fallen to <span class="burn">1%</span>. From 2006 to 2023, 97.6% of Amazon deforestation had no direct soy link, even as soy area grew fourfold. Brazil became the world's largest soy exporter — <strong>127 million tonnes exported in 2023, generating $53 billion</strong> — without directly clearing primary forest to do it.
+  </p>
+  <p class="section-body">
+    But soy deforests indirectly. Investors buy land cleared by cattle ranchers — technically "clean" under the moratorium — and the ranchers take the money and clear further in. Soy also builds the roads, raises the land values, and funds the infrastructure that opens the frontier. And in August 2025, Brazil's antitrust regulator <span class="burn">suspended the moratorium entirely</span>, ruling it an anti-competitive cartel. The agreement that protected the Amazon for 19 years and saved an estimated 3.2 million hectares is now dismantled — just months before COP30, hosted by Brazil. <span class="burn">China, which buys 80% of Brazil's soy and is bound by no equivalent agreement</span>, has every economic incentive to fill the gap. The era of soy as a clean crop in the Amazon is over.
+  </p>
+</section>
+
+<hr class="section-rule">
+
+<!-- SECTION 2: SPECIES -->
+<section class="section" id="s2">
+  <p class="section-eyebrow">02 — What Is Being Lost</p>
+  <h2 class="section-title">Species That Will Not Return</h2>
+  <p class="section-body">
+    The Amazon contains more biodiversity than anywhere on Earth — an estimated <strong>3 million species</strong>, the majority still unknown to science. When a tract of primary forest falls, it does not just remove trees. It erases species found nowhere else. Many will vanish before they are ever named.
+  </p>
+  <p class="section-body">
+    The IUCN Red List currently classifies <span class="burn">10,774 species as critically endangered globally</span> — the last category before extinct in the wild. The Amazon, as home to roughly 10% of all species on Earth, bears a proportionate share of that crisis. Of the amphibian species assessed in the Amazon alone, approximately <span class="burn">18% face extinction risk</span>. The rate of loss is not linear — science has identified a threshold beyond which collapse accelerates catastrophically.
+  </p>
+
+  <div class="species-list">
+    <div class="species-row">
+      <div>
+        <div class="species-name">Amazonian Jaguar</div>
+        <div class="species-detail">Apex predator. Fewer than 15,000 remain in the wild. Habitat fragmentation prevents the territory needed to sustain viable populations.</div>
+      </div>
+      <span class="species-status status-critical">Critical</span>
+    </div>
+    <div class="species-row">
+      <div>
+        <div class="species-name">Amazon River Dolphin (Boto)</div>
+        <div class="species-detail">Freshwater dolphin endemic to Amazonian rivers. Threatened by mercury contamination from illegal gold mining and river degradation from deforestation.</div>
+      </div>
+      <span class="species-status status-endangered">Endangered</span>
+    </div>
+    <div class="species-row">
+      <div>
+        <div class="species-name">Giant Anteater</div>
+        <div class="species-detail">Critical ecological role in controlling insect populations. Road kills and habitat loss from agricultural expansion have accelerated decline.</div>
+      </div>
+      <span class="species-status status-critical">Critical</span>
+    </div>
+    <div class="species-row">
+      <div>
+        <div class="species-name">Hyacinth Macaw</div>
+        <div class="species-detail">The world's largest flying parrot. Dependent on ancient Brazil nut trees that take decades to mature — trees that cannot be replaced once cleared.</div>
+      </div>
+      <span class="species-status status-endangered">Endangered</span>
+    </div>
+    <div class="species-row">
+      <div>
+        <div class="species-name">Giant River Otter</div>
+        <div class="species-detail">Listed as endangered. River system degradation from deforestation, sedimentation and mercury from mining has collapsed prey populations.</div>
+      </div>
+      <span class="species-status status-endangered">Endangered</span>
+    </div>
+    <div class="species-row">
+      <div>
+        <div class="species-name">Uakari Monkey</div>
+        <div class="species-detail">Entirely dependent on flooded várzea forests. As deforestation fragments habitat, isolated populations cannot sustain genetic viability.</div>
+      </div>
+      <span class="species-status status-vulnerable">Vulnerable</span>
+    </div>
+    <div class="species-row">
+      <div>
+        <div class="species-name">Thousands of unnamed species</div>
+        <div class="species-detail">Scientists estimate that for every hectare of primary Amazon forest cleared, an unknown number of invertebrate, plant, fungal and microbial species are permanently erased — species that science has not yet described.</div>
+      </div>
+      <span class="species-status status-critical">Unknown</span>
+    </div>
+  </div>
+
+  <div class="pull-quote">
+    <p>The Amazon holds an estimated 3 million species. Science has formally described fewer than 20% of them. Every hectare of primary forest cleared erases species that will never be named, studied, or understood — knowledge lost before it existed.</p>
+    <cite>— IUCN / INPA (Brazil's National Institute for Amazon Research)</cite>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- SECTION 3: TIPPING POINT -->
+<section class="section" id="s3">
+  <p class="section-eyebrow">03 — The Threshold</p>
+  <h2 class="section-title">We Are Standing at the Edge</h2>
+  <p class="section-body">
+    Scientists do not use the word "tipping point" lightly. In the Amazon, it has a precise meaning: <strong>the moment at which deforestation triggers self-reinforcing collapse</strong> — where the forest can no longer generate the rainfall needed to sustain itself, dries out, catches fire, and transitions permanently into dry savannah. Savannization. Irreversible.
+  </p>
+  <p class="section-body">
+    The threshold is estimated at <span class="burn">20–25% total forest loss</span>, combined with global warming beyond 2°C. We are currently at approximately <span class="burn">17–18%</span> deforestation and accelerating. The southeastern Amazon has already crossed its own local tipping point — it is now a <strong>net carbon emitter</strong>, not a sink.
+  </p>
+
+  <p style="font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--ash);letter-spacing:0.15em;margin-bottom:0.75rem;text-transform:uppercase;">Deforestation progress toward tipping point</p>
+  <div class="threshold-bar" id="thresholdBar">
+    <div class="threshold-fill" id="thresholdFill"></div>
+    <div class="threshold-marker" style="left:20%">
+      <div class="threshold-marker-label">20% — Tipping Point</div>
+    </div>
+  </div>
+  <div class="threshold-labels">
+    <span>0%</span>
+    <span style="color:var(--burn)">~17–18% (Now)</span>
+    <span>25%</span>
+    <span>50%</span>
+    <span>100%</span>
+  </div>
+
+  <div class="stat-grid" style="margin-top:3rem">
+    <div class="stat-cell">
+      <div class="stat-number">75%</div>
+      <div class="stat-desc">of the Amazon has been losing resilience since the early 2000s — Nature Climate Change</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-number">47%</div>
+      <div class="stat-desc">of forest area could undergo ecosystem transitions by 2050 — Science Panel for the Amazon 2025</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-number">200Gt</div>
+      <div class="stat-desc">CO₂ released if tipping point triggered — 5 years of global emissions</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-number">2050</div>
+      <div class="stat-desc">the year Dr. Carlos Nobre estimates the tipping point could be reached at current trajectory</div>
+    </div>
+  </div>
+
+  <div class="pull-quote">
+    <p>"The Amazon is very close to a tipping point. That would induce a self-degradation of 50% to 70% of the forest, releasing more than 200 billion tonnes of CO₂ into the atmosphere."</p>
+    <cite>— Dr. Carlos Nobre, Earth System Scientist, University of São Paulo</cite>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- SECTION 4: FLYING RIVERS -->
+<section class="section" id="s4">
+  <p class="section-eyebrow">04 — The Global Water Machine</p>
+  <h2 class="section-title">The Amazon Does Not Just Grow Rain. It Sends It.</h2>
+  <p class="section-body">
+    The Amazon is the centre of the global water cycle. The forest recycles <strong>30–50% of its own rainfall</strong> through transpiration — trees release water vapour that forms clouds that return as rain. This creates "flying rivers": invisible atmospheric rivers of moisture that carry more water than the Amazon River itself, distributing precipitation across South America and beyond.
+  </p>
+
+  <div class="river-diagram">
+    <p class="river-title">What flying rivers supply</p>
+    <div class="river-row">
+      <div class="river-icon">▸</div>
+      <div class="river-text"><strong>Southern Brazil — which generates ~70% of the country's economic output</strong> — would be arid desert without the flying rivers, according to climate scientist Antonio Nobre. The agricultural regions producing Brazil's soy, beef, coffee and corn depend entirely on this invisible infrastructure.</div>
+    </div>
+    <div class="river-row">
+      <div class="river-icon">▸</div>
+      <div class="river-text"><strong>Complete Amazon deforestation could reduce Sierra Nevada snowpack by up to 50%</strong>, according to modelling by Princeton University published in the Journal of Climate. The Amazon's moisture systems are not contained to South America — they reach the atmosphere and travel.</div>
+    </div>
+    <div class="river-row">
+      <div class="river-icon">▸</div>
+      <div class="river-text"><strong>Hydropower generation</strong> across Brazil — which supplies 65% of Brazil's electricity — is directly dependent on river flows fed by Amazon rainfall. Deforestation is already degrading output.</div>
+    </div>
+    <div class="river-row">
+      <div class="river-icon">▸</div>
+      <div class="river-text"><strong>The dry season is already 4–5 weeks longer</strong> across eastern and southern Amazon than it was in 1979. Temperatures in the southeastern arc are 3.1°C higher during dry months. The system is changing now.</div>
+    </div>
+  </div>
+
+  <p class="section-body">
+    The forest is worth an estimated <span class="burn">$20 billion annually</span> in rainfall generation alone. This is not counted in any commodity price. Not in a soy futures contract. Not in a cattle invoice. The Amazon gives this away for free — and we are destroying the infrastructure.
+  </p>
+</section>
+
+<hr class="section-rule">
+
+<!-- SECTION 5: CARBON -->
+<section class="section" id="s5">
+  <p class="section-eyebrow">05 — Carbon Sink Becoming Source</p>
+  <h2 class="section-title">The Lungs Have Started Exhaling</h2>
+  <p class="section-body">
+    For decades, the Amazon absorbed more carbon dioxide than it emitted — a vital brake on global warming. In the 1980s and 90s, the forest was removing more than <strong>1.5 billion tonnes of CO₂ per year</strong> from the atmosphere. That function is collapsing.
+  </p>
+  <p class="section-body">
+    In 2021, a landmark nine-year NOAA study published in Nature confirmed what scientists had feared: <strong>the southeastern Amazon is now a net carbon emitter</strong>. The region that once absorbed carbon is now releasing it. Fire burning emits three times more CO₂ than the surviving forest can absorb. By 2025, parts of the Amazon had lost up to <span class="burn">40% of their biomass</span>.
+  </p>
+  <p class="section-body">
+    The carbon math of tipping point collapse is staggering. Dieback of just 50% of the Amazon — <strong>263 million hectares</strong> — would release 131.5 gigatons of carbon. The equivalent of 30 years of US CO₂ emissions. In a single ecological event.
+  </p>
+
+  <div class="stat-grid">
+    <div class="stat-cell">
+      <div class="stat-number">1.5Bt</div>
+      <div class="stat-desc">tonnes CO₂ absorbed per year by Amazon in 1990s</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-number">↓ ~80%</div>
+      <div class="stat-desc">estimated reduction in net carbon absorption since the 1990s — Dr. Carlos Nobre, University of São Paulo. The Amazon now removes "several hundred million tonnes" where it once removed 1.5 billion.</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-number">131Gt</div>
+      <div class="stat-desc">CO₂ released if half the Amazon collapses — 30 years of US emissions</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-number">340Mt</div>
+      <div class="stat-desc">CO₂ removed annually by Indigenous-managed Amazon lands — the only areas still functioning as sinks</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- SECTION 6: ECONOMICS -->
+<section class="section" id="s6">
+  <p class="section-eyebrow">06 — The Economics of Destruction</p>
+  <h2 class="section-title">The Worst Trade in Human History</h2>
+  <p class="section-body">
+    The economic case for deforestation is built on a fiction: that the forest has no value. In reality, it is the <strong>most valuable piece of infrastructure on Earth</strong> — and we are selling it for $1.33 per ton of the carbon it stores.
+  </p>
+
+  <div class="econ-compare">
+    <div class="econ-cell">
+      <div class="econ-cell-label">Cost to clear one hectare</div>
+      <div class="econ-cell-value gain">$300–600</div>
+      <div class="econ-cell-note">What a farmer pays to clear one hectare of Amazon primary forest. The timber sold from that hectare returns an average of just $4. The land itself is the point — a speculative asset, not a productive one. Source: The Nature Conservancy / ScienceDirect 2025.</div>
+    </div>
+    <div class="econ-cell">
+      <div class="econ-cell-label">Carbon stored in one hectare</div>
+      <div class="econ-cell-value loss">500t CO₂</div>
+      <div class="econ-cell-note">The average Amazon hectare holds 150 tonnes of carbon. When burned, that releases approximately 500 tonnes of CO₂ — carbon that took centuries to accumulate, released in days. Source: INPE emissions modelling.</div>
+    </div>
+    <div class="econ-cell">
+      <div class="econ-cell-label">Cost to prevent 1 tonne CO₂</div>
+      <div class="econ-cell-value gain">$1.33</div>
+      <div class="econ-cell-note">Halting Amazon deforestation is the cheapest large-scale climate intervention available — cheaper than solar subsidies, cheaper than electric vehicle incentives, cheaper than almost any alternative. Source: Woods Hole Research Institute.</div>
+    </div>
+    <div class="econ-cell">
+      <div class="econ-cell-label">Soil productivity after clearing</div>
+      <div class="econ-cell-value loss">5–10 yrs</div>
+      <div class="econ-cell-note">Amazon soils are among the poorest on Earth for agriculture. Nutrients are locked in the living forest, not the ground. Once cleared and farmed, most land is exhausted within a decade — then abandoned, as the frontier moves deeper.</div>
+    </div>
+  </div>
+
+  <p class="section-body">
+    This is the central absurdity: a farmer spends $300–$600 to clear a hectare, earns $4 from the timber, farms degraded soil for a few years, then abandons it and clears again. The forest — which took centuries to build, stores 500 tonnes of CO₂, generates its own rainfall, and sustains thousands of species — is destroyed for a transaction that would not cover a week's wages. <strong>The economics only work because the forest's true value is never on the invoice.</strong>
+  </p>
+</section>
+
+<hr class="section-rule">
+
+<!-- SECTION 7: HUMANITY -->
+<section class="section" id="s7">
+  <p class="section-eyebrow">07 — What It Means for Humanity</p>
+  <h2 class="section-title">This Is Not an Environmental Story. It Is a Human One.</h2>
+  <p class="section-body">
+    Over <strong>400 Indigenous groups</strong> — representing some of the oldest living cultures on Earth — call the Amazon home. Many have never had contact with the outside world. As their forest disappears, so do their languages, their knowledge systems, their medicines. Accumulated over thousands of years. Gone in a dry season.
+  </p>
+  <p class="section-body">
+    But the consequences reach every human alive. The Amazon regulates global temperature. It generates rainfall across two continents. It stores the carbon of centuries. If it tips — and the science says we are close — the climate feedback loops it triggers will accelerate warming worldwide, disrupt food systems from California to sub-Saharan Africa, and render hundreds of millions of people food and water insecure within a generation.
+  </p>
+  <p class="section-body">
+    <strong>NASA identifies the Amazon as the centre of the global water cycle.</strong> Its destruction does not stay in Brazil. It arrives in drought. In crop failure. In displaced people. In the slow unravelling of the stable climate that agriculture — and civilisation — depends on.
+  </p>
+  <p class="section-body">
+    The window is still open. In 2023, deforestation fell 49% in Brazil following political change and enforcement — proof that the trajectory can reverse. Indigenous-managed Amazon lands removed <span class="burn">340 million tonnes of CO₂ annually</span> between 2001 and 2021, equivalent to the UK's entire fossil fuel emissions — proof that the forest, when protected, still functions. The science is clear: halt deforestation now and the tipping point can be avoided. <span class="burn">The choice is still ours. Barely. And not for much longer.</span>
+  </p>
+</section>
+
+<!-- SECTION 8: JUNGLEKEEPERS -->
+<section class="section" id="s8">
+  <p class="section-eyebrow">08 — There Is One Thing That Works</p>
+  <h2 class="section-title">Buy the Land. Put Rangers on It.</h2>
+  <p class="section-body">
+    While governments negotiate and corporations make pledges, a small team on the Las Piedras River in Peru's Madre de Dios region is doing something simpler. <strong>Junglekeepers buys the land. Then they put rangers on it.</strong>
+  </p>
+  <p class="section-body">
+    The model is almost disarmingly straightforward: 60 cents of every donated dollar goes to direct land acquisition — the only guaranteed form of protection. 34 cents funds the ranger programme that patrols those boundaries. Within the land they currently hold — <span class="burn">138,000 acres</span> — incidents of illegal logging have dropped by over <span class="burn">90%</span>. Illegal land acquisition has fallen to near zero.
+  </p>
+  <p class="section-body">
+    They need to protect another <span class="burn">170,000 acres immediately</span>. The gap between what they hold and what needs protecting is, at its core, a funding problem. The forest is there. The rangers are trained. The model is proven. <strong>What's missing is money.</strong>
+  </p>
+
+  <div style="display:flex;justify-content:center;margin:3rem 0;">
+    <blockquote
+      class="instagram-media"
+      data-instgrm-permalink="https://www.instagram.com/p/DG0htYVxfSc/"
+      data-instgrm-version="14"
+      style="background:#fff;border:0;border-radius:3px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:0;max-width:540px;min-width:326px;padding:0;width:100%;">
+    </blockquote>
+  </div>
+  <script async src="//www.instagram.com/embed.js"></script>
+
+  <a class="cta-btn" href="https://www.junglekeepers.org" target="_blank" rel="noopener" style="display:inline-block;margin-top:1rem">Support Junglekeepers →</a>
+</section>
+
+<hr class="section-rule">
+
+
+<section class="final-section" id="final">
+  <h2 class="final-title">Every run is a record. Every kilometre, a witness.</h2>
+  <p class="final-body">Run Forest Run translates the scale of what is lost into something the human body can understand. Distance run becomes forest visualised. Movement becomes testimony. We run because the forest cannot speak for itself.</p>
+  <a class="cta-btn" href="https://runforestrun.earth">See the Forest Lost →</a>
+</section>
+
+<footer>
+  <span>Run Forest Run — runforestrun.earth</span>
+  <span>Sources: INPE/PRODES · GFW/UMD · NOAA · Nature · Science Panel for the Amazon 2025 · Cambridge University · WEF · MAAP</span>
+</footer>
+
+<script>
+  // LIVE COUNTER
+  // 10-year average Amazon primary forest loss, all causes (deforestation + fire) 2015–2024: ~2.6M ha/year
+  // Consistent with GFW/UMD all-cause methodology used in the main Run Forest Run visualisation
+  // Source: MAAP annual reports via GFW/UMD data
+  // = 2,600,000 / 365.25 / 24 / 3600 = ~0.0824 hectares per second
+  const HECTARES_PER_SECOND = 2600000 / 365.25 / 24 / 3600;
+  const FOOTBALL_FIELD = 0.714; // hectares per football field
+  const startTime = Date.now();
+
+  function formatNum(n) {
+    if (n < 1000) return n.toFixed(2);
+    return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function tick() {
+    const elapsed = (Date.now() - startTime) / 1000;
+    const hectares = elapsed * HECTARES_PER_SECOND;
+    const fields = Math.round(hectares / FOOTBALL_FIELD);
+    document.getElementById('live-counter').textContent = formatNum(hectares);
+    document.getElementById('football-fields').textContent =
+      fields === 1 ? '1 football field' : fields.toLocaleString() + ' football fields';
+    requestAnimationFrame(tick);
+  }
+  tick();
+
+  // INTERSECTION OBSERVER for scroll reveals
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        // Animate threshold bar when s3 visible
+        if (e.target.id === 's3') {
+          setTimeout(() => {
+            document.getElementById('thresholdFill').style.width = '70%'; // 17.5% of 25% scale
+          }, 400);
+        }
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.section, .final-section').forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
