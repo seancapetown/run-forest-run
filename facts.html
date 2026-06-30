@@ -233,6 +233,45 @@
   .section-body .burn { color: var(--burn); font-weight: 400; }
 
   /* STAT GRID */
+  /* IMAGE BLOCKS */
+  .img-block {
+    margin: 3rem 0;
+  }
+  .img-block img {
+    width: 100%;
+    display: block;
+    border: 1px solid rgba(26,26,24,0.1);
+  }
+  .img-caption {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--ash);
+    letter-spacing: 0.04em;
+    margin-top: 0.75rem;
+    line-height: 1.6;
+  }
+  .img-caption a { color: var(--burn); text-decoration: none; border-bottom: 0.5px solid rgba(200,83,26,.4); }
+
+  .img-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: rgba(26,26,24,0.08);
+    margin: 3rem 0;
+  }
+  @media (max-width: 600px) { .img-compare { grid-template-columns: 1fr; } }
+  .img-compare-cell { background: #fff; }
+  .img-compare-cell img { width: 100%; display: block; }
+  .img-compare-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--parchment);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.85rem 1rem;
+    background: #fff;
+  }
+
   .stat-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -668,11 +707,14 @@
     </div>
 
   </div>
+
+  <div class="img-block">
+    <img src="https://assets.science.nasa.gov/dynamicimage/assets/science/esd/eo/images/imagerecords/4000/4385/tree_herb_bare_lrg.jpg?w=2143&h=1650&fit=clip&crop=faces%2Cfocalpoint" alt="Satellite image of the Arc of Deforestation in the southern Amazon, showing the fishbone pattern of forest clearing" loading="lazy">
+    <p class="img-caption">The "Arc of Deforestation" — the southeastern edge of the Amazon, imaged by NASA's MODIS satellite. Red is intact forest. Green and blue are cleared land. The fishbone pattern radiating from roads is the signature of the frontier advancing. <a href="https://science.nasa.gov/earth/earth-observatory/deforestation-patterns-in-the-amazon-4385/" target="_blank" rel="noopener">NASA Earth Observatory</a></p>
+  </div>
 </section>
 
 <hr class="section-rule">
-
-<!-- SECTION 1: SCALE -->
 <section class="section" id="s1">
   <p class="section-eyebrow">01 — The Scale</p>
   <h2 class="section-title">A Forest Larger Than Western Europe. Disappearing.</h2>
@@ -701,6 +743,18 @@
       <div class="stat-desc">increase in deforestation, May 2024 to May 2025</div>
     </div>
   </div>
+
+  <div class="img-compare">
+    <div class="img-compare-cell">
+      <div class="img-compare-label">2001</div>
+      <img src="https://assets.science.nasa.gov/content/dam/science/esd/eo/images/imagerecords/145000/145988/yurimaguas_ls7_2001181_lrg.jpg" alt="Yurimaguas, Peru, Amazon forest in 2001, Landsat satellite image" loading="lazy">
+    </div>
+    <div class="img-compare-cell">
+      <div class="img-compare-label">2019</div>
+      <img src="https://assets.science.nasa.gov/content/dam/science/esd/eo/images/imagerecords/145000/145988/yurimaguas_oli_2019191_lrg.jpg" alt="Yurimaguas, Peru, Amazon forest in 2019, Landsat satellite image showing deforestation" loading="lazy">
+    </div>
+  </div>
+  <p class="img-caption">Yurimaguas, Peru — 18 years apart. The dense green of intact rainforest gives way to the fishbone pattern of roads and clearings, the most common signature of Amazon deforestation. <a href="https://science.nasa.gov/earth/natural-disasters/wildfires/tracking-amazon-deforestation-from-above-145988/" target="_blank" rel="noopener">NASA Earth Observatory, Landsat 7 / Landsat 8</a></p>
 
   <p class="section-body">
     The driver is not mystery. <strong>80% of deforestation</strong> is for cattle pasture and soy — but the mechanics are more entangled than they appear, and more damning for all of us.
