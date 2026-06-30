@@ -294,10 +294,14 @@
 
   .stat-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 1px;
     background: rgba(26,26,24,0.08);
     margin: 3rem 0;
+  }
+
+  @media (max-width: 600px) {
+    .stat-grid { grid-template-columns: 1fr; }
   }
 
   .stat-cell {
