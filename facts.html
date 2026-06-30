@@ -113,6 +113,26 @@
     color: var(--burn);
   }
 
+  .hero-img {
+    width: 100%;
+    max-width: 900px;
+    margin: 1.5rem 0 2.5rem;
+    border: 1px solid rgba(26,26,24,0.1);
+  }
+  .hero-img img {
+    width: 100%;
+    display: block;
+  }
+  .hero-img-caption {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--ash);
+    letter-spacing: 0.04em;
+    margin-top: 0.6rem;
+    text-align: left;
+  }
+  .hero-img-caption a { color: var(--burn); text-decoration: none; border-bottom: 0.5px solid rgba(200,83,26,.4); }
+
   .hero-subtitle {
     font-family: 'IBM Plex Sans', sans-serif;
     font-weight: 300;
@@ -619,6 +639,12 @@
 <section class="hero">
   <p class="hero-eyebrow">Amazon Deforestation — The Evidence</p>
   <h1 class="hero-title">What We Are <em>Erasing</em></h1>
+
+  <div class="hero-img">
+    <img src="https://svs.gsfc.nasa.gov/vis/a010000/a013600/a013694/Amazon_clearing_DSC_1491.jpg" alt="Aerial photograph of recently cleared Amazon rainforest, Brazil" loading="lazy">
+    <p class="hero-img-caption">Recently cleared Amazon rainforest, Brazil. <a href="https://svs.gsfc.nasa.gov/13694" target="_blank" rel="noopener">NASA's Goddard Space Flight Center</a></p>
+  </div>
+
   <p class="hero-subtitle">This is not a distant environmental concern. It is the most consequential act of environmental destruction in human history and it's happening right now. Every single day.</p>
 
   <div class="counter-block">
