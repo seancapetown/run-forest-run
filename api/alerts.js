@@ -53,7 +53,7 @@ module.exports = async function handler(req, res) {
     const dailyKm2 = totalKm2 / 30;
 
     return res.status(200).json({
-      source: 'GFW Integrated Deforestation Alerts · Satellite data · 3-8 day lag',
+      source: 'GFW Integrated Deforestation Alerts · Satellite data · 2–16 day lag',
       data_period: `${since} to today`,
       total_km2_30_days: parseFloat(totalKm2.toFixed(2)),
       estimated_area_km2: parseFloat(dailyKm2.toFixed(2))
