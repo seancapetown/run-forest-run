@@ -607,6 +607,70 @@
   }
   .cta-btn:hover { background: var(--burn); color: var(--forest-night); }
 
+  /* DATA SOURCING SECTION */
+  .data-section {
+    border-top: 1px solid rgba(26,26,24,0.1);
+    padding: 5rem 2rem;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .data-section-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    color: var(--burn);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  .data-section-title {
+    font-family: 'Special Elite', serif;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    color: var(--parchment);
+    margin-bottom: 2.5rem;
+    line-height: 1.2;
+  }
+
+  .data-block {
+    border-top: 1px solid rgba(26,26,24,0.08);
+    padding: 2rem 0;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 2rem;
+  }
+
+  @media (max-width: 600px) {
+    .data-block { grid-template-columns: 1fr; gap: 0.75rem; }
+  }
+
+  .data-block-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--parchment);
+    letter-spacing: 0.05em;
+    line-height: 1.5;
+    padding-top: 0.15rem;
+  }
+
+  .data-block-label span {
+    display: block;
+    font-size: 0.62rem;
+    color: var(--ash);
+    margin-top: 0.3rem;
+    letter-spacing: 0.03em;
+  }
+
+  .data-block-body {
+    font-size: 0.875rem;
+    color: var(--ash);
+    line-height: 1.8;
+  }
+
+  .data-block-body strong { color: var(--parchment); font-weight: 400; }
+  .data-block-body a { color: var(--burn); text-decoration: none; border-bottom: 0.5px solid rgba(200,83,26,.3); }
+  .data-block-body a:hover { border-color: var(--burn); }
+
   /* FOOTER */
   footer {
     border-top: 1px solid rgba(26,26,24,0.1);
@@ -646,7 +710,7 @@
     <p class="hero-img-caption">Recently cleared Amazon rainforest, Brazil. <a href="https://svs.gsfc.nasa.gov/13694" target="_blank" rel="noopener">NASA's Goddard Space Flight Center</a></p>
   </div>
 
-  <p class="hero-subtitle">This is not a distant environmental concern. It is the most consequential act of environmental destruction in human history and it's happening right now. Every single day.</p>
+  <p class="hero-subtitle">This is not a distant environmental concern. It is one of the most consequential acts of environmental destruction in human history and it's happening right now. Every single day.</p>
 
   <div class="counter-block">
     <p class="counter-label">Hectares cleared since you opened this page</p>
@@ -886,19 +950,20 @@
     The threshold is estimated at <span class="burn">20–25% total forest loss</span>, combined with global warming beyond 2°C. We are currently at approximately <span class="burn">17–18%</span> deforestation and accelerating. The southeastern Amazon has already crossed its own local tipping point — it is now a <strong>net carbon emitter</strong>, not a sink.
   </p>
 
-  <p style="font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--ash);letter-spacing:0.15em;margin-bottom:0.75rem;text-transform:uppercase;">Deforestation progress toward tipping point</p>
+  <p style="font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--ash);letter-spacing:0.15em;margin-bottom:0.75rem;text-transform:uppercase;">Deforestation progress toward tipping point (0–25% scale)</p>
   <div class="threshold-bar" id="thresholdBar">
     <div class="threshold-fill" id="thresholdFill"></div>
-    <div class="threshold-marker" style="left:20%">
-      <div class="threshold-marker-label">20% — Tipping Point</div>
+    <div class="threshold-marker" style="left:100%">
+      <div class="threshold-marker-label">25% — Point of No Return</div>
+    </div>
+    <div class="threshold-marker" style="left:70%;background:var(--burn);opacity:1;">
+      <div class="threshold-marker-label" style="color:var(--burn);opacity:1;">~17–18% Now</div>
     </div>
   </div>
   <div class="threshold-labels">
     <span>0%</span>
-    <span style="color:var(--burn)">~17–18% (Now)</span>
-    <span>25%</span>
-    <span>50%</span>
-    <span>100%</span>
+    <span style="color:var(--burn);font-weight:500">▲ ~17–18% We are here</span>
+    <span style="color:var(--burn)">25% — Tipping Point</span>
   </div>
 
   <div class="stat-grid" style="margin-top:3rem">
@@ -1091,6 +1156,64 @@
   <a class="cta-btn" href="https://runforestrun.earth">See the Forest Lost →</a>
 </section>
 
+<hr class="section-rule">
+
+<!-- DATA SOURCING -->
+<div class="data-section">
+  <p class="data-section-eyebrow">Data & Methodology</p>
+  <h2 class="data-section-title">Where These Numbers Come From</h2>
+
+  <div class="data-block">
+    <div class="data-block-label">
+      Historical Forest Loss
+      <span>1972 – 2001</span>
+    </div>
+    <div class="data-block-body">
+      <strong>INPE/PRODES</strong> — Brazil's National Institute for Space Research, PRODES programme. Measures primary forest loss in the Brazilian Legal Amazon using annual Landsat satellite imagery. The gold standard for Brazilian Amazon deforestation data, produced by the Brazilian government and peer-reviewed internationally. Covers clear-cut deforestation only — does not include fire-driven loss or degradation. Available via <a href="https://terrabrasilis.dpi.inpe.br" target="_blank" rel="noopener">TerraBrasilis</a>.
+    </div>
+  </div>
+
+  <div class="data-block">
+    <div class="data-block-label">
+      Annual Forest Loss
+      <span>2002 – 2025</span>
+    </div>
+    <div class="data-block-body">
+      <strong>GFW/UMD Primary Forest Loss</strong> — Global Forest Watch, powered by the University of Maryland's Global Land Analysis and Discovery (GLAD) laboratory. Measures annual primary forest loss across the full Amazon biome covering nine countries, all causes including deforestation and fire. Updated annually, typically released mid-year for the previous calendar year. Queried directly from the <a href="https://data-api.globalforestwatch.org" target="_blank" rel="noopener">GFW Data API v1.9.1</a> via geostore <code style="font-family:'IBM Plex Mono',monospace;font-size:0.8em;background:rgba(26,26,24,0.06);padding:0.1em 0.4em;">d44bb24653ce755b02a2bacf49223e41</code>.
+    </div>
+  </div>
+
+  <div class="data-block">
+    <div class="data-block-label">
+      Daily Clearing Figure
+      <span>Live · Updated hourly</span>
+    </div>
+    <div class="data-block-body">
+      <strong>GFW Integrated Deforestation Alerts</strong> — a composite of four independent satellite alert systems: GLAD-L (Landsat 8/9, optical), GLAD-S2 (Sentinel-2, optical), RADD (Sentinel-1, radar), and DIST-ALERT (global vegetation disturbance). Run Forest Run queries the GFW Data API for the total alert area across the Amazon biome over the preceding 30 days and divides by 30 to produce a daily average. Radar-based systems (RADD) can detect through cloud cover; optical systems require clear skies. Combined lag between a deforestation event occurring on the ground and appearing in the alert dataset is typically <strong>2–16 days</strong> depending on cloud cover, satellite pass frequency, and confidence threshold. Results are cached hourly. When the live API is unavailable, Run Forest Run falls back to the 2025 annual UMD average of 21,957 km²/year ÷ 365.
+    </div>
+  </div>
+
+  <div class="data-block">
+    <div class="data-block-label">
+      Page Counter
+      <span>Hectares since page load</span>
+    </div>
+    <div class="data-block-body">
+      The live counter on this page uses the <strong>10-year average primary forest loss (2015–2024)</strong> across the Amazon biome: approximately 2.6 million hectares per year, all causes. This equals roughly 0.082 hectares per second. The figure is derived from MAAP annual reports compiled from GFW/UMD data, and is consistent with the methodology used throughout the Run Forest Run visualisation. It is intentionally conservative — 2024 was an anomalous record year at 4.5 million hectares; using the 10-year average avoids overstating a single extreme year.
+    </div>
+  </div>
+
+  <div class="data-block" style="border-bottom: 1px solid rgba(26,26,24,0.08);">
+    <div class="data-block-label">
+      Editorial Sources
+      <span>Facts page citations</span>
+    </div>
+    <div class="data-block-body">
+      Statistics and claims throughout The Reckoning are sourced from peer-reviewed literature and government data including: INPE · GFW/UMD · NOAA · <em>Nature</em> · <em>Nature Climate Change</em> · <em>Science</em> (Lapola et al., 2023) · Science Panel for the Amazon 2025 · PNAS · Potsdam Institute for Climate Impact Research · WHO · National Cancer Institute · Royal Botanic Gardens Kew · FAO · World Resources Institute · IUCN · INPA · MAAP · Woods Hole Research Institute · FUNAI. Individual citations are noted inline throughout the page.
+    </div>
+  </div>
+</div>
+
 <footer>
   <span>Run Forest Run — runforestrun.earth</span>
   <span>Sources: INPE/PRODES · GFW/UMD · NOAA · Nature · Science Panel for the Amazon 2025 · Cambridge University · WEF · MAAP</span>
@@ -1130,7 +1253,7 @@
         // Animate threshold bar when s3 visible
         if (e.target.id === 's3') {
           setTimeout(() => {
-            document.getElementById('thresholdFill').style.width = '70%'; // 17.5% of 25% scale
+            document.getElementById('thresholdFill').style.width = '70%'; // 17.5/25 = 70% on 0-25% scale
           }, 400);
         }
         observer.unobserve(e.target);
